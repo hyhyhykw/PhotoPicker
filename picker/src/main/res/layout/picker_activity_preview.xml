@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/whole_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.hy.picker.view.HackyViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"/>
+
+    <RelativeLayout
+        android:id="@+id/toolbar_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/picker_title_bg"
+        android:clickable="true"
+        android:minHeight="48dp">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/picker_picsel_back_normal"
+            android:foreground="@drawable/picker_foreground"
+            android:tint="?attr/picker_back_color"/>
+
+        <TextView
+            android:id="@+id/index_total"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@id/back"
+            android:layout_toRightOf="@id/back"
+            android:gravity="center_vertical"
+            android:textColor="?attr/picker_title_color"
+            android:textSize="18sp"/>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            tools:ignore="RelativeOverlap">
+
+            <TextView
+                android:id="@+id/send"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/picker_send_bg"
+                android:enabled="false"
+                android:foreground="@drawable/picker_send_foreground"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/picker_picsel_toolbar_send"
+                android:textAllCaps="true"
+                android:textColor="@color/picker_send_color"
+                android:textSize="14sp"/>
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/toolbar_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/picker_bottom_color"
+        android:clickable="true"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
+
+
+        <!--<android.support.v7.widget.AppCompatRadioButton-->
+        <!--android:id="@+id/origin_check"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:textColor="?attr/picker_title_color"-->
+        <!--android:textSize="16sp"-->
+        <!--android:theme="@style/picker_check_box"/>-->
+        <!--<LinearLayout-->
+        <!--android:id="@+id/origin_check"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingLeft="18dp">-->
+
+        <!--<ImageView-->
+        <!--android:id="@+id/image"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center_vertical"/>-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/text"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:paddingLeft="8dp"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:textSize="16sp"/>-->
+        <!--</LinearLayout>-->
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/select_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="?attr/picker_title_color"
+            android:textSize="16sp"
+            android:theme="@style/picker_check_box"/>
+        <!--<LinearLayout-->
+        <!--android:id="@+id/select_check"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:paddingRight="16dp">-->
+
+        <!--<ImageView-->
+        <!--android:id="@id/image"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="center_vertical"/>-->
+
+        <!--<TextView-->
+        <!--android:id="@id/text"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_vertical"-->
+        <!--android:paddingLeft="8dp"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:textSize="16sp"/>-->
+        <!--</LinearLayout>-->
+    </RelativeLayout>
+
+</RelativeLayout>

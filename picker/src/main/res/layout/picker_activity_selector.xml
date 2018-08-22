@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/picker_title_bg"
+        android:fitsSystemWindows="true"
+        android:minHeight="48dp">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/picker_picsel_back_normal"
+            android:contentDescription="@string/app_name"
+            android:foreground="@drawable/picker_foreground"
+            android:tint="?attr/picker_back_color"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@id/back"
+            android:layout_toRightOf="@id/back"
+            android:gravity="center_vertical"
+            android:text="@string/picker_picsel_toolbar"
+            android:textColor="?attr/picker_title_color"
+            android:textSize="18sp"/>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            tools:ignore="RelativeOverlap">
+
+            <TextView
+                android:id="@+id/send"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/picker_send_bg"
+                android:enabled="false"
+                android:foreground="@drawable/picker_send_foreground"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/picker_picsel_toolbar_send"
+                android:textAllCaps="true"
+                android:textColor="@color/picker_send_color"
+                android:textSize="14sp"/>
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="1dp">
+
+        <GridView
+            android:id="@+id/gridlist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black"
+            android:gravity="center"
+            android:horizontalSpacing="2dip"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="2dip"/>
+
+        <LinearLayout
+            android:id="@+id/lyt_load"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateDrawable="@drawable/picker_progress_bar"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/catalog_window"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="48dp"
+            android:background="@color/picker_picsel_catalog_shadow"
+            android:visibility="invisible">
+
+            <ListView
+                android:id="@+id/catalog_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="48dp"
+                android:background="@android:color/white"
+                android:paddingBottom="6dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="6dp"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:background="?attr/picker_bottom_color"
+            android:clickable="true">
+
+
+            <view
+                android:id="@+id/pic_type"
+                class="com.hy.picker.PictureSelectorActivity$PicTypeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp">
+
+                <TextView
+                    android:id="@+id/type_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/picker_picsel_pictype"
+                    android:textColor="@color/picker_preview_color"
+                    android:textSize="16sp"/>
+
+                <ImageView
+                    android:id="@+id/type_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="4dp"
+                    android:paddingTop="8dp"
+                    android:src="@drawable/picker_picsel_pictype_normal"
+                    android:tint="@color/picker_preview_color"/>
+
+            </view>
+
+            <view
+                android:id="@+id/preview"
+                class="com.hy.picker.PictureSelectorActivity$PreviewBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true">
+
+                <ImageView
+                    android:layout_width="1dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="#2A2A2A"/>
+
+                <TextView
+                    android:id="@+id/preview_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp"
+                    android:text="@string/picker_picsel_toolbar_preview"
+                    android:textColor="@color/picker_preview_color"
+                    android:textSize="16sp"/>
+            </view>
+        </RelativeLayout>
+    </FrameLayout>
+</LinearLayout>

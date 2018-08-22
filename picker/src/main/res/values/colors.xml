@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#ffffff</color>
+    <!-- PictureSelectorActivity -->
+    <color name="picker_picsel_toolbar">#303135</color>
+    <color name="picker_picsel_toolbar_transparent">#F0303135</color>
+    <color name="picker_picsel_toolbar_send_text_disable">#AAAAAA</color>
+    <color name="picker_picsel_toolbar_send_text_normal">#ff303135</color>
+    <color name="picker_picsel_grid_mask">#00000000</color>
+    <color name="picker_picsel_grid_mask_pressed">#80000000</color>
+    <color name="picker_picsel_catalog_shadow">#C0000000</color>
+
+</resources>
