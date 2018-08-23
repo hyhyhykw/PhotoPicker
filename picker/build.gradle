@@ -5,7 +5,7 @@ apply plugin: 'com.github.dcendents.android-maven' // 添加这个
 group='com.github.hyhyhykw'	// 指定group，com.github.<用户名>
 android {
     compileSdkVersion 27
-
+    resourcePrefix "picker_"
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 27
@@ -40,6 +40,7 @@ dependencies {
     api 'com.github.bumptech.glide:glide:4.7.1'
     api 'com.github.bumptech.glide:compiler:4.7.1'
 
+    api project(':image')
     api 'com.yanzhenjie:permission:2.0.0-rc4'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 }

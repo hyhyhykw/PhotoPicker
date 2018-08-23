@@ -16,6 +16,7 @@
     <!-- PictureSelectorActivity -->
     <string name="picker_picsel_toolbar">Picture</string>
     <string name="picker_picsel_toolbar_send">Choose</string>
+    <string name="picker_picsel_toolbar_sure">Sure</string>
     <string name="picker_picsel_toolbar_send_num">Choose(%d/%d)</string>
     <string name="picker_picsel_pictype">Picture</string>
     <string name="picker_picsel_toolbar_preview">Preview</string>
@@ -33,4 +34,6 @@
     <!--<string name="picker_permission_grant_needed">You have to grant permissions in setting</string>-->
     <string name="picker_empty_sdcard">No SD card</string>
     <string name="picker_photo_failure">Photo failure</string>
+    <string name="picker_photo_edit">Edit</string>
+    <string name="picker_file_error">File Error</string>
 </resources>

@@ -2,9 +2,12 @@ package com.hy.picker;
 
 
 import android.content.Intent;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -27,11 +30,16 @@ import com.bumptech.glide.request.RequestOptions;
 import com.github.chrisbanes.photoview.OnViewTapListener;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.hy.picker.utils.CommonUtils;
+import com.hy.picker.utils.Logger;
 import com.hy.picker.view.HackyViewPager;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
+
+import me.kareluo.imaging.IMGEditActivity;
 
 
 /**
@@ -56,6 +64,7 @@ public class PicturePreviewActivity extends AppCompatActivity {
     private boolean mFullScreen;
 
     private int max;
+    private TextView mTvEdit;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +80,9 @@ public class PicturePreviewActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         max = intent.getIntExtra("max", 9);
+        boolean isGif = intent.getBooleanExtra("isGif", false);
+        mTvEdit.setVisibility(isGif ? View.GONE : View.VISIBLE);
+
 //        mUseOrigin.setChecked(intent.getBooleanExtra("sendOrigin", false));
         mCurrentIndex = intent.getIntExtra("index", 0);
         if (mItemList == null) {
@@ -169,16 +181,85 @@ public class PicturePreviewActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 mCurrentIndex = position;
                 mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size()));
-                mSelectBox.setChecked(mItemList.get(position).selected);
+                PictureSelectorActivity.PicItem item = mItemList.get(position);
+                mSelectBox.setChecked(item.selected);
+                mTvEdit.setVisibility(item.isGif() ? View.GONE : View.VISIBLE);
             }
 
             public void onPageScrollStateChanged(int state) {
             }
         });
+        mTvEdit.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PictureSelectorActivity.PicItem picItem = mItemList.get(mViewPager.getCurrentItem());
+                toEdit(Uri.fromFile(new File(picItem.uri)));
+            }
+        });
         updateToolbar();
     }
 
+    public static final int REQUEST_EDIT = 0x987;
+    public static final int REQUEST_EDIT_PREVIEW = 0x876;
+    private File mEditFile;
+
+    private void toEdit(Uri uri) {
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        if (!path.exists()) {
+            boolean mkdirs = path.mkdirs();
+            Logger.d("文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+        }
+
+        String name = "IMG-EDIT-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";
+        mEditFile = new File(path, name);
+        if (!mEditFile.exists()) {
+            try {
+                boolean newFile = mEditFile.createNewFile();
+                Logger.d("文件：" + mEditFile + "创建" + (newFile ? "成功" : "失败"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        startActivityForResult(new Intent(this, IMGEditActivity.class)
+                .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
+                .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, mEditFile.getAbsolutePath()), REQUEST_EDIT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_EDIT) {
+                if (mEditFile != null) {
+                    PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
+                    String uriPath = mEditFile.getAbsolutePath();
+                    item.uri = uriPath;
+                    item.selected = true;
+                    MediaScannerConnection.scanFile(this, new String[]{uriPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                        @Override
+                        public void onScanCompleted(final String path, Uri uri) {
+                            Logger.d("crop path===" + path);
+                        }
+                    });
+
+                    startActivityForResult(new Intent(this, PictureEditPreviewActivity.class)
+                            .putExtra("picItem", item), REQUEST_EDIT_PREVIEW);
+                } else {
+                    Toast.makeText(this, R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            } else if (requestCode == REQUEST_EDIT_PREVIEW) {
+                PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
+                item.uri = mEditFile.getAbsolutePath();
+                item.selected = true;
+                mItemList.add(item);
+                finish();
+            }
+        }
+    }
+
     private void initView() {
+        mTvEdit = findViewById(R.id.picker_tv_edit);
         mToolbarTop = findViewById(R.id.picker_preview_toolbar);
         mIndexTotal = findViewById(R.id.picker_index_total);
         mBtnBack = findViewById(R.id.picker_back);

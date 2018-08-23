@@ -14,7 +14,9 @@
         <item name="picker_back_color">#ffffff</item>
         <item name="picker_send_color_disable">@color/picker_picsel_toolbar_send_text_disable</item>
         <item name="picker_send_color_enable">@color/picker_picsel_toolbar_send_text_normal</item>
-        <item name="picker_preview_color_disable">@color/picker_picsel_toolbar_send_text_disable</item>
+        <item name="picker_preview_color_disable">@color/picker_picsel_toolbar_send_text_disable
+        </item>
         <item name="picker_preview_color_enable">#ffffff</item>
     </style>
+
 </resources>

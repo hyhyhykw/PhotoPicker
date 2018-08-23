@@ -211,9 +211,11 @@ public class PictureSelectorActivity extends AppCompatActivity {
                     }
                 }
 
+
                 PicItemHolder.itemSelectedList = null;
                 Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
 //                intent.putExtra("sendOrigin", mSendOrigin);
+                intent.putExtra("isGif", PicItemHolder.itemList.get(0).isGif());
                 intent.putExtra("max", max);
                 startActivityForResult(intent, REQUEST_PREVIEW);
             }
@@ -982,6 +984,7 @@ public class PictureSelectorActivity extends AppCompatActivity {
 
                         Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
                         intent.putExtra("index", position - 1);
+                        intent.putExtra("isGif", item.isGif());
                         intent.putExtra("max", max);
                         startActivityForResult(intent, REQUEST_PREVIEW);
                     }

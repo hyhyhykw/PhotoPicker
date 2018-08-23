@@ -31,6 +31,10 @@
 
         <activity android:name="com.hy.picker.OpenCameraResultActivity"/>
 
+        <activity
+            android:name="me.kareluo.imaging.IMGEditActivity"
+            android:theme="@style/ImageEditTheme"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.hy.photopicker.file_provider"

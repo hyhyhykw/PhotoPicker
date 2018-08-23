@@ -17,6 +17,11 @@ public class PhotoPicker {
 
     static PhotoListener sPhotoListener;
     static TakePhotoListener sTakePhotoListener;
+    static boolean isEdit;
+
+    public PhotoPicker() {
+        isEdit = false;
+    }
 
     public static void init(PhotoModule photoModule) {
         PhotoContext.setPhotoModule(photoModule);
@@ -26,6 +31,11 @@ public class PhotoPicker {
 
     public PhotoPicker max(int max) {
         this.max = max;
+        return this;
+    }
+
+    public PhotoPicker edit(boolean edit) {
+        isEdit = edit;
         return this;
     }
 
@@ -60,7 +70,8 @@ public class PhotoPicker {
                 .setPermissionListener(new PermissionUtils.PermissionListener() {
                     @Override
                     public void onResult() {
-                        context.startActivity(new Intent(context, OpenCameraResultActivity.class));
+                        context.startActivity(new Intent(context, OpenCameraResultActivity.class)
+                                .putExtra("edit", isEdit));
                     }
                 })
                 .requestPermission(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE);

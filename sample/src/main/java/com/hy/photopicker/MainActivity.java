@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
 //                        .select(new ArrayList<>(mFeedbackSelectPictureAdapter.getData()))
 //                        .start(this);
                 new PhotoPicker()
+                        .edit(true)
                         .openCamera(this, this);
                 break;
             case FeedbackSelectPictureAdapter.TYPE_DELETE:

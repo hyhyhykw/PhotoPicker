@@ -5,6 +5,7 @@
     <!-- PictureSelectorActivity -->
     <string name="picker_picsel_toolbar">图片</string>
     <string name="picker_picsel_toolbar_send">选择</string>
+    <string name="picker_picsel_toolbar_sure">确定</string>
     <string name="picker_picsel_toolbar_send_num">选择(%d/%d)</string>
     <string name="picker_picsel_pictype">图片</string>
     <string name="picker_picsel_toolbar_preview">预览</string>
@@ -34,4 +35,6 @@
     <string name="picker_message_permission_rationale">允许以下权限以便程序继续执行：\n\n%1$s</string>
     <string name="picker_message_permission_always_failed">我们需要以下权限，请在设置中为我们开启：\n\n%1$s</string>
     <string name="picker_photo_failure">拍照失败</string>
+    <string name="picker_photo_edit">编辑</string>
+    <string name="picker_file_error">文件出错</string>
 </resources>

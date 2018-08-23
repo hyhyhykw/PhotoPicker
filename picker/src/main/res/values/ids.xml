@@ -27,6 +27,8 @@
     <item name="picker_catalog_mask" type="id"/>
     <item name="picker_bottom_mask" type="id"/>
     <item name="picker_toolbar_mask" type="id"/>
+    <item name="picker_photo_preview" type="id"/>
+    <item name="picker_sure" type="id"/>
 
 
 </resources>
