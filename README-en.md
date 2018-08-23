@@ -1,6 +1,6 @@
 #PhotoPicker
-Use：[中文版](README.md)
-Step 1. Add the JitPack repository to your build file.
+Use：[中文版](README.md)<br>
+Step 1. Add the JitPack repository to your build file.<br>
 Add it in your root build.gradle at the end of repositories:
 ```gradle
 	allprojects {
@@ -34,7 +34,7 @@ public class MyApp extends Application implements PhotoModule {
 }
 ```
 
-Step 4. Configuring FileProvider in AndroidManifest.xml
+Step 4. Configuring FileProvider in AndroidManifest.xml<br>
 Create a new xml folder in your project res folder and create file_path.xml where external-path must be configured
 ```xml
 <paths>
@@ -81,20 +81,19 @@ Then copy the following to AndroidManifest.xml
         </provider>
 ```
 
-Step 5. Add com.hy.picker.PictureSelectorActivity and com.hy.picker.PicturePreviewActivity to AndroidManifest.xml
-Then configuration theme is @style/Picker_Apptheme, or the custom theme must include the following attributes
-picker_send_color : Choose button background color
-picker_title_bg : Title bar background color
-picker_title_color : Title text color
-picker_bottom_color : Bottom bar background color
-picker_back_color : Back button color
-picker_send_color_disable :  The text color when the choose button disable
-picker_send_color_enable : The text color when the choose button enable
-picker_preview_color_disable : The text color when the preview button disable
-picker_preview_color_enable : The text color when the preview button enable
+Step 5. Add com.hy.picker.PictureSelectorActivity and com.hy.picker.PicturePreviewActivity to AndroidManifest.xml<br>
+Then configuration theme is @style/Picker_Apptheme, or the custom theme must include the following attributes<br>
+picker_send_color : Choose button background color<br>
+picker_title_bg : Title bar background color<br>
+picker_title_color : Title text color<br>
+picker_bottom_color : Bottom bar background color<br>
+picker_back_color : Back button color<br>
+picker_send_color_disable :  The text color when the choose button disable<br>
+picker_send_color_enable : The text color when the choose button enable<br>
+picker_preview_color_disable : The text color when the preview button disable<br>
+picker_preview_color_enable : The text color when the preview button enable<br>
 
 Step 6. select photo
-第六步：把大象放进去
 ```Java
 new PhotoPicker()
     .max(9)//Maximum number of pictures
