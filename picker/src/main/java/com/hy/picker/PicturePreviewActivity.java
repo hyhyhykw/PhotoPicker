@@ -179,15 +179,15 @@ public class PicturePreviewActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        mToolbarTop = findViewById(R.id.toolbar_top);
-        mIndexTotal = findViewById(R.id.index_total);
-        mBtnBack = findViewById(R.id.back);
-        mBtnSend = findViewById(R.id.send);
-        mWholeView = findViewById(R.id.whole_layout);
-        mViewPager = findViewById(R.id.viewpager);
-        mToolbarBottom = findViewById(R.id.toolbar_bottom);
+        mToolbarTop = findViewById(R.id.picker_preview_toolbar);
+        mIndexTotal = findViewById(R.id.picker_index_total);
+        mBtnBack = findViewById(R.id.picker_back);
+        mBtnSend = findViewById(R.id.picker_send);
+        mWholeView = findViewById(R.id.picker_whole_layout);
+        mViewPager = findViewById(R.id.picker_vpg_preview);
+        mToolbarBottom = findViewById(R.id.picker_bottom_bar);
 //        mUseOrigin = findViewById(R.id.origin_check);
-        mSelectBox = findViewById(R.id.select_check);
+        mSelectBox = findViewById(R.id.picker_select_check);
     }
 
     protected void onResume() {

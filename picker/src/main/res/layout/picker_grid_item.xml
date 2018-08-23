@@ -5,7 +5,7 @@
     android:layout_height="127dip">
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@id/picker_photo_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"

@@ -15,7 +15,7 @@
         android:minHeight="48dp">
 
         <ImageButton
-            android:id="@+id/back"
+            android:id="@id/picker_back"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/picker_picsel_back_normal"
@@ -29,8 +29,8 @@
             android:layout_marginBottom="1dp"
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
-            android:layout_toEndOf="@id/back"
-            android:layout_toRightOf="@id/back"
+            android:layout_toEndOf="@id/picker_back"
+            android:layout_toRightOf="@id/picker_back"
             android:gravity="center_vertical"
             android:text="@string/picker_picsel_toolbar"
             android:textColor="?attr/picker_title_color"
@@ -46,7 +46,7 @@
             tools:ignore="RelativeOverlap">
 
             <TextView
-                android:id="@+id/send"
+                android:id="@id/picker_send"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
@@ -62,6 +62,12 @@
                 android:textSize="14sp"/>
         </FrameLayout>
 
+        <View
+            android:id="@id/picker_toolbar_mask"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <FrameLayout
@@ -70,7 +76,7 @@
         android:layout_marginTop="1dp">
 
         <GridView
-            android:id="@+id/gridlist"
+            android:id="@id/picker_photo_grd"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/black"
@@ -81,7 +87,7 @@
             android:verticalSpacing="2dip"/>
 
         <LinearLayout
-            android:id="@+id/lyt_load"
+            android:id="@id/picker_photo_load"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center">
@@ -89,19 +95,27 @@
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:indeterminateBehavior="repeat"
+                android:indeterminateDuration="100"
+                android:indeterminateOnly="true"
                 android:indeterminateDrawable="@drawable/picker_progress_bar"/>
         </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/catalog_window"
+            android:id="@id/picker_catalog_window"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="48dp"
-            android:background="@color/picker_picsel_catalog_shadow"
-            android:visibility="invisible">
+            android:layout_marginBottom="48dp">
+
+            <View
+                android:id="@id/picker_catalog_mask"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/picker_picsel_catalog_shadow"
+                android:visibility="gone"/>
 
             <ListView
-                android:id="@+id/catalog_listview"
+                android:id="@id/picker_catalog_lst"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -110,7 +124,8 @@
                 android:paddingBottom="6dp"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:paddingTop="6dp"/>
+                android:paddingTop="6dp"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
@@ -123,14 +138,14 @@
 
 
             <view
-                android:id="@+id/pic_type"
+                android:id="@id/picker_pic_type"
                 class="com.hy.picker.PictureSelectorActivity$PicTypeBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="16dp">
 
                 <TextView
-                    android:id="@+id/type_text"
+                    android:id="@id/picker_type_text"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -139,7 +154,6 @@
                     android:textSize="16sp"/>
 
                 <ImageView
-                    android:id="@+id/type_image"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:paddingLeft="4dp"
@@ -150,10 +164,11 @@
             </view>
 
             <view
-                android:id="@+id/preview"
+                android:id="@id/picker_preview"
                 class="com.hy.picker.PictureSelectorActivity$PreviewBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true">
 
                 <ImageView
@@ -163,7 +178,7 @@
                     android:background="#2A2A2A"/>
 
                 <TextView
-                    android:id="@+id/preview_text"
+                    android:id="@id/picker_preview_text"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
@@ -173,6 +188,13 @@
                     android:textColor="@color/picker_preview_color"
                     android:textSize="16sp"/>
             </view>
+
+            <View
+                android:id="@id/picker_bottom_mask"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:visibility="gone"/>
         </RelativeLayout>
     </FrameLayout>
 </LinearLayout>

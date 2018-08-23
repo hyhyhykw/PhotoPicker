@@ -6,14 +6,14 @@
     android:background="@android:color/white">
 
     <FrameLayout
-        android:id="@+id/image_layout"
+        android:id="@id/picker_image_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:background="@drawable/picker_picsel_catalog_pic_shadow">
 
         <ImageView
-            android:id="@+id/image"
+            android:id="@id/picker_catalog_image"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:adjustViewBounds="true"
@@ -27,12 +27,12 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="14dp"
         android:layout_marginStart="14dp"
-        android:layout_toEndOf="@id/image_layout"
-        android:layout_toRightOf="@id/image_layout"
+        android:layout_toEndOf="@id/picker_image_layout"
+        android:layout_toRightOf="@id/picker_image_layout"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/name"
+            android:id="@id/picker_catalog_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="DCIM"
@@ -40,7 +40,7 @@
             android:textSize="16sp"/>
 
         <TextView
-            android:id="@+id/number"
+            android:id="@id/picker_catalog_photo_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -50,7 +50,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/selected"
+        android:id="@id/picker_catalog_selected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

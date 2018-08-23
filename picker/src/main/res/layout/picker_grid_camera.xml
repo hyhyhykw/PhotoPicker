@@ -9,32 +9,21 @@
         android:layout_height="match_parent"
         android:background="#353535">
 
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:orientation="vertical">
+            android:layout_gravity="center_horizontal"
+            android:drawablePadding="12dp"
+            android:drawableTop="@drawable/picker_grid_camera"
+            android:text="@string/picker_picsel_take_picture"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"/>
 
-            <ImageView
-                android:id="@+id/pic_camera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/picker_grid_camera"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="12dp"
-                android:text="@string/picker_picsel_take_picture"
-                android:textColor="@android:color/white"
-                android:textSize="12sp"/>
-        </LinearLayout>
     </RelativeLayout>
 
     <ImageButton
-        android:id="@+id/camera_mask"
+        android:id="@id/picker_camera_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/picker_selector_grid_camera_mask"/>

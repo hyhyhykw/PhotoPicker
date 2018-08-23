@@ -1,5 +1,8 @@
 package com.hy.picker;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -29,7 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.GridView;
@@ -47,6 +50,7 @@ import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.ObjectsUtils;
 import com.hy.picker.utils.PermissionUtils;
 import com.hy.picker.utils.SetList;
+import com.hy.picker.utils.SizeUtils;
 import com.yanzhenjie.permission.Permission;
 
 import java.io.File;
@@ -66,7 +70,6 @@ public class PictureSelectorActivity extends AppCompatActivity {
     private TextView mBtnSend;
     private PicTypeBtn mPicType;
     private PreviewBtn mPreviewBtn;
-    private View mCatalogView;
     private ListView mCatalogListView;
     private SetList<PicItem> mAllItemList;
     private Map<String, List<PicItem>> mItemMap;
@@ -82,6 +85,11 @@ public class PictureSelectorActivity extends AppCompatActivity {
     private GridViewAdapter mGridViewAdapter;
     private CatalogAdapter mCatalogAdapter;
 
+    private View mToolbarMask;
+    private View mBottomBarMask;
+    private View mCatalogMask;
+    private int catalogHeight;
+
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -91,16 +99,20 @@ public class PictureSelectorActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-
+        catalogHeight = PhotoContext.getScreenHeight() - SizeUtils.dp2px(this, 145) - CommonUtils.getStatusBarHeight(this);
 
         Intent intent = getIntent();
         max = intent.getIntExtra("max", 9);
         gif = intent.getBooleanExtra("gif", true);
         mSelectItems = intent.getParcelableArrayListExtra("items");
 
-        mLytLoad = findViewById(R.id.lyt_load);
-        mGridView = findViewById(R.id.gridlist);
-        mBtnBack = findViewById(R.id.back);
+        mLytLoad = findViewById(R.id.picker_photo_load);
+        mGridView = findViewById(R.id.picker_photo_grd);
+        mBtnBack = findViewById(R.id.picker_back);
+        mToolbarMask = findViewById(R.id.picker_toolbar_mask);
+        mBottomBarMask = findViewById(R.id.picker_bottom_mask);
+        mCatalogMask = findViewById(R.id.picker_catalog_mask);
+
 
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,11 +120,11 @@ public class PictureSelectorActivity extends AppCompatActivity {
                 finish();
             }
         });
-        mBtnSend = findViewById(R.id.send);
-        mPicType = findViewById(R.id.pic_type);
+        mBtnSend = findViewById(R.id.picker_send);
+        mPicType = findViewById(R.id.picker_pic_type);
         mPicType.init(this);
         mPicType.setEnabled(false);
-        mPreviewBtn = findViewById(R.id.preview);
+        mPreviewBtn = findViewById(R.id.picker_preview);
         mPreviewBtn.init(this);
         mPreviewBtn.setEnabled(null != mSelectItems && !mSelectItems.isEmpty());
 
@@ -132,9 +144,7 @@ public class PictureSelectorActivity extends AppCompatActivity {
         }
 
 
-        mCatalogView = findViewById(R.id.catalog_window);
-        mCatalogListView = findViewById(R.id.catalog_listview);
-
+        mCatalogListView = findViewById(R.id.picker_catalog_lst);
 
         Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
             @Override
@@ -184,7 +194,7 @@ public class PictureSelectorActivity extends AppCompatActivity {
         mPicType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCatalogView.setVisibility(View.VISIBLE);
+                showCatalog();
             }
         });
 
@@ -209,42 +219,117 @@ public class PictureSelectorActivity extends AppCompatActivity {
             }
         });
 
-        mCatalogView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == 1 && mCatalogView.getVisibility() == View.VISIBLE) {
-                    mCatalogView.setVisibility(View.GONE);
-                }
-                return true;
-            }
-        });
 
         mCatalogAdapter = new CatalogAdapter();
         mCatalogListView.setAdapter(mCatalogAdapter);
-        mCatalogListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String catalog;
-                if (position == 0) {
-                    catalog = "";
-                } else {
-                    catalog = mCatalogList.get(position - 1);
-                }
+        mCatalogListView.setTranslationY(catalogHeight);
+        mCatalogListView.setVisibility(View.VISIBLE);
+        mToolbarMask.setOnClickListener(new MaskClickListener());
+        mBottomBarMask.setOnClickListener(new MaskClickListener());
+        mCatalogMask.setOnClickListener(new MaskClickListener());
 
-                if (catalog.equals(mCurrentCatalog)) {
-                    mCatalogView.setVisibility(View.GONE);
+        mCatalogListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                mScrollState = scrollState;
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (firstVisibleItem == 0) {
+                    View first_view = mCatalogListView.getChildAt(0);
+                    canDown = first_view != null && first_view.getTop() == 0;
                 } else {
-                    mCurrentCatalog = catalog;
-                    TextView textView = view.findViewById(R.id.name);
-                    mPicType.setText(textView.getText().toString());
-                    mCatalogView.setVisibility(View.GONE);
-                    ((CatalogAdapter) mCatalogListView.getAdapter()).notifyDataSetChanged();
-                    ((GridViewAdapter) mGridView.getAdapter()).notifyDataSetChanged();
+                    canDown = false;
                 }
             }
         });
+        mCatalogListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        listLastY = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (mScrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {//判断是否在滑动
+                            if (canDown && event.getY() - listLastY >= 20) {//判断到达顶部后是否又向下滑动了20像素 可以修改
+                                hideCatalog();
+                                return true;
+                            }
+                        }
 
+                        break;
+                }
+                return false;
+            }
+        });
     }
+
+    private float listLastY;
+    private int mScrollState;
+    private boolean canDown;
+
+    private class MaskClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            hideCatalog();
+        }
+    }
+
+    private void showCatalog() {
+        if (isAnimating) return;
+        final ObjectAnimator translationY = ObjectAnimator.ofFloat(mCatalogListView, "translationY", catalogHeight, 0);
+        translationY.setDuration(300);
+        translationY.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                isAnimating = false;
+                translationY.removeAllListeners();
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                mToolbarMask.setVisibility(View.VISIBLE);
+                mBottomBarMask.setVisibility(View.VISIBLE);
+                mCatalogMask.setVisibility(View.VISIBLE);
+                isAnimating = true;
+                isShowing = true;
+            }
+        });
+        translationY.start();
+    }
+
+    private boolean isAnimating = false;
+    private boolean isShowing = false;
+
+    private void hideCatalog() {
+        if (isAnimating) return;
+        final ObjectAnimator translationY = ObjectAnimator.ofFloat(mCatalogListView, "translationY", 0, catalogHeight);
+        translationY.setDuration(300);
+        translationY.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                mToolbarMask.setVisibility(View.GONE);
+                mBottomBarMask.setVisibility(View.GONE);
+                mCatalogMask.setVisibility(View.GONE);
+                isAnimating = false;
+                isShowing = false;
+                translationY.removeAllListeners();
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                isAnimating = true;
+            }
+        });
+        translationY.start();
+    }
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -308,8 +393,8 @@ public class PictureSelectorActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mCatalogView != null && mCatalogView.getVisibility() == View.VISIBLE) {
-            mCatalogView.setVisibility(View.GONE);
+        if (isShowing) {
+            hideCatalog();
             return;
         }
         super.onBackPressed();
@@ -471,6 +556,9 @@ public class PictureSelectorActivity extends AppCompatActivity {
         return null;
     }
 
+    private Context getContext() {
+        return this;
+    }
 
     protected void onDestroy() {
         PicItemHolder.itemList = null;
@@ -493,7 +581,7 @@ public class PictureSelectorActivity extends AppCompatActivity {
         }
 
         public void init(Activity root) {
-            mText = root.findViewById(R.id.preview_text);
+            mText = root.findViewById(R.id.picker_preview_text);
         }
 
         public void setText(int id) {
@@ -533,7 +621,7 @@ public class PictureSelectorActivity extends AppCompatActivity {
         }
 
         public void init(Activity root) {
-            mText = root.findViewById(R.id.type_text);
+            mText = root.findViewById(R.id.picker_type_text);
         }
 
         public void setText(String text) {
@@ -638,12 +726,12 @@ public class PictureSelectorActivity extends AppCompatActivity {
         }
 
         public long getItemId(int position) {
-            return (long) position;
+            return position;
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = convertView;
-            ViewHolder holder;
+            final ViewHolder holder;
             if (convertView == null) {
                 view = mInflater.inflate(R.layout.picker_item_lst_catalog, parent, false);
                 holder = new ViewHolder(view);
@@ -653,66 +741,93 @@ public class PictureSelectorActivity extends AppCompatActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
+            holder.bind(position);
 
-            String path;
-            int num = 0;
-            boolean showSelected;
-            String name;
-            if (position == 0) {
-                if (mItemMap.size() == 0) {
-                    holder.image.setImageResource(R.drawable.picker_picsel_empty_pic);
+            return view;
+        }
+
+        private class ViewHolder {
+            ImageView image;
+            TextView tvName;
+            TextView tvNumber;
+            ImageView selected;
+            View itemView;
+
+            private ViewHolder(View itemView) {
+                this.itemView = itemView;
+                image = itemView.findViewById(R.id.picker_catalog_image);
+                tvName = itemView.findViewById(R.id.picker_catalog_name);
+                tvNumber = itemView.findViewById(R.id.picker_catalog_photo_number);
+                selected = itemView.findViewById(R.id.picker_catalog_selected);
+            }
+
+            void bind(final int position) {
+                String path;
+                int num = 0;
+                boolean showSelected;
+                String name;
+                if (position == 0) {
+                    if (mItemMap.size() == 0) {
+                        image.setImageResource(R.drawable.picker_picsel_empty_pic);
+                    } else {
+                        path = ((PicItem) ((List) mItemMap.get(mCatalogList.get(0))).get(0)).uri;
+
+                        Glide.with(getContext())
+                                .asBitmap()
+                                .load(path)
+                                .thumbnail(0.5f)
+                                .apply(new RequestOptions()
+                                        .placeholder(R.drawable.picker_grid_image_default)
+                                        .error(R.drawable.picker_grid_image_default))
+                                .into(image);
+                    }
+
+                    name = getResources().getString(R.string.picker_picsel_catalog_allpic);
+                    tvNumber.setVisibility(View.GONE);
+                    showSelected = mCurrentCatalog.isEmpty();
                 } else {
-                    path = ((PicItem) ((List) mItemMap.get(mCatalogList.get(0))).get(0)).uri;
+                    path = ((PicItem) ((List) mItemMap.get(mCatalogList.get(position - 1))).get(0)).uri;
+                    name = mCatalogList.get(position - 1);
+                    num = mItemMap.get(mCatalogList.get(position - 1)).size();
+                    tvNumber.setVisibility(View.VISIBLE);
+                    showSelected = name.equals(mCurrentCatalog);
 
-                    Glide.with(parent.getContext())
+                    Glide.with(getContext())
                             .asBitmap()
                             .load(path)
                             .thumbnail(0.5f)
                             .apply(new RequestOptions()
                                     .placeholder(R.drawable.picker_grid_image_default)
                                     .error(R.drawable.picker_grid_image_default))
-                            .into(holder.image);
+                            .into(image);
                 }
 
-                name = getResources().getString(R.string.picker_picsel_catalog_allpic);
-                holder.number.setVisibility(View.GONE);
-                showSelected = mCurrentCatalog.isEmpty();
-            } else {
-                path = ((PicItem) ((List) mItemMap.get(mCatalogList.get(position - 1))).get(0)).uri;
-                name = mCatalogList.get(position - 1);
-                num = mItemMap.get(mCatalogList.get(position - 1)).size();
-                holder.number.setVisibility(View.VISIBLE);
-                showSelected = name.equals(mCurrentCatalog);
+                tvName.setText(name);
+                tvNumber.setText(String.format(getResources().getString(R.string.picker_picsel_catalog_number), num));
+                selected.setVisibility(showSelected ? View.VISIBLE : View.INVISIBLE);
 
-                Glide.with(parent.getContext())
-                        .asBitmap()
-                        .load(path)
-                        .thumbnail(0.5f)
-                        .apply(new RequestOptions()
-                                .placeholder(R.drawable.picker_grid_image_default)
-                                .error(R.drawable.picker_grid_image_default))
-                        .into(holder.image);
-            }
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String catalog;
+                        if (position == 0) {
+                            catalog = "";
+                        } else {
+                            catalog = mCatalogList.get(position - 1);
+                        }
 
-            holder.name.setText(name);
-            holder.number.setText(String.format(getResources().getString(R.string.picker_picsel_catalog_number), num));
-            holder.selected.setVisibility(showSelected ? View.VISIBLE : View.INVISIBLE);
-            return view;
-        }
+                        if (catalog.equals(mCurrentCatalog)) {
+                            hideCatalog();
+                        } else {
+                            mCurrentCatalog = catalog;
 
-        private class ViewHolder {
-            ImageView image;
-            TextView name;
-            TextView number;
-            ImageView selected;
-            View itemView;
-
-            private ViewHolder(View itemView) {
-                this.itemView = itemView;
-                image = itemView.findViewById(R.id.image);
-                name = itemView.findViewById(R.id.name);
-                number = itemView.findViewById(R.id.number);
-                selected = itemView.findViewById(R.id.selected);
+                            mPicType.setText(tvName.getText().toString());
+                            hideCatalog();
+                            ((CatalogAdapter) mCatalogListView.getAdapter()).notifyDataSetChanged();
+                            ((GridViewAdapter) mGridView.getAdapter()).notifyDataSetChanged();
+                        }
+                    }
+                });
             }
         }
     }
@@ -746,7 +861,7 @@ public class PictureSelectorActivity extends AppCompatActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
             if (position == 0) {
                 View cameraView = mInflater.inflate(R.layout.picker_grid_camera, parent, false);
-                ImageButton mask = cameraView.findViewById(R.id.camera_mask);
+                ImageButton mask = cameraView.findViewById(R.id.picker_camera_mask);
 
                 mask.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -764,14 +879,6 @@ public class PictureSelectorActivity extends AppCompatActivity {
 
                 return cameraView;
             } else {
-                final PicItem item;
-                if (mCurrentCatalog.isEmpty()) {
-                    item = mAllItemList.get(position - 1);
-                } else {
-                    item = getItemAt(mCurrentCatalog, position - 1);
-                }
-
-
                 final ViewHolder holder;
                 if (convertView != null && convertView.getTag() != null) {
                     holder = (ViewHolder) convertView.getTag();
@@ -781,26 +888,54 @@ public class PictureSelectorActivity extends AppCompatActivity {
                     convertView.setTag(holder);
                 }
 
-                if (item.isGif()) {
-                    holder.ivGif.setVisibility(View.VISIBLE);
+                holder.bind(position);
+                return convertView;
+            }
+        }
+
+        private class ViewHolder {
+            ImageView image;
+            View mask;
+            AppCompatCheckBox checkBox;
+            View itemView;
+            ImageView ivGif;
+
+            private ViewHolder(View itemView) {
+                this.itemView = itemView;
+                image = itemView.findViewById(R.id.picker_photo_image);
+                mask = itemView.findViewById(R.id.mask);
+                checkBox = itemView.findViewById(R.id.checkbox);
+                ivGif = itemView.findViewById(R.id.iv_gif);
+            }
+
+
+            void bind(final int position) {
+                final PicItem item;
+                if (mCurrentCatalog.isEmpty()) {
+                    item = mAllItemList.get(position - 1);
                 } else {
-                    holder.ivGif.setVisibility(View.GONE);
+                    item = getItemAt(mCurrentCatalog, position - 1);
+                }
+                if (item.isGif()) {
+                    ivGif.setVisibility(View.VISIBLE);
+                } else {
+                    ivGif.setVisibility(View.GONE);
                 }
 
                 String uri = item.getUri();
 
-                Glide.with(parent.getContext())
+                Glide.with(getContext())
                         .asBitmap()
                         .load(new File(uri))
                         .thumbnail(0.5f)
                         .apply(new RequestOptions()
                                 .error(R.drawable.picker_grid_image_default)
                                 .placeholder(R.drawable.picker_grid_image_default))
-                        .into(holder.image);
+                        .into(image);
 
-                holder.checkBox.setChecked(item.selected);
+                checkBox.setChecked(item.selected);
 
-                holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if (buttonView.isPressed()) {
@@ -811,9 +946,9 @@ public class PictureSelectorActivity extends AppCompatActivity {
                                 item.selected = isChecked;
                             }
                             if (item.selected) {
-                                holder.mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
+                                mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
                             } else {
-                                holder.mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
+                                mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
                             }
 
                             updateToolbar();
@@ -823,11 +958,11 @@ public class PictureSelectorActivity extends AppCompatActivity {
                 });
 
                 if (item.selected) {
-                    holder.mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
+                    mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
                 } else {
-                    holder.mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
+                    mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
                 }
-                holder.mask.setOnClickListener(new View.OnClickListener() {
+                mask.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         PicItemHolder.itemList = new SetList<>();
@@ -851,26 +986,7 @@ public class PictureSelectorActivity extends AppCompatActivity {
                         startActivityForResult(intent, REQUEST_PREVIEW);
                     }
                 });
-
-                return convertView;
             }
-        }
-
-        private class ViewHolder {
-            ImageView image;
-            View mask;
-            AppCompatCheckBox checkBox;
-            View itemView;
-            ImageView ivGif;
-
-            private ViewHolder(View itemView) {
-                this.itemView = itemView;
-                image = itemView.findViewById(R.id.image);
-                mask = itemView.findViewById(R.id.mask);
-                checkBox = itemView.findViewById(R.id.checkbox);
-                ivGif = itemView.findViewById(R.id.iv_gif);
-            }
-
         }
     }
 }

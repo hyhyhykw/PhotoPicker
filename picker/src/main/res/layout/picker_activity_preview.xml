@@ -2,18 +2,18 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/whole_layout"
+    android:id="@id/picker_whole_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.hy.picker.view.HackyViewPager
-        android:id="@+id/viewpager"
+        android:id="@id/picker_vpg_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"/>
 
     <RelativeLayout
-        android:id="@+id/toolbar_top"
+        android:id="@id/picker_preview_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/picker_title_bg"
@@ -21,7 +21,7 @@
         android:minHeight="48dp">
 
         <ImageButton
-            android:id="@+id/back"
+            android:id="@id/picker_back"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/picker_picsel_back_normal"
@@ -29,14 +29,14 @@
             android:tint="?attr/picker_back_color"/>
 
         <TextView
-            android:id="@+id/index_total"
+            android:id="@id/picker_index_total"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginBottom="1dp"
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
-            android:layout_toEndOf="@id/back"
-            android:layout_toRightOf="@id/back"
+            android:layout_toEndOf="@id/picker_back"
+            android:layout_toRightOf="@id/picker_back"
             android:gravity="center_vertical"
             android:textColor="?attr/picker_title_color"
             android:textSize="18sp"/>
@@ -51,7 +51,7 @@
             tools:ignore="RelativeOverlap">
 
             <TextView
-                android:id="@+id/send"
+                android:id="@id/picker_send"
                 android:layout_width="wrap_content"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
@@ -70,7 +70,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/toolbar_bottom"
+        android:id="@id/picker_bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_alignParentBottom="true"
@@ -113,7 +113,7 @@
         <!--</LinearLayout>-->
 
         <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/select_check"
+            android:id="@id/picker_select_check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
