@@ -50,17 +50,16 @@ public class OpenCameraResultActivity extends AppCompatActivity {
                 }
 
                 if (new File(path).exists()) {
+                    PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
+                    item.uri = path;
+                    item.selected = true;
+                    PhotoPicker.sTakePhotoListener.onTake(item);
+                    finish();
+
                     MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
                         @Override
-                        public void onScanCompleted(String path, Uri uri) {
+                        public void onScanCompleted(final String path, Uri uri) {
                             Logger.d("path===" + path);
-                            if (null != PhotoPicker.sTakePhotoListener) {
-                                PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
-                                item.uri = path;
-                                item.selected = true;
-                                PhotoPicker.sTakePhotoListener.onTake(item);
-                                finish();
-                            }
                         }
                     });
                 } else {
@@ -71,6 +70,8 @@ public class OpenCameraResultActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                 finish();
             }
+        }else{
+            finish();
         }
 
     }

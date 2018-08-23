@@ -29,6 +29,8 @@
             android:name="com.hy.picker.PicturePreviewActivity"
             android:theme="@style/Picker_Apptheme"/>
 
+        <activity android:name="com.hy.picker.OpenCameraResultActivity"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.hy.photopicker.file_provider"

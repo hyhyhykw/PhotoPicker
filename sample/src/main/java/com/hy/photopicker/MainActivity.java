@@ -8,10 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import com.hy.picker.PhotoListener;
 import com.hy.picker.PhotoPicker;
 import com.hy.picker.PictureSelectorActivity;
+import com.hy.picker.TakePhotoListener;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements FeedbackSelectPictureAdapter.OnItemClickListener, PhotoListener {
+public class MainActivity extends AppCompatActivity implements FeedbackSelectPictureAdapter.OnItemClickListener, PhotoListener, TakePhotoListener {
     RecyclerView mRcyPhoto;
     private FeedbackSelectPictureAdapter mFeedbackSelectPictureAdapter = new FeedbackSelectPictureAdapter();
     private PhotoPicker mPhotoPicker;
@@ -36,9 +37,11 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
 
                 break;
             case FeedbackSelectPictureAdapter.TYPE_ADD:
-                new PhotoPicker().max(9)
-                        .select(new ArrayList<>(mFeedbackSelectPictureAdapter.getData()))
-                        .start(this);
+//                new PhotoPicker().max(9)
+//                        .select(new ArrayList<>(mFeedbackSelectPictureAdapter.getData()))
+//                        .start(this);
+                new PhotoPicker()
+                        .openCamera(this, this);
                 break;
             case FeedbackSelectPictureAdapter.TYPE_DELETE:
                 mFeedbackSelectPictureAdapter.deleteItem(position);
@@ -49,5 +52,10 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
     @Override
     public void onPicked(ArrayList<PictureSelectorActivity.PicItem> picItems) {
         mFeedbackSelectPictureAdapter.reset(picItems);
+    }
+
+    @Override
+    public void onTake(PictureSelectorActivity.PicItem picItem) {
+        mFeedbackSelectPictureAdapter.addItem(picItem);
     }
 }
