@@ -1,6 +1,10 @@
 package com.hy.picker;
 
+import android.content.Context;
 import android.content.Intent;
+
+import com.hy.picker.utils.PermissionUtils;
+import com.yanzhenjie.permission.Permission;
 
 import java.util.ArrayList;
 
@@ -12,6 +16,7 @@ import java.util.ArrayList;
 public class PhotoPicker {
 
     static PhotoListener sPhotoListener;
+    static TakePhotoListener sTakePhotoListener;
 
     public static void init(PhotoModule photoModule) {
         PhotoContext.setPhotoModule(photoModule);
@@ -49,4 +54,15 @@ public class PhotoPicker {
         PhotoContext.getContext().startActivity(intent);
     }
 
+    public void openCamera(final Context context, TakePhotoListener takePhotoListener) {
+        sTakePhotoListener = takePhotoListener;
+        new PermissionUtils(context)
+                .setPermissionListener(new PermissionUtils.PermissionListener() {
+                    @Override
+                    public void onResult() {
+                        context.startActivity(new Intent(context, OpenCameraResultActivity.class));
+                    }
+                })
+                .requestPermission(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE);
+    }
 }
