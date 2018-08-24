@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="12dp">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="12dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -19,9 +19,9 @@
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:focusable="true"
-            android:text="@string/image_cancel"
-            android:textColor="@color/image_color_primary"
-            android:textSize="16sp" />
+            android:text="@string/picker_cancel"
+            android:textColor="@color/picker_color_primary"
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/tv_done"
@@ -30,9 +30,9 @@
             android:layout_gravity="center_vertical|end"
             android:clickable="true"
             android:focusable="true"
-            android:text="@string/image_done"
-            android:textColor="@color/image_color_accent"
-            android:textSize="16sp" />
+            android:text="@string/picker_done"
+            android:textColor="@color/picker_color_accent"
+            android:textSize="16sp"/>
 
     </FrameLayout>
 
@@ -44,10 +44,12 @@
         android:layout_weight="1"
         android:background="@null"
         android:gravity="top"
-        android:textColor="@color/image_color_primary"
+        android:inputType="textMultiLine"
+        android:textColor="@color/picker_color_primary"
         android:textSize="24sp"
-        tools:text="这里添加文字" />
+        tools:ignore="LabelFor"
+        tools:text="这里添加文字"/>
 
-    <include layout="@layout/image_color_layout" />
+    <include layout="@layout/picker_color_layout"/>
 
 </LinearLayout>

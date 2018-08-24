@@ -33,8 +33,8 @@
 
     <style name="ImageDialogAnimation" parent="android:Animation.Dialog">
 
-        <item name="android:windowEnterAnimation">@anim/image_dialog_enter</item>
-        <item name="android:windowExitAnimation">@anim/image_dialog_exit</item>
+        <item name="android:windowEnterAnimation">@anim/picker_dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/picker_dialog_exit</item>
 
     </style>
 

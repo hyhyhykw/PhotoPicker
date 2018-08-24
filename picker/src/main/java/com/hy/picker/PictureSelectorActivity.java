@@ -5,8 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
@@ -90,11 +92,19 @@ public class PictureSelectorActivity extends AppCompatActivity {
     private View mCatalogMask;
     private int catalogHeight;
 
+    private UpdateReceiver mUpdateReceiver;
+
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picker_activity_selector);
+
+
+        mUpdateReceiver = new UpdateReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_UPDATE);
+        registerReceiver(mUpdateReceiver, intentFilter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -433,6 +443,21 @@ public class PictureSelectorActivity extends AppCompatActivity {
         }
     }
 
+    public static final String ACTION_UPDATE = "com.hy.picker.action.UPDATE";
+    public static final String ACTION_UPDATE_PATH = "path";
+
+    public class UpdateReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (null == intent) return;
+            if (!ACTION_UPDATE.equals(intent.getAction())) return;
+            String path = intent.getStringExtra(ACTION_UPDATE_PATH);
+            Logger.d("new image path===" + path);
+            updatePictureItems();
+        }
+    }
+
+
     private void updatePictureItems() {
         String[] projection = new String[]{"_data", "date_added"};
         String orderBy = "datetaken DESC";
@@ -534,6 +559,7 @@ public class PictureSelectorActivity extends AppCompatActivity {
 //        return null;
 //    }
 
+
     private PicItem getItemAt(String catalog, int index) {
         if (!mItemMap.containsKey(catalog)) {
             return null;
@@ -566,6 +592,8 @@ public class PictureSelectorActivity extends AppCompatActivity {
         PicItemHolder.itemList = null;
         PicItemHolder.itemSelectedList = null;
         super.onDestroy();
+        PhotoPicker.destroy();
+        unregisterReceiver(mUpdateReceiver);
     }
 
     public static class PicItemHolder {

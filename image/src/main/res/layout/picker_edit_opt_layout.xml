@@ -10,7 +10,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/image_bg_top"
+        android:background="@drawable/picker_bg_top"
         android:padding="12dp">
 
         <TextView
@@ -22,8 +22,8 @@
             android:clickable="true"
             android:focusable="true"
             android:onClick="onClick"
-            android:text="@string/image_cancel"
-            android:textColor="@color/image_color_primary"
+            android:text="@string/picker_cancel"
+            android:textColor="@color/picker_color_primary"
             android:textSize="16sp" />
 
         <TextView
@@ -35,8 +35,8 @@
             android:clickable="true"
             android:focusable="true"
             android:onClick="onClick"
-            android:text="@string/image_done"
-            android:textColor="@color/image_color_accent"
+            android:text="@string/picker_done"
+            android:textColor="@color/picker_color_accent"
             android:textSize="16sp" />
 
     </FrameLayout>
@@ -76,38 +76,38 @@
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
                     android:button="@null"
-                    app:image_color="@color/image_color_red" />
+                    app:image_color="@color/picker_color_red" />
 
                 <me.kareluo.imaging.view.IMGColorRadio
                     android:layout_width="@dimen/image_color"
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
-                    app:image_color="@color/image_color_black" />
+                    app:image_color="@color/picker_color_black" />
 
                 <me.kareluo.imaging.view.IMGColorRadio
                     android:layout_width="@dimen/image_color"
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
 
-                    app:image_color="@color/image_color_white" />
+                    app:image_color="@color/picker_color_white" />
 
                 <me.kareluo.imaging.view.IMGColorRadio
                     android:layout_width="@dimen/image_color"
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
-                    app:image_color="@color/image_color_cyan" />
+                    app:image_color="@color/picker_color_cyan" />
 
                 <me.kareluo.imaging.view.IMGColorRadio
                     android:layout_width="@dimen/image_color"
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
-                    app:image_color="@color/image_color_yellow" />
+                    app:image_color="@color/picker_color_yellow" />
 
                 <me.kareluo.imaging.view.IMGColorRadio
                     android:layout_width="@dimen/image_color"
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
-                    app:image_color="@color/image_color_blue" />
+                    app:image_color="@color/picker_color_blue" />
 
             </me.kareluo.imaging.view.IMGColorGroup>
 
@@ -115,8 +115,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/image_mosaic_tip"
-                android:textColor="@color/image_color_white"
+                android:text="@string/picker_mosaic_tip"
+                android:textColor="@color/picker_color_white"
                 android:textSize="12sp" />
 
         </ViewSwitcher>
@@ -126,9 +126,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:contentDescription="@string/image_undo"
+            android:contentDescription="@string/picker_undo"
             android:onClick="onClick"
-            android:src="@drawable/image_btn_undo" />
+            android:src="@drawable/picker_btn_undo" />
 
     </LinearLayout>
 
@@ -136,7 +136,7 @@
         android:id="@+id/rg_modes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/image_bg_bottom"
+        android:background="@drawable/picker_bg_bottom"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="20dp">
@@ -145,7 +145,7 @@
             android:id="@+id/rb_doodle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/image_btn_doodle"
+            android:button="@drawable/picker_btn_doodle"
             android:gravity="center"
             android:onClick="onClick"
             android:textColor="#FFF" />
@@ -159,10 +159,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:contentDescription="@string/image_text"
+            android:contentDescription="@string/picker_text"
             android:gravity="center"
             android:onClick="onClick"
-            android:src="@drawable/image_btn_text"
+            android:src="@drawable/picker_btn_text"
             android:textColor="#FFF" />
 
         <Space
@@ -173,7 +173,7 @@
             android:id="@+id/rb_mosaic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/image_btn_mosaic"
+            android:button="@drawable/picker_btn_mosaic"
             android:gravity="center"
             android:onClick="onClick"
             android:textColor="#FFF" />
@@ -187,10 +187,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:contentDescription="@string/image_clip"
+            android:contentDescription="@string/picker_clip"
             android:gravity="center"
             android:onClick="onClick"
-            android:src="@drawable/image_btn_clip"
+            android:src="@drawable/picker_btn_clip"
             android:textColor="#FFF" />
 
     </RadioGroup>

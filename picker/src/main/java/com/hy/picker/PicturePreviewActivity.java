@@ -34,7 +34,6 @@ import com.hy.picker.utils.Logger;
 import com.hy.picker.view.HackyViewPager;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -93,22 +92,6 @@ public class PicturePreviewActivity extends AppCompatActivity {
         mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size()));
 
         mWholeView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-//        result = getSmartBarHeight(this);
-//        if (result > 0) {
-//            LayoutParams lp = (LayoutParams) mToolbarBottom.getLayoutParams();
-//            lp.setMargins(0, 0, 0, result);
-//            mToolbarBottom.setLayoutParams(lp);
-//        }
-
-//        int  result = 0;
-//        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-//        if (resourceId > 0) {
-//            result = getResources().getDimensionPixelSize(resourceId);
-//        }
-
-//        LayoutParams lp = new LayoutParams(mToolbarTop.getLayoutParams());
-//        lp.setMargins(0, result, 0, 0);
-//        mToolbarTop.setLayoutParams(lp);
 
         mBtnBack.setOnClickListener(new OnClickListener() {
             @Override
@@ -212,14 +195,7 @@ public class PicturePreviewActivity extends AppCompatActivity {
 
         String name = "IMG-EDIT-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";
         mEditFile = new File(path, name);
-        if (!mEditFile.exists()) {
-            try {
-                boolean newFile = mEditFile.createNewFile();
-                Logger.d("文件：" + mEditFile + "创建" + (newFile ? "成功" : "失败"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
         startActivityForResult(new Intent(this, IMGEditActivity.class)
                 .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
                 .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, mEditFile.getAbsolutePath()), REQUEST_EDIT);
@@ -235,10 +211,13 @@ public class PicturePreviewActivity extends AppCompatActivity {
                     String uriPath = mEditFile.getAbsolutePath();
                     item.uri = uriPath;
                     item.selected = true;
+                    mItemList.add(item);
                     MediaScannerConnection.scanFile(this, new String[]{uriPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
                         @Override
                         public void onScanCompleted(final String path, Uri uri) {
-                            Logger.d("crop path===" + path);
+                            Intent intent = new Intent(PictureSelectorActivity.ACTION_UPDATE);
+                            intent.putExtra(PictureSelectorActivity.ACTION_UPDATE_PATH, path);
+                            sendBroadcast(intent);
                         }
                     });
 
@@ -249,10 +228,7 @@ public class PicturePreviewActivity extends AppCompatActivity {
                     finish();
                 }
             } else if (requestCode == REQUEST_EDIT_PREVIEW) {
-                PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
-                item.uri = mEditFile.getAbsolutePath();
-                item.selected = true;
-                mItemList.add(item);
+                setResult(RESULT_OK);
                 finish();
             }
         }

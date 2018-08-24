@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="picker_doodle">Doodle</string>
+    <string name="picker_text">Text</string>
+    <string name="picker_mosaic">Mosaic</string>
+    <string name="picker_clip">Clip</string>
+    <string name="picker_reset">Reset</string>
+    <string name="picker_done">Down</string>
+    <string name="picker_cancel">Cancel</string>
+    <string name="picker_rotate">Rotate</string>
+
+    <string name="picker_mosaic_tip">Please smear directly on the picture</string>
+    <string name="picker_undo">Undo</string>
+    <string name="picker_all_photo">All Picture</string>
+    <string name="picker_original">Original</string>
+    <string name="picker_preview">Preview</string>
+</resources>

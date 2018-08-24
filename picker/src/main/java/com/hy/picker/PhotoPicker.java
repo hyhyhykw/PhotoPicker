@@ -2,10 +2,14 @@ package com.hy.picker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 
+import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.PermissionUtils;
 import com.yanzhenjie.permission.Permission;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 
 /**
@@ -18,6 +22,12 @@ public class PhotoPicker {
     static PhotoListener sPhotoListener;
     static TakePhotoListener sTakePhotoListener;
     static boolean isEdit;
+
+    public static void destroy() {
+        sTakePhotoListener = null;
+        sPhotoListener = null;
+        isEdit = false;
+    }
 
     public PhotoPicker() {
         isEdit = false;
@@ -75,5 +85,35 @@ public class PhotoPicker {
                     }
                 })
                 .requestPermission(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE);
+    }
+
+    /**
+     * 删除编辑缓存
+     */
+    public static void deleteEditCache() {
+        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        if (!path.exists()) {
+            boolean mkdirs = path.mkdirs();
+            Logger.d("文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+        }
+        delete(path);
+    }
+
+    private static void delete(File cache) {
+        if (cache.isDirectory()) {
+
+            File[] files = cache.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return !pathname.isDirectory() && pathname.getAbsolutePath().startsWith("IMG-EDIT");
+                }
+            });
+            for (File file : files) {
+                delete(file);
+            }
+        } else {
+            boolean delete = cache.delete();
+            Logger.d("缓存文件：" + cache + "删除" + (delete ? "成功" : "失败"));
+        }
     }
 }

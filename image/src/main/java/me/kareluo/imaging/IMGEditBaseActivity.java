@@ -3,10 +3,13 @@ package me.kareluo.imaging;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.media.ExifInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.ViewSwitcher;
+
+import java.io.IOException;
 
 import me.kareluo.imaging.core.IMGMode;
 import me.kareluo.imaging.core.IMGText;
@@ -48,12 +51,43 @@ abstract class IMGEditBaseActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         Bitmap bitmap = getBitmap();
         if (bitmap != null) {
-            setContentView(R.layout.image_edit_activity);
+            setContentView(R.layout.picker_edit_activity);
             initViews();
             mImgView.setImageBitmap(bitmap);
+
             onCreated();
         } else finish();
     }
+
+    /**
+     * 读取照片旋转角度
+     *
+     * @param path 照片路径
+     * @return 角度
+     */
+    public static int readPictureDegree(String path) {
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
+    }
+
+
 
     public void onCreated() {
 

@@ -28,6 +28,9 @@
         <activity
             android:name="com.hy.picker.PicturePreviewActivity"
             android:theme="@style/Picker_Apptheme"/>
+        <activity
+            android:name="com.hy.picker.PictureEditPreviewActivity"
+            android:theme="@style/Picker_Apptheme"/>
 
         <activity android:name="com.hy.picker.OpenCameraResultActivity"/>
 

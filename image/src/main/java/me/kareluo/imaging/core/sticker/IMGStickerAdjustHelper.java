@@ -31,6 +31,7 @@ public class IMGStickerAdjustHelper implements View.OnTouchListener {
         mView.setOnTouchListener(this);
     }
 
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {

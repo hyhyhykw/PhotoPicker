@@ -342,16 +342,19 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         if (isHoming()) {
             stopHoming();
             return true;
-        } else if (mImage.getMode() == IMGMode.CLIP) {
-            return true;
-        }
-        return false;
+        } else return mImage.getMode() == IMGMode.CLIP;
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                performClick();
                 removeCallbacks(this);
                 break;
             case MotionEvent.ACTION_UP:

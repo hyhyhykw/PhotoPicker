@@ -1,18 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.kareluo.imaging">
+          package="me.kareluo.imaging">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
-    <application>
+    <application android:supportsRtl="true">
 
-        <!--<activity-->
-            <!--android:name=".IMGGalleryActivity"-->
-            <!--android:theme="@style/ImageGalleryTheme" />-->
 
         <!--<activity-->
-            <!--android:name=".IMGEditActivity"-->
-            <!--android:theme="@style/ImageEditTheme"-->
-            <!--android:windowSoftInputMode="stateAlwaysHidden" />-->
+        <!--android:name=".IMGEditActivity"-->
+        <!--android:theme="@style/ImageEditTheme"-->
+        <!--android:windowSoftInputMode="stateAlwaysHidden" />-->
 
     </application>
 

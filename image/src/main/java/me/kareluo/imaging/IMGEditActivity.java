@@ -3,9 +3,12 @@ package me.kareluo.imaging;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,7 +36,6 @@ public class IMGEditActivity extends IMGEditBaseActivity {
 
     @Override
     public void onCreated() {
-
     }
 
     @Override
@@ -51,7 +53,10 @@ public class IMGEditActivity extends IMGEditBaseActivity {
         IMGDecoder decoder = null;
 
         String path = uri.getPath();
+
+        int degree = 0;
         if (!TextUtils.isEmpty(path)) {
+            degree = readPictureDegree(path);
             switch (uri.getScheme()) {
                 case "asset":
                     decoder = new IMGAssetFileDecoder(this, uri);
@@ -88,8 +93,36 @@ public class IMGEditActivity extends IMGEditBaseActivity {
             return null;
         }
 
-        return bitmap;
+        return degree == 0 ? bitmap : rotatingImageView(degree, bitmap);
     }
+
+    /**
+     * 旋转图片
+     *
+     * @param angle  被旋转角度
+     * @param bitmap 图片对象
+     * @return 旋转后的图片
+     */
+    public static Bitmap rotatingImageView(int angle, Bitmap bitmap) {
+        Bitmap returnBm = null;
+        // 根据旋转角度，生成旋转矩阵
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        try {
+            // 将原始图片按照旋转矩阵进行旋转，并得到新的图片
+            returnBm = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } catch (OutOfMemoryError e) {
+            Log.d("Error", "图片太大，内存溢出");
+        }
+        if (returnBm == null) {
+            returnBm = bitmap;
+        }
+        if (bitmap != returnBm) {
+            bitmap.recycle();
+        }
+        return returnBm;
+    }
+
 
     @Override
     public void onText(IMGText text) {
@@ -129,6 +162,16 @@ public class IMGEditActivity extends IMGEditBaseActivity {
     public void onDoneClick() {
         String path = getIntent().getStringExtra(EXTRA_IMAGE_SAVE_PATH);
         if (!TextUtils.isEmpty(path)) {
+            File file = new File(path);
+            if (!file.exists()) {
+                try {
+                    boolean newFile = file.createNewFile();
+                    Log.d("TAG", "文件：" + file + "创建" + (newFile ? "成功" : "失败"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
             Bitmap bitmap = mImgView.saveBitmap();
             if (bitmap != null) {
                 FileOutputStream fos = null;

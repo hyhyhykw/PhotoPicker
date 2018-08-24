@@ -18,7 +18,6 @@ import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +39,11 @@ public class OpenCameraResultActivity extends AppCompatActivity {
         requestCamera();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PhotoPicker.destroy();
+    }
 
     private void toEdit(Uri uri) {
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
@@ -50,14 +54,7 @@ public class OpenCameraResultActivity extends AppCompatActivity {
 
         String name = "IMG-EDIT-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";
         mEditFile = new File(path, name);
-        if (!mEditFile.exists()) {
-            try {
-                boolean newFile = mEditFile.createNewFile();
-                Logger.d("文件：" + mEditFile + "创建" + (newFile ? "成功" : "失败"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
         startActivityForResult(new Intent(this, IMGEditActivity.class)
                 .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
                 .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, mEditFile.getAbsolutePath()), REQUEST_EDIT);

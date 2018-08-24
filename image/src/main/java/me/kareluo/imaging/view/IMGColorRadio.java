@@ -6,9 +6,9 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.RadioButton;
 
 import me.kareluo.imaging.R;
 
@@ -16,7 +16,7 @@ import me.kareluo.imaging.R;
  * Created by felix on 2017/12/1 下午2:50.
  */
 
-public class IMGColorRadio extends RadioButton implements ValueAnimator.AnimatorUpdateListener {
+public class IMGColorRadio extends AppCompatRadioButton implements ValueAnimator.AnimatorUpdateListener {
 
     private static final String TAG = "IMGColorRadio";
 

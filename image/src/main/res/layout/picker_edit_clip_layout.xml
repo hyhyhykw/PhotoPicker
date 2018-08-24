@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_weight="20"
         android:gravity="bottom"
-        android:background="@drawable/image_bg_bottom"
+        android:background="@drawable/picker_bg_bottom"
         android:orientation="vertical">
 
         <ImageButton
@@ -21,9 +21,9 @@
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
             android:background="@null"
-            android:contentDescription="@string/image_rotate"
+            android:contentDescription="@string/picker_rotate"
             android:onClick="onClick"
-            android:src="@drawable/image_btn_rotate" />
+            android:src="@drawable/picker_btn_rotate" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -40,9 +40,9 @@
                 android:layout_marginLeft="40dp"
                 android:layout_marginStart="40dp"
                 android:background="@null"
-                android:contentDescription="@string/image_cancel"
+                android:contentDescription="@string/picker_cancel"
                 android:onClick="onClick"
-                android:src="@drawable/image_btn_cancel" />
+                android:src="@drawable/picker_btn_cancel" />
 
             <TextView
                 android:id="@+id/tv_clip_reset"
@@ -52,8 +52,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:onClick="onClick"
-                android:text="@string/image_reset"
-                android:textColor="@color/image_color_text"
+                android:text="@string/picker_reset"
+                android:textColor="@color/picker_color_text"
                 android:textSize="16sp" />
 
             <ImageButton
@@ -64,9 +64,9 @@
                 android:layout_marginEnd="40dp"
                 android:layout_marginRight="40dp"
                 android:background="@null"
-                android:contentDescription="@string/image_done"
+                android:contentDescription="@string/picker_done"
                 android:onClick="onClick"
-                android:src="@drawable/image_btn_ok" />
+                android:src="@drawable/picker_btn_ok" />
 
         </FrameLayout>
 
