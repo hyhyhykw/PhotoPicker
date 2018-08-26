@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 
+import me.kareluo.imaging.R;
 import me.kareluo.imaging.core.IMGImage;
 import me.kareluo.imaging.core.IMGMode;
 import me.kareluo.imaging.core.IMGPath;
@@ -30,6 +31,7 @@ import me.kareluo.imaging.core.anim.IMGHomingAnimator;
 import me.kareluo.imaging.core.homing.IMGHoming;
 import me.kareluo.imaging.core.sticker.IMGSticker;
 import me.kareluo.imaging.core.sticker.IMGStickerPortrait;
+import me.kareluo.imaging.core.util.SizeUtils;
 
 /**
  * Created by felix on 2017/11/14 下午6:43.
@@ -88,9 +90,11 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     public IMGView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        dp100= SizeUtils.dp2px(context,100);
         initialize(context);
     }
 
+    private final int dp100;
     private void initialize(Context context) {
         mPen.setMode(mImage.getMode());
         mGDetector = new GestureDetector(context, new MoveAdapter());
@@ -309,6 +313,36 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
             stickerView.registerCallback(this);
             mImage.addSticker(stickerView);
         }
+    }
+
+    public void addStickerImage(Bitmap bitmap){
+        IMGStickerImageView imageView=new IMGStickerImageView(getContext());
+        imageView.setImageBitmap(bitmap);
+        LayoutParams layoutParams = new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+        );
+
+        // Center of the drawing window.
+        layoutParams.gravity = Gravity.CENTER;
+        imageView.setX(getScrollX());
+        imageView.setY(getScrollY());
+        addStickerView(imageView, layoutParams);
+    }
+
+    public void addStickerImageTest(){
+        IMGStickerImageView imageView=new IMGStickerImageView(getContext());
+        imageView.setImageResource(R.mipmap.ic_launcher);
+        LayoutParams layoutParams = new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+        );
+
+        // Center of the drawing window.
+        layoutParams.gravity = Gravity.CENTER;
+        imageView.setX(getScrollX());
+        imageView.setY(getScrollY());
+        addStickerView(imageView, layoutParams);
     }
 
     public void addStickerText(IMGText text) {

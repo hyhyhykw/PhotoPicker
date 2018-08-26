@@ -38,6 +38,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
     public void onCreated() {
     }
 
+
     @Override
     public Bitmap getBitmap() {
         Intent intent = getIntent();
@@ -127,6 +128,11 @@ public class IMGEditActivity extends IMGEditBaseActivity {
     @Override
     public void onText(IMGText text) {
         mImgView.addStickerText(text);
+    }
+
+    @Override
+    protected void onImageModeClick() {
+        mImgView.addStickerImageTest();
     }
 
     @Override

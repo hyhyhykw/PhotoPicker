@@ -52,7 +52,6 @@ import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.ObjectsUtils;
 import com.hy.picker.utils.PermissionUtils;
 import com.hy.picker.utils.SetList;
-import com.hy.picker.utils.SizeUtils;
 import com.yanzhenjie.permission.Permission;
 
 import java.io.File;
@@ -61,6 +60,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import me.kareluo.imaging.core.util.SizeUtils;
 
 
 @SuppressWarnings("ResultOfMethodCallIgnored")

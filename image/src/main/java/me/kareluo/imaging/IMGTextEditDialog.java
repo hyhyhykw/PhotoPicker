@@ -32,7 +32,7 @@ public class IMGTextEditDialog extends Dialog implements View.OnClickListener,
     private IMGColorGroup mColorGroup;
 
     public IMGTextEditDialog(Context context, Callback callback) {
-        super(context, R.style.ImageTextDialog);
+        super(context, R.style.PickerTextDialog);
         setContentView(R.layout.picker_text_dialog);
         mCallback = callback;
         Window window = getWindow();

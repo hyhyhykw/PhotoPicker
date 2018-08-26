@@ -5,6 +5,8 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.view.View;
 
+import me.kareluo.imaging.view.IMGStickerImageView;
+
 /**
  * Created by felix on 2017/11/16 下午5:52.
  */
@@ -36,6 +38,9 @@ public class IMGStickerHelper<StickerView extends View & IMGSticker> implements
 
     @Override
     public boolean remove() {
+        if (mView instanceof IMGStickerImageView) {
+            ((IMGStickerImageView) mView).destroy();
+        }
         return onRemove(mView);
     }
 

@@ -131,8 +131,12 @@ abstract class IMGEditBaseActivity extends AppCompatActivity implements View.OnC
             onResetClipClick();
         } else if (vid == R.id.ib_clip_rotate) {
             onRotateClipClick();
+        }else if (vid==R.id.btn_image){
+            onImageModeClick();
         }
     }
+
+    protected abstract void onImageModeClick();
 
     public void updateModeUI() {
         IMGMode mode = mImgView.getMode();

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="bottom"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_gravity="bottom"
+              android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:onClick="onClick"
             android:text="@string/picker_cancel"
             android:textColor="@color/picker_color_primary"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/tv_done"
@@ -37,14 +37,14 @@
             android:onClick="onClick"
             android:text="@string/picker_done"
             android:textColor="@color/picker_color_accent"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
     </FrameLayout>
 
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:id="@+id/layout_op_sub"
@@ -76,38 +76,38 @@
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
                     android:button="@null"
-                    app:image_color="@color/picker_color_red" />
+                    app:image_color="@color/picker_color_red"/>
 
                 <me.kareluo.imaging.view.IMGColorRadio
                     android:layout_width="@dimen/image_color"
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
-                    app:image_color="@color/picker_color_black" />
+                    app:image_color="@color/picker_color_black"/>
 
                 <me.kareluo.imaging.view.IMGColorRadio
                     android:layout_width="@dimen/image_color"
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
 
-                    app:image_color="@color/picker_color_white" />
+                    app:image_color="@color/picker_color_white"/>
 
                 <me.kareluo.imaging.view.IMGColorRadio
                     android:layout_width="@dimen/image_color"
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
-                    app:image_color="@color/picker_color_cyan" />
+                    app:image_color="@color/picker_color_cyan"/>
 
                 <me.kareluo.imaging.view.IMGColorRadio
                     android:layout_width="@dimen/image_color"
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
-                    app:image_color="@color/picker_color_yellow" />
+                    app:image_color="@color/picker_color_yellow"/>
 
                 <me.kareluo.imaging.view.IMGColorRadio
                     android:layout_width="@dimen/image_color"
                     android:layout_height="@dimen/image_color"
                     android:layout_margin="@dimen/image_color_margin"
-                    app:image_color="@color/picker_color_blue" />
+                    app:image_color="@color/picker_color_blue"/>
 
             </me.kareluo.imaging.view.IMGColorGroup>
 
@@ -117,7 +117,7 @@
                 android:layout_gravity="center"
                 android:text="@string/picker_mosaic_tip"
                 android:textColor="@color/picker_color_white"
-                android:textSize="12sp" />
+                android:textSize="12sp"/>
 
         </ViewSwitcher>
 
@@ -128,7 +128,7 @@
             android:background="@null"
             android:contentDescription="@string/picker_undo"
             android:onClick="onClick"
-            android:src="@drawable/picker_btn_undo" />
+            android:src="@drawable/picker_btn_undo"/>
 
     </LinearLayout>
 
@@ -148,11 +148,27 @@
             android:button="@drawable/picker_btn_doodle"
             android:gravity="center"
             android:onClick="onClick"
-            android:textColor="#FFF" />
+            android:textColor="#FFF"/>
+
 
         <Space
             android:layout_width="@dimen/image_mode_space"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/btn_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="@string/picker_text"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:src="@drawable/picker_btn_image"
+            android:textColor="#FFF"/>
+
+        <Space
+            android:layout_width="@dimen/image_mode_space"
+            android:layout_height="wrap_content"/>
 
         <ImageButton
             android:id="@+id/btn_text"
@@ -163,11 +179,11 @@
             android:gravity="center"
             android:onClick="onClick"
             android:src="@drawable/picker_btn_text"
-            android:textColor="#FFF" />
+            android:textColor="#FFF"/>
 
         <Space
             android:layout_width="@dimen/image_mode_space"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <RadioButton
             android:id="@+id/rb_mosaic"
@@ -176,11 +192,11 @@
             android:button="@drawable/picker_btn_mosaic"
             android:gravity="center"
             android:onClick="onClick"
-            android:textColor="#FFF" />
+            android:textColor="#FFF"/>
 
         <Space
             android:layout_width="@dimen/image_mode_space"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <ImageButton
             android:id="@+id/btn_clip"
@@ -191,7 +207,7 @@
             android:gravity="center"
             android:onClick="onClick"
             android:src="@drawable/picker_btn_clip"
-            android:textColor="#FFF" />
+            android:textColor="#FFF"/>
 
     </RadioGroup>
 
