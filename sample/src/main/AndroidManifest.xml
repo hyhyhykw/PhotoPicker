@@ -11,7 +11,7 @@
         android:name=".MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/picker_app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -30,6 +30,12 @@
             android:theme="@style/Picker_Apptheme"/>
         <activity
             android:name="com.hy.picker.PictureEditPreviewActivity"
+            android:theme="@style/Picker_Apptheme"/>
+        <activity
+            android:name="com.hy.picker.PickerCrystalCategoryActivity"
+            android:theme="@style/Picker_Apptheme"/>
+        <activity
+            android:name="com.hy.picker.PickerCrystalActivity"
             android:theme="@style/Picker_Apptheme"/>
 
         <activity android:name="com.hy.picker.OpenCameraResultActivity"/>

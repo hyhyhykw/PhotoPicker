@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <attr name="picker_back_color" format="color"/>
+    <attr name="picker_title_bg" format="color"/>
+    <attr name="picker_send_color" format="color"/>
+    <attr name="picker_title_color" format="color"/>
+    <attr name="picker_bottom_color" format="color"/>
+
+    <attr name="picker_send_color_enable" format="color"/>
+    <attr name="picker_send_color_disable" format="color"/>
+
+    <attr name="picker_preview_color_disable" format="color"/>
+    <attr name="picker_preview_color_enable" format="color"/>
+    <attr name="picker_photo_back" format="color"/>
+
+    <declare-styleable name="IMGColorRadio" tools:ignore="ResourceName">
+
+        <attr name="image_color" format="color"/>
+        <attr name="image_stroke_color" format="color"/>
+
+    </declare-styleable>
+
+    <!--圆弧进度条-->
+    <declare-styleable name="PickerCompletedView">
+        <attr name="picker_complete_radius" format="dimension"/>
+        <attr name="picker_complete_strokeWidth" format="dimension"/>
+        <attr name="picker_complete_circleColor" format="color"/>
+        <attr name="picker_complete_ringColor" format="color"/>
+        <attr name="picker_complete_ringBgColor" format="color"/>
+    </declare-styleable>
+
+</resources>

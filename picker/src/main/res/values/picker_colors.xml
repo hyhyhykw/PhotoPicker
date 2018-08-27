@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="picker_color_primary">#FFFFFF</color>
+    <color name="picker_color_accent">#4CA1FB</color>
+
+    <color name="picker_color_white">#FFFFFF</color>
+    <color name="picker_color_black">#2B2B2B</color>
+    <color name="picker_color_red">#FF5151</color>
+    <color name="picker_color_cyan">#20FFCD</color>
+    <color name="picker_color_yellow">#FFCC00</color>
+    <color name="picker_color_blue">#0078FF</color>
+    <!-- PictureSelectorActivity -->
+    <color name="picker_picsel_toolbar">#303135</color>
+    <color name="picker_picsel_toolbar_transparent">#F0303135</color>
+    <color name="picker_picsel_toolbar_send_text_disable">#AAAAAA</color>
+    <color name="picker_picsel_toolbar_send_text_normal">#ff303135</color>
+    <color name="picker_picsel_grid_mask">#00000000</color>
+    <color name="picker_picsel_grid_mask_pressed">#80000000</color>
+    <color name="picker_picsel_catalog_shadow">#C0000000</color>
+</resources>

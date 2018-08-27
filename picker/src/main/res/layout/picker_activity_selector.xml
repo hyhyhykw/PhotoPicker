@@ -19,7 +19,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/picker_picsel_back_normal"
-            android:contentDescription="@string/app_name"
+            android:contentDescription="@string/picker_app_name"
             android:foreground="@drawable/picker_foreground"
             android:tint="?attr/picker_back_color"/>
 
@@ -79,7 +79,7 @@
             android:id="@id/picker_photo_grd"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/black"
+            android:background="?attr/picker_photo_back"
             android:gravity="center"
             android:horizontalSpacing="2dip"
             android:numColumns="3"

@@ -9,29 +9,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="@string/picker_app_name"
         android:scaleType="centerCrop"/>
 
     <ImageView
-        android:id="@+id/iv_gif"
+        android:id="@id/picker_iv_gif"
         android:layout_width="28dp"
         android:layout_height="15dp"
         android:layout_gravity="bottom"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="@string/picker_app_name"
         android:src="@drawable/picker_gif"
         android:visibility="gone"/>
 
     <RelativeLayout
-        android:id="@+id/mask"
+        android:id="@id/picker_item_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/picker_sp_grid_mask">
 
         <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/checkbox"
+            android:id="@id/picker_item_checkbox"
             style="@style/Widget.AppCompat.CompoundButton.CheckBox"
             android:layout_width="32dp"
             android:layout_height="32dp"

@@ -934,9 +934,9 @@ public class PictureSelectorActivity extends AppCompatActivity {
             private ViewHolder(View itemView) {
                 this.itemView = itemView;
                 image = itemView.findViewById(R.id.picker_photo_image);
-                mask = itemView.findViewById(R.id.mask);
-                checkBox = itemView.findViewById(R.id.checkbox);
-                ivGif = itemView.findViewById(R.id.iv_gif);
+                mask = itemView.findViewById(R.id.picker_item_mask);
+                checkBox = itemView.findViewById(R.id.picker_item_checkbox);
+                ivGif = itemView.findViewById(R.id.picker_iv_gif);
             }
 
 
