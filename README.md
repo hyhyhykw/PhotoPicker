@@ -103,5 +103,5 @@ new PhotoPicker()
 ```
 
 混淆配置<br>
--keep class me.kareluo.imaging.core.CrystalCategory{*;}
--keep class me.kareluo.imaging.core.CrystalResult{*;}
+-keep class com.hy.picker.core.CrystalCategory{*;}
+-keep class com.hy.picker.core.CrystalResult{*;}

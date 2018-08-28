@@ -10,11 +10,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.hy.picker.R;
 
-import me.kareluo.imaging.core.CrystalResult;
-import me.kareluo.imaging.core.ExistBean;
-import me.kareluo.imaging.core.util.CrystalDownloadUtils;
-import me.kareluo.imaging.core.util.FileUtils;
-import me.kareluo.imaging.view.CompletedView;
+import com.hy.picker.core.CrystalResult;
+import com.hy.picker.core.ExistBean;
+import com.hy.picker.core.util.CrystalDownloadUtils;
+import com.hy.picker.core.util.FileUtils;
+import com.hy.picker.view.CompletedView;
 
 /**
  * Created time : 2018/8/27 15:53.

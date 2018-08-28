@@ -13,7 +13,7 @@ import com.hy.picker.utils.NetworkUtils;
 
 import java.util.Locale;
 
-import me.kareluo.imaging.core.CrystalCategory;
+import com.hy.picker.core.CrystalCategory;
 
 /**
  * Created time : 2018/8/27 16:42.

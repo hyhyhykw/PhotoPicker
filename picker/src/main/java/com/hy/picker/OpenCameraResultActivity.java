@@ -20,8 +20,6 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-import me.kareluo.imaging.IMGEditActivity;
-
 /**
  * Created time : 2018/8/23 10:56.
  *

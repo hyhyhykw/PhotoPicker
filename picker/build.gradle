@@ -36,12 +36,12 @@ dependencies {
 
     api 'com.github.chrisbanes:PhotoView:2.1.4'
 
-    api 'com.github.bumptech.glide:glide:4.7.1'
-    api 'com.github.bumptech.glide:compiler:4.7.1'
+    api 'com.github.bumptech.glide:glide:4.8.0'
+    api 'com.github.bumptech.glide:compiler:4.8.0'
     api 'com.android.support:recyclerview-v7:27.1.1'
 
     api 'com.android.support:exifinterface:27.1.1'
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
     api 'com.yanzhenjie:permission:2.0.0-rc4'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 }

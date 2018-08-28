@@ -25,7 +25,6 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.ArrayMap;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -61,7 +60,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import me.kareluo.imaging.core.util.SizeUtils;
+import com.hy.picker.core.util.SizeUtils;
 
 
 @SuppressWarnings("ResultOfMethodCallIgnored")

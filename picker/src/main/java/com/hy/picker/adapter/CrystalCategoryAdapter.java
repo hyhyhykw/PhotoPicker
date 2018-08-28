@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.hy.picker.R;
 
-import me.kareluo.imaging.core.CrystalCategory;
+import com.hy.picker.core.CrystalCategory;
 
 /**
  * Created time : 2018/8/27 15:42.
