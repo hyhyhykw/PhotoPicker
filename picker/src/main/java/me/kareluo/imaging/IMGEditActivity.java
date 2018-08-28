@@ -174,10 +174,12 @@ public class IMGEditActivity extends IMGEditBaseActivity {
         int height = bitmap.getHeight();
         // 计算缩放比例
         float scaleWidth = ((float) dp100) / width;
-        float scaleHeight = ((float) dp100) / height;
+
+//        float scaleHeight = scaleWidth * height / height;
+//        float scaleHeight = ((float) dp100) / height;
         // 取得想要缩放的matrix参数
         Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);
+        matrix.postScale(scaleWidth, scaleWidth);
         // 得到新的图片
         Bitmap newBitmap = null;
         try {

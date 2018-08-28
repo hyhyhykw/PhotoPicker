@@ -11,7 +11,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.hy.picker.utils.CommonUtils;
@@ -28,7 +27,7 @@ import me.kareluo.imaging.IMGEditActivity;
  *
  * @author HY
  */
-public class OpenCameraResultActivity extends AppCompatActivity {
+public class OpenCameraResultActivity extends BaseActivity {
     public static final int REQUEST_CAMERA = 0x357;
     public static final int REQUEST_EDIT = 0x753;
     private File mEditFile;

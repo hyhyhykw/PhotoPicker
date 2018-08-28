@@ -7,12 +7,11 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.MessageQueue;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.hy.picker.adapter.CrystalCategoryAdapter;
@@ -28,7 +27,7 @@ import me.kareluo.imaging.core.CrystalCategory;
  *
  * @author HY
  */
-public class PickerCrystalCategoryActivity extends AppCompatActivity implements CrystalCategoryAdapter.OnItemClickListener {
+public class PickerCrystalCategoryActivity extends BaseActivity implements CrystalCategoryAdapter.OnItemClickListener {
 
     private CrystalCategoryAdapter mCrystalCategoryAdapter = new CrystalCategoryAdapter();
 
@@ -41,7 +40,7 @@ public class PickerCrystalCategoryActivity extends AppCompatActivity implements 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-        ImageButton ibBack = findViewById(R.id.picker_back);
+        ImageView ibBack = findViewById(R.id.picker_back);
         RecyclerView rvCrystal = findViewById(R.id.picker_rcy_crystal);
         rvCrystal.addItemDecoration(new DefaultItemDecoration(Color.parseColor("#f5f5f5")));
         mCrystalCategoryAdapter.setOnItemClickListener(this);

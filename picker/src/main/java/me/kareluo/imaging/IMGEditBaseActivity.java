@@ -4,11 +4,11 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.media.ExifInterface;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.ViewSwitcher;
 
+import com.hy.picker.BaseActivity;
 import com.hy.picker.R;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ import me.kareluo.imaging.view.IMGView;
  * Created by felix on 2017/12/5 下午3:08.
  */
 
-abstract class IMGEditBaseActivity extends AppCompatActivity implements View.OnClickListener,
+abstract class IMGEditBaseActivity extends BaseActivity implements View.OnClickListener,
         IMGTextEditDialog.Callback, RadioGroup.OnCheckedChangeListener,
         DialogInterface.OnShowListener, DialogInterface.OnDismissListener {
 

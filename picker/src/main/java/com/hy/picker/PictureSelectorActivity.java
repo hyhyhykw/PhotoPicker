@@ -65,11 +65,11 @@ import me.kareluo.imaging.core.util.SizeUtils;
 
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class PictureSelectorActivity extends AppCompatActivity {
+public class PictureSelectorActivity extends BaseActivity {
     public static final int REQUEST_PREVIEW = 0;
     public static final int REQUEST_CAMERA = 1;
     private GridView mGridView;
-    private ImageButton mBtnBack;
+    private ImageView mBtnBack;
     private TextView mBtnSend;
     private PicTypeBtn mPicType;
     private PreviewBtn mPreviewBtn;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
+    android:background="?attr/picker_photo_back"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -14,11 +14,11 @@
         android:fitsSystemWindows="true"
         android:minHeight="48dp">
 
-        <ImageButton
+        <ImageView
             android:id="@id/picker_back"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/picker_picsel_back_normal"
+            android:src="@drawable/picker_picsel_back_normal"
             android:contentDescription="@string/picker_app_name"
             android:foreground="@drawable/picker_foreground"
             android:tint="?attr/picker_back_color"/>

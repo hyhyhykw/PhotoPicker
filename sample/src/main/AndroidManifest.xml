@@ -24,19 +24,19 @@
         </activity>
         <activity
             android:name="com.hy.picker.PictureSelectorActivity"
-            android:theme="@style/Picker_Apptheme"/>
+            android:theme="@style/PickerWhiteTheme"/>
         <activity
             android:name="com.hy.picker.PicturePreviewActivity"
-            android:theme="@style/Picker_Apptheme"/>
+            android:theme="@style/PickerWhiteTheme"/>
         <activity
             android:name="com.hy.picker.PictureEditPreviewActivity"
-            android:theme="@style/Picker_Apptheme"/>
+            android:theme="@style/PickerWhiteTheme"/>
         <activity
             android:name="com.hy.picker.PickerCrystalCategoryActivity"
-            android:theme="@style/Picker_Apptheme"/>
+            android:theme="@style/PickerWhiteTheme"/>
         <activity
             android:name="com.hy.picker.PickerCrystalActivity"
-            android:theme="@style/Picker_Apptheme"/>
+            android:theme="@style/PickerWhiteTheme"/>
 
         <activity android:name="com.hy.picker.OpenCameraResultActivity"/>
 

@@ -20,11 +20,11 @@
         android:clickable="true"
         android:minHeight="48dp">
 
-        <ImageButton
+        <ImageView
             android:id="@id/picker_back"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/picker_picsel_back_normal"
+            android:src="@drawable/picker_picsel_back_normal"
             android:foreground="@drawable/picker_foreground"
             android:tint="?attr/picker_back_color"/>
 

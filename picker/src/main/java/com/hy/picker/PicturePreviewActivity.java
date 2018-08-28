@@ -11,7 +11,6 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.KeyEvent;
 import android.view.View;
@@ -20,7 +19,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,13 +44,13 @@ import me.kareluo.imaging.IMGEditActivity;
  *
  * @author HY
  */
-public class PicturePreviewActivity extends AppCompatActivity {
+public class PicturePreviewActivity extends BaseActivity {
     public static final int RESULT_SEND = 1;
     private TextView mIndexTotal;
     private View mWholeView;
     private View mToolbarTop;
     private View mToolbarBottom;
-    private ImageButton mBtnBack;
+    private ImageView mBtnBack;
     private TextView mBtnSend;
     //    private AppCompatRadioButton mUseOrigin;
     private AppCompatCheckBox mSelectBox;

@@ -11,13 +11,13 @@
         android:fitsSystemWindows="true"
         android:minHeight="48dp">
 
-        <ImageButton
+        <ImageView
             android:id="@id/picker_back"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/picker_picsel_back_normal"
             android:contentDescription="@string/picker_app_name"
             android:foreground="@drawable/picker_foreground"
+            android:src="@drawable/picker_picsel_back_normal"
             android:tint="?attr/picker_back_color"/>
 
         <TextView
@@ -34,6 +34,11 @@
             android:textSize="18sp"/>
 
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#f1f1f1"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@id/picker_rcy_crystal"

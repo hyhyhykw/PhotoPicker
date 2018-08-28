@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,7 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,11 +30,11 @@ import java.io.File;
  *
  * @author HY
  */
-public class PictureEditPreviewActivity extends AppCompatActivity {
+public class PictureEditPreviewActivity extends BaseActivity {
     private View mWholeView;
     private View mToolbarTop;
     private View mToolbarBottom;
-    private ImageButton mBtnBack;
+    private ImageView mBtnBack;
     private TextView mBtnSend;
     //    private AppCompatRadioButton mUseOrigin;
     private AppCompatCheckBox mSelectBox;

@@ -7,12 +7,11 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.MessageQueue;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.hy.picker.adapter.CrystalAdapter;
@@ -29,7 +28,7 @@ import me.kareluo.imaging.core.ExistBean;
  *
  * @author HY
  */
-public class PickerCrystalActivity extends AppCompatActivity implements CrystalAdapter.OnItemClickListener {
+public class PickerCrystalActivity extends BaseActivity implements CrystalAdapter.OnItemClickListener {
 
 
     private CrystalAdapter mCrystalAdapter;
@@ -43,7 +42,7 @@ public class PickerCrystalActivity extends AppCompatActivity implements CrystalA
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-        ImageButton ibBack = findViewById(R.id.picker_back);
+        ImageView ibBack = findViewById(R.id.picker_back);
         RecyclerView rvCrystal = findViewById(R.id.picker_rcy_crystal);
         rvCrystal.addItemDecoration(new DefaultItemDecoration(Color.parseColor("#f5f5f5")));
         int id = getIntent().getIntExtra("id", 1);

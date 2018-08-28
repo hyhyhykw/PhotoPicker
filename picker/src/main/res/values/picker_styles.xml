@@ -43,7 +43,8 @@
         <item name="colorControlActivated">?attr/picker_send_color</item>
     </style>
 
-    <style name="Picker_Apptheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="PickerWeChatTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="picker_status_black">false</item><!--是否修改状态栏字体为黑色-->
         <item name="picker_send_color">#FF6E40</item>
         <item name="picker_title_bg">@color/picker_picsel_toolbar</item>
         <item name="picker_title_color">#ffffff</item>
@@ -57,5 +58,40 @@
         <item name="picker_photo_back">#000000</item>
     </style>
 
+    <!--白色主题样式，，注意每一项都不能少-->
+    <style name="PickerWhiteTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="picker_status_black">true</item><!--是否修改状态栏字体为黑色-->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="picker_send_color">#FF6E40</item>
+        <item name="picker_title_bg">@color/picker_color_white</item>
+        <item name="picker_title_color">#333</item>
+        <item name="picker_bottom_color">#f0ffffff</item>
+        <item name="picker_back_color">#333333</item>
+        <item name="picker_send_color_disable">@color/picker_picsel_toolbar_send_text_disable</item>
+        <item name="picker_send_color_enable">@color/picker_picsel_toolbar_send_text_normal</item>
+        <item name="picker_preview_color_disable">@color/picker_picsel_toolbar_send_text_disable
+        </item>
+        <item name="picker_preview_color_enable">#333</item>
+        <item name="picker_photo_back">#fff</item>
+    </style>
+
+    <!--QQ数字风格样式，注意每一项都不能少-->
+    <style name="PickerQQTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="picker_status_black">false</item><!--是否修改状态栏字体为黑色-->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="picker_send_color">#7D7DFF</item>
+        <item name="picker_title_bg">#7D7DFF</item>
+        <item name="picker_title_color">#fff</item>
+        <item name="picker_bottom_color">#f07D7DFF</item>
+        <item name="picker_back_color">#fff</item>
+        <item name="picker_send_color_disable">@color/picker_picsel_toolbar_send_text_disable</item>
+        <item name="picker_send_color_enable">#fff</item>
+        <item name="picker_preview_color_disable">@color/picker_picsel_toolbar_send_text_disable
+        </item>
+        <item name="picker_preview_color_enable">#7D7DFF</item>
+        <item name="picker_photo_back">#fff</item>
+    </style>
 
 </resources>
