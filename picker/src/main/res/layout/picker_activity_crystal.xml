@@ -40,8 +40,52 @@
         android:layout_height="1dp"
         android:background="#f1f1f1"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@id/picker_rcy_crystal"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/picker_rcy_crystal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+        <LinearLayout
+            android:id="@id/picker_photo_load"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/picker_color_white"
+            android:gravity="center">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateBehavior="repeat"
+                android:indeterminateDrawable="@drawable/picker_progress_bar"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/picker_load_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/picker_color_white"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/picker_color_white"
+                android:drawableLeft="@drawable/picker_reload"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/picker_reload"
+                android:gravity="center"
+                android:text="@string/picker_load_error"
+                android:textSize="16sp"/>
+        </LinearLayout>
+    </FrameLayout>
+
+
 </LinearLayout>

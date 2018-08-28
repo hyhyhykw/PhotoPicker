@@ -2,23 +2,14 @@ package com.hy.picker;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Looper;
 import android.os.MessageQueue;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.hy.picker.adapter.CrystalCategoryAdapter;
 import com.hy.picker.utils.DefaultItemDecoration;
-
-import java.io.IOException;
-import java.io.InputStream;
+import com.hy.picker.utils.NetworkUtils;
 
 import me.kareluo.imaging.core.CrystalCategory;
 
@@ -27,31 +18,19 @@ import me.kareluo.imaging.core.CrystalCategory;
  *
  * @author HY
  */
-public class PickerCrystalCategoryActivity extends BaseActivity implements CrystalCategoryAdapter.OnItemClickListener {
+public class PickerCrystalCategoryActivity extends BaseListActivity implements CrystalCategoryAdapter.OnItemClickListener, Constants {
 
     private CrystalCategoryAdapter mCrystalCategoryAdapter = new CrystalCategoryAdapter();
 
     private boolean isOther;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.picker_activity_crystal);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-        ImageView ibBack = findViewById(R.id.picker_back);
-        RecyclerView rvCrystal = findViewById(R.id.picker_rcy_crystal);
+    protected void initView() {
         rvCrystal.addItemDecoration(new DefaultItemDecoration(Color.parseColor("#f5f5f5")));
         mCrystalCategoryAdapter.setOnItemClickListener(this);
         rvCrystal.setAdapter(mCrystalCategoryAdapter);
         rvCrystal.setLayoutManager(new LinearLayoutManager(this));
-        ibBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+
         isOther = getIntent().getBooleanExtra("other", false);
         Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
             @Override
@@ -63,23 +42,28 @@ public class PickerCrystalCategoryActivity extends BaseActivity implements Cryst
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void initData() {
-        String file;
+    protected void initData() {
+        String url;
         if (isOther) {
-            file = "child-category.json";
+            url = CHILD_CATEGORY;
         } else {
-            file = "Category.json";
+            url = CATEGORY;
         }
-        try {
-            InputStream open = getAssets().open(file);
-            byte[] bytes = new byte[open.available()];
-            open.read(bytes);
-            String json = new String(bytes);
-            CrystalCategory category = new Gson().fromJson(json, CrystalCategory.class);
-            mCrystalCategoryAdapter.reset(category.getCategory());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        NetworkUtils.getInstance()
+                .url(url)
+                .start(new NetworkUtils.TaskListener() {
+                    @Override
+                    public void onSuccess(String json) {
+                        loadSuccess();
+                        CrystalCategory category = new Gson().fromJson(json, CrystalCategory.class);
+                        mCrystalCategoryAdapter.reset(category.getCategory());
+                    }
+
+                    @Override
+                    public void onFailed() {
+                        loadFailed();
+                    }
+                });
     }
 
     @Override

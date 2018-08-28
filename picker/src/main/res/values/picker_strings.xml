@@ -53,4 +53,5 @@
     <string name="picker_crystal">Crystal</string>
     <string name="picker_waiting">Waiting&#8230;</string>
     <string name="picker_sticker_not_download">The sticker is not downloaded, is it downloaded?</string>
+    <string name="picker_load_error">Load failed, click reload</string>
 </resources>

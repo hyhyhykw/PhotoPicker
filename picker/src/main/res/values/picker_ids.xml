@@ -59,5 +59,6 @@
     <item name="picker_btn_image" type="id"/>
     <item name="picker_rb_mosaic" type="id"/>
     <item name="picker_btn_undo" type="id"/>
+    <item name="picker_load_error" type="id"/>
 
 </resources>

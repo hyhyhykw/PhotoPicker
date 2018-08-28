@@ -2,23 +2,14 @@ package com.hy.picker;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Looper;
 import android.os.MessageQueue;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.hy.picker.adapter.CrystalAdapter;
 import com.hy.picker.utils.DefaultItemDecoration;
-
-import java.io.IOException;
-import java.io.InputStream;
+import com.hy.picker.utils.NetworkUtils;
 
 import me.kareluo.imaging.core.CrystalResult;
 import me.kareluo.imaging.core.ExistBean;
@@ -28,35 +19,21 @@ import me.kareluo.imaging.core.ExistBean;
  *
  * @author HY
  */
-public class PickerCrystalActivity extends BaseActivity implements CrystalAdapter.OnItemClickListener {
+public class PickerCrystalActivity extends BaseListActivity implements CrystalAdapter.OnItemClickListener {
 
 
     private CrystalAdapter mCrystalAdapter;
     private String cate;
 
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.picker_activity_crystal);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-        ImageView ibBack = findViewById(R.id.picker_back);
-        RecyclerView rvCrystal = findViewById(R.id.picker_rcy_crystal);
+    protected void initView() {
         rvCrystal.addItemDecoration(new DefaultItemDecoration(Color.parseColor("#f5f5f5")));
         int id = getIntent().getIntExtra("id", 1);
         cate = getCateFromId(id);
         mCrystalAdapter = new CrystalAdapter(cate);
         mCrystalAdapter.setOnItemClickListener(this);
         rvCrystal.setAdapter(mCrystalAdapter);
-        rvCrystal.setLayoutManager(new GridLayoutManager(this,3));
-        ibBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        rvCrystal.setLayoutManager(new GridLayoutManager(this, 3));
 
         Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
             @Override
@@ -107,28 +84,22 @@ public class PickerCrystalActivity extends BaseActivity implements CrystalAdapte
         }
     }
 
-    private void initData() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    InputStream open = getAssets().open(cate + ".json");
-                    byte[] bytes = new byte[open.available()];
-                    //noinspection ResultOfMethodCallIgnored
-                    open.read(bytes);
-                    String json = new String(bytes);
-                    final CrystalResult result = new Gson().fromJson(json, CrystalResult.class);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mCrystalAdapter.reset(result.getData());
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+    protected void initData() {
+        NetworkUtils.getInstance()
+                .url(JSON_BASE + cate + ".json")
+                .start(new NetworkUtils.TaskListener() {
+                    @Override
+                    public void onSuccess(String json) {
+                        loadSuccess();
+                        final CrystalResult result = new Gson().fromJson(json, CrystalResult.class);
+                        mCrystalAdapter.reset(result.getData());
+                    }
+
+                    @Override
+                    public void onFailed() {
+                        loadFailed();
+                    }
+                });
     }
 
     @Override
