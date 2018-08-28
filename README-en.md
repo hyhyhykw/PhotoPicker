@@ -82,7 +82,7 @@ Then copy the following to AndroidManifest.xml
 ```
 
 Step 5. Add com.hy.picker.PictureSelectorActivity and com.hy.picker.PicturePreviewActivity to AndroidManifest.xml<br>
-Then configuration theme is @style/Picker_Apptheme, or the custom theme must include the following attributes<br>
+Then configuration theme is PickerWeChatTheme or PickerWhiteTheme or PickerQQTheme, or the custom theme must include the following attributes<br>
 picker_send_color : Choose button background color<br>
 picker_title_bg : Title bar background color<br>
 picker_title_color : Title text color<br>
@@ -92,6 +92,7 @@ picker_send_color_disable :  The text color when the choose button disable<br>
 picker_send_color_enable : The text color when the choose button enable<br>
 picker_preview_color_disable : The text color when the preview button disable<br>
 picker_preview_color_enable : The text color when the preview button enable<br>
+picker_status_black ：Whether to set the status bar black font(Set if the theme color is a bright color)
 
 Step 6. select photo
 ```Java
