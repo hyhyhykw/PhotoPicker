@@ -15,7 +15,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency.
 ```gradle
 	dependencies {
-	        implementation 'com.github.hyhyhykw:PhotoPicker:1.3'
+	        implementation 'com.github.hyhyhykw:PhotoPicker:1.4'
 	}
 ```
 
