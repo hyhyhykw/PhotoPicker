@@ -100,3 +100,7 @@ new PhotoPicker()
     .select(new ArrayList<PictureSelectorActivity.PicItem>())//已经选择的图片
     .start(PhotoListener);//图片选择回调
 ```
+
+混淆配置<br>
+-keep class me.kareluo.imaging.core.CrystalCategory{*;}
+-keep class me.kareluo.imaging.core.CrystalResult{*;}

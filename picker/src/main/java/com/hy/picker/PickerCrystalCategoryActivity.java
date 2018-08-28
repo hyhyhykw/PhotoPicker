@@ -11,6 +11,8 @@ import com.hy.picker.adapter.CrystalCategoryAdapter;
 import com.hy.picker.utils.DefaultItemDecoration;
 import com.hy.picker.utils.NetworkUtils;
 
+import java.util.Locale;
+
 import me.kareluo.imaging.core.CrystalCategory;
 
 /**
@@ -45,9 +47,17 @@ public class PickerCrystalCategoryActivity extends BaseListActivity implements C
     protected void initData() {
         String url;
         if (isOther) {
-            url = CHILD_CATEGORY;
+            if (Locale.getDefault() == Locale.CHINESE) {
+                url = CHILD_CATEGORY;
+            } else {
+                url = CHILD_CATEGORY_EN;
+            }
         } else {
-            url = CATEGORY;
+            if (Locale.getDefault() == Locale.CHINESE) {
+                url = CATEGORY;
+            } else {
+                url = CATEGORY_EN;
+            }
         }
         NetworkUtils.getInstance()
                 .url(url)

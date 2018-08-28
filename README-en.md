@@ -101,3 +101,7 @@ new PhotoPicker()
     .select(new ArrayList<PictureSelectorActivity.PicItem>())//Selected image
     .start(PhotoListener);//Picture selection callback
 ```
+
+proguard-rules<br>
+-keep class me.kareluo.imaging.core.CrystalCategory{*;}
+-keep class me.kareluo.imaging.core.CrystalResult{*;}
