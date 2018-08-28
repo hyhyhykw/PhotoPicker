@@ -1,4 +1,5 @@
 #图片选择<br>
+[![](https://jitpack.io/v/hyhyhykw/PhotoPicker.svg)](https://jitpack.io/#hyhyhykw/PhotoPicker)<br>
 使用：[English](README-en.md)<br>
 第一步：将 JitPack 仓库添加到你的build文件中<br>
 将下列代码添加到项目中的build.gradle文件中:
