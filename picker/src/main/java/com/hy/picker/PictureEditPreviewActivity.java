@@ -79,6 +79,7 @@ public class PictureEditPreviewActivity extends BaseActivity {
                     mToolbarTop.setVisibility(View.INVISIBLE);
                     mToolbarBottom.setVisibility(View.INVISIBLE);
                 } else {
+                    CommonUtils.processMIUI(PictureEditPreviewActivity.this, mIsStatusBlack);
                     if (VERSION.SDK_INT < 16) {
                         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
                     } else {

@@ -122,17 +122,6 @@ public class PicturePreviewActivity extends BaseActivity {
             }
         });
 
-//        mUseOrigin.setText(R.string.rc_picprev_origin);
-//        mUseOrigin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked && getTotalSelectedNum() == 0) {
-//                    mItemList.get(mCurrentIndex).selected = mSelectBox.isChecked();
-//                    updateToolbar();
-//                }
-//            }
-//        });
-
         mSelectBox.setText(R.string.picker_picprev_select);
         mSelectBox.setChecked(mItemList.get(mCurrentIndex).selected);
         mSelectBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -273,36 +262,6 @@ public class PicturePreviewActivity extends BaseActivity {
         return sum;
     }
 
-//    private String getTotalSelectedSize() {
-//        float size = 0.0F;
-//
-//        int i;
-//        File file;
-//        for (i = 0; i < mItemList.size(); ++i) {
-//            if (mItemList.get(i).selected) {
-//                file = new File(mItemList.get(i).uri);
-//                size += (float) (file.length() / 1024L);
-//            }
-//        }
-//
-//        if (mItemSelectedList != null) {
-//            for (i = 0; i < mItemSelectedList.size(); ++i) {
-//                if (mItemSelectedList.get(i).selected) {
-//                    file = new File(mItemSelectedList.get(i).uri);
-//                    size += (float) (file.length() / 1024L);
-//                }
-//            }
-//        }
-//
-//        String totalSize;
-//        if (size < 1024.0F) {
-//            totalSize = String.format(Locale.getDefault(), "%.0fK", size);
-//        } else {
-//            totalSize = String.format(Locale.getDefault(), "%.1fM", size / 1024.0F);
-//        }
-//
-//        return totalSize;
-//    }
 
     private void updateToolbar() {
         int selNum = getTotalSelectedNum();
@@ -313,32 +272,14 @@ public class PicturePreviewActivity extends BaseActivity {
         } else {
             if (selNum == 0) {
                 mBtnSend.setText(R.string.picker_picsel_toolbar_send);
-//                mUseOrigin.setText(R.string.rc_picprev_origin);
-//                mUseOrigin.setChecked(false);
                 mBtnSend.setEnabled(false);
             } else if (selNum <= 9) {
                 mBtnSend.setEnabled(true);
                 mBtnSend.setText(getResources().getString(R.string.picker_picsel_toolbar_send_num, selNum, max));
-//                mUseOrigin.setText(String.format(getResources().getString(R.string.rc_picprev_origin_size), getTotalSelectedSize()));
             }
 
         }
     }
-
-//    public static int getSmartBarHeight(Context context) {
-//        try {
-//            @SuppressLint("PrivateApi")
-//            Class c = Class.forName("com.android.internal.R$dimen");
-//            Object obj = c.newInstance();
-//            Field field = c.getField("mz_action_button_min_height");
-//            int height = Integer.parseInt(field.get(obj).toString());
-//            return context.getResources().getDimensionPixelSize(height);
-//        } catch (Exception var5) {
-//            var5.printStackTrace();
-//            return 0;
-//        }
-//    }
-
 
     private class PreviewAdapter extends PagerAdapter {
         private PreviewAdapter() {
@@ -376,6 +317,7 @@ public class PicturePreviewActivity extends BaseActivity {
                             mToolbarTop.setVisibility(View.INVISIBLE);
                             mToolbarBottom.setVisibility(View.INVISIBLE);
                         } else {
+                            CommonUtils.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
                             if (VERSION.SDK_INT < 16) {
                                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
                             } else {
@@ -419,7 +361,7 @@ public class PicturePreviewActivity extends BaseActivity {
                                 uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
                                 decorView.setSystemUiVisibility(uiOptions);
                             }
-
+                            CommonUtils.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
                             mToolbarTop.setVisibility(View.VISIBLE);
                             mToolbarBottom.setVisibility(View.VISIBLE);
                         }

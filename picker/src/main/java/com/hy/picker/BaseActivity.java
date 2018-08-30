@@ -14,10 +14,12 @@ import com.hy.picker.utils.CommonUtils;
  */
 public class BaseActivity extends AppCompatActivity {
 
+    protected boolean mIsStatusBlack;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        boolean isStatusBlack = AttrsUtils.getTypeValueBoolean(this, R.attr.picker_status_black);
-        CommonUtils.processMIUI(this, isStatusBlack);
+        mIsStatusBlack = AttrsUtils.getTypeValueBoolean(this, R.attr.picker_status_black);
+        CommonUtils.processMIUI(this, mIsStatusBlack);
     }
 }
