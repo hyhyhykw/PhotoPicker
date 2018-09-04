@@ -54,4 +54,6 @@
     <string name="picker_waiting">Waiting&#8230;</string>
     <string name="picker_sticker_not_download">The sticker is not downloaded, is it downloaded?</string>
     <string name="picker_load_error">Load failed, click reload</string>
+    <string name="picker_child_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-en/child-category.json</string>
+    <string name="picker_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-en/Category.json</string>
 </resources>

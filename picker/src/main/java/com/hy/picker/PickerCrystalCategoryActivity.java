@@ -43,19 +43,10 @@ public class PickerCrystalCategoryActivity extends BaseListActivity implements C
     @SuppressWarnings("ResultOfMethodCallIgnored")
     protected void initData() {
         String url;
-        String language = getResources().getConfiguration().locale.getLanguage();
         if (isOther) {
-            if (language.contains("zh")) {
-                url = CHILD_CATEGORY;
-            } else {
-                url = CHILD_CATEGORY_EN;
-            }
+            url = CHILD_CATEGORY;
         } else {
-            if (language.contains("zh")) {
-                url = CATEGORY;
-            } else {
-                url = CATEGORY_EN;
-            }
+            url = CATEGORY;
         }
         NetworkUtils.getInstance()
                 .url(url)

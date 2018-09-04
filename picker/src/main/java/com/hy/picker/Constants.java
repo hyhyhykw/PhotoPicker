@@ -6,11 +6,7 @@ package com.hy.picker;
  * @author HY
  */
 public interface Constants {
+    String CHILD_CATEGORY = PhotoContext.getContext().getString(R.string.picker_child_category);
+    String CATEGORY = PhotoContext.getContext().getString(R.string.picker_category);
     String JSON_BASE = "https://gitee.com/hyhyhykw/Sucai/raw/master/json/";
-    String CHILD_CATEGORY = JSON_BASE + "child-category.json";
-    String CATEGORY = JSON_BASE + "Category.json";
-
-    String JSON_BASE_EN = "https://gitee.com/hyhyhykw/Sucai/raw/master/json-en/";
-    String CHILD_CATEGORY_EN = JSON_BASE_EN + "child-category.json";
-    String CATEGORY_EN = JSON_BASE_EN + "Category.json";
 }
