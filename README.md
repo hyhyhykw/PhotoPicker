@@ -15,7 +15,7 @@
 第二步：添加依赖
 ```gradle
 	dependencies {
-	        implementation 'com.github.hyhyhykw:PhotoPicker:1.7'
+	        implementation 'com.github.hyhyhykw:PhotoPicker:1.8'
 	}
 ```
 

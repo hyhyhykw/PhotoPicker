@@ -45,7 +45,6 @@ public class PictureEditPreviewActivity extends BaseActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.picker_activity_edit_preview);
         Intent intent = getIntent();
         mPicItem = intent.getParcelableExtra("picItem");
