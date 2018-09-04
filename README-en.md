@@ -1,5 +1,5 @@
 #PhotoPicker<br>
-[![](https://jitpack.io/v/hyhyhykw/PhotoPicker.svg)](https://jitpack.io/#hyhyhykw/PhotoPicker)<br>
+[![](https://jitpack.io/v/hyhyhykw/photopicker.svg)](https://jitpack.io/#hyhyhykw/photopicker)<br>
 Use：[中文版](README.md)<br>
 Step 1. Add the JitPack repository to your build file.<br>
 Add it in your root build.gradle at the end of repositories:
