@@ -68,6 +68,7 @@ public class PhotoPicker {
         Intent intent = new Intent(PhotoContext.getContext(), PictureSelectorActivity.class);
         intent.putExtra("max", max);
         intent.putExtra("gif", gif);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (null != mPicItems) {
             intent.putParcelableArrayListExtra("items", mPicItems);
         }
@@ -81,7 +82,8 @@ public class PhotoPicker {
                     @Override
                     public void onResult() {
                         context.startActivity(new Intent(context, OpenCameraResultActivity.class)
-                                .putExtra("edit", isEdit));
+                                .putExtra("edit", isEdit)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 })
                 .requestPermission(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE);
