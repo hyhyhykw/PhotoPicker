@@ -16,7 +16,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -120,6 +119,7 @@ public class PicturePreviewActivity extends BaseActivity {
                 finish();
             }
         });
+
 
         mSelectBox.setText(R.string.picker_picprev_select);
         mSelectBox.setChecked(mItemList.get(mCurrentIndex).selected);
