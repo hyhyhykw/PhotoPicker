@@ -18,9 +18,9 @@
             android:id="@id/picker_back"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/picker_picsel_back_normal"
             android:contentDescription="@string/picker_app_name"
             android:foreground="@drawable/picker_foreground"
+            android:src="@drawable/picker_picsel_back_normal"
             android:tint="?attr/picker_back_color"/>
 
         <TextView
@@ -79,6 +79,7 @@
             android:id="@id/picker_photo_grd"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="48dp"
             android:background="?attr/picker_photo_back"
             android:gravity="center"
             android:horizontalSpacing="2dip"
