@@ -4,11 +4,11 @@ apply plugin: 'com.github.dcendents.android-maven' // 添加这个
 
 group='com.github.hyhyhykw'	// 指定group，com.github.<用户名>
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     resourcePrefix "picker_"
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
@@ -28,7 +28,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -38,9 +38,9 @@ dependencies {
 
     api 'com.github.bumptech.glide:glide:4.8.0'
     api 'com.github.bumptech.glide:compiler:4.8.0'
-    api 'com.android.support:recyclerview-v7:27.1.1'
+    api 'com.android.support:recyclerview-v7:28.0.0'
 
-    api 'com.android.support:exifinterface:27.1.1'
+    api 'com.android.support:exifinterface:28.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     api 'com.yanzhenjie:permission:2.0.0-rc4'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
