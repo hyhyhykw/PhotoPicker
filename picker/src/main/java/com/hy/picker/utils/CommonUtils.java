@@ -132,6 +132,27 @@ public class CommonUtils {
         return result;
     }
 
+    public static String format(long time) {
+        long sumSec = time / 1000;
+
+        long second = sumSec % 60;
+        long sumMin = sumSec / 60;
+        long minute = sumMin % 60;
+
+        long sumHour = sumMin / 60;
+        if (sumHour == 0) {
+            return formatNum(minute) + ":" + formatNum(second);
+        }
+        return sumHour + ":" + formatNum(minute) + ":" + formatNum(second);
+    }
+
+    private static String formatNum(long num) {
+        if (num < 10) {
+            return "0" + num;
+        }
+        return "" + num;
+    }
+
     /**
      * 获取手机厂商
      *

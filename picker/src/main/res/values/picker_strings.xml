@@ -33,11 +33,14 @@
     <string name="picker_picsel_toolbar_sure">Sure</string>
     <string name="picker_picsel_toolbar_send_num">Choose(%d/%d)</string>
     <string name="picker_picsel_pictype">Picture</string>
+    <string name="picker_picsel_videotype">Video</string>
     <string name="picker_picsel_toolbar_preview">Preview</string>
     <string name="picker_picsel_toolbar_preview_num">Preview(%d)</string>
     <string name="picker_picsel_selected_max">You can only choose %d picture at most.</string>
     <string name="picker_picsel_take_picture">Take picture</string>
+    <string name="picker_picsel_record_video">Record video</string>
     <string name="picker_picsel_catalog_allpic">All pictures</string>
+    <string name="picker_picsel_catalog_all_video">All Videos</string>
     <string name="picker_picsel_catalog_number">%d</string>
 
     <!-- PicturePreviewActivity -->
@@ -48,6 +51,7 @@
     <!--<string name="picker_permission_grant_needed">You have to grant permissions in setting</string>-->
     <string name="picker_empty_sdcard">No SD card</string>
     <string name="picker_photo_failure">Photo failure</string>
+    <string name="picker_video_failure">Record failure</string>
     <string name="picker_photo_edit">Edit</string>
     <string name="picker_file_error">File Error</string>
     <string name="picker_crystal">Crystal</string>

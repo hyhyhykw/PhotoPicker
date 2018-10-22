@@ -3,6 +3,7 @@ package com.hy.picker;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -29,10 +30,12 @@ public class OpenCameraResultActivity extends BaseActivity {
     public static final int REQUEST_CAMERA = 0x357;
     public static final int REQUEST_EDIT = 0x753;
     private File mEditFile;
+    private boolean video;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        video = getIntent().getBooleanExtra("video", false);
         requestCamera();
     }
 
@@ -73,29 +76,68 @@ public class OpenCameraResultActivity extends BaseActivity {
 
                     File file = new File(path);
                     if (file.exists()) {
-                        PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
-                        item.uri = path;
-                        item.selected = true;
+                        if (video) {
+                            MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                                @Override
+                                public void onScanCompleted(final String path, Uri uri) {
+                                    Cursor cursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                            null,
+                                            MediaStore.Video.Media.DATA + " = ?",
+                                            new String[]{path},
+                                            MediaStore.Video.DEFAULT_SORT_ORDER);
 
-                        MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                            @Override
-                            public void onScanCompleted(final String path, Uri uri) {
-                                Logger.d("path===" + path);
-                            }
-                        });
-                        if (PhotoPicker.isEdit) {
-                            toEdit(Uri.fromFile(file));
+                                    if (null != cursor && cursor.moveToFirst()) {
+                                        // title：MediaStore.Audio.Media.TITLE
+                                        String title = cursor.getString(cursor
+                                                .getColumnIndexOrThrow(MediaStore.Video.Media.TITLE));
+                                        // path：MediaStore.Audio.Media.DATA
+                                        String url = cursor.getString(cursor
+                                                .getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
+                                        // duration：MediaStore.Audio.Media.DURATION
+                                        int duration = cursor
+                                                .getInt(cursor
+                                                        .getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                                        // 大小：MediaStore.Audio.Media.SIZE
+                                        int size = (int) cursor.getLong(cursor
+                                                .getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
+
+                                        PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
+                                        item.title = title;
+                                        item.uri = url;
+                                        item.duration = duration;
+                                        item.size = size;
+
+                                        cursor.close();
+                                        PhotoPicker.sTakePhotoListener.onTake(item);
+                                    }
+                                    finish();
+                                }
+                            });
                         } else {
-                            PhotoPicker.sTakePhotoListener.onTake(item);
-                            finish();
+                            PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
+                            item.uri = path;
+                            item.selected = true;
+
+                            MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                                @Override
+                                public void onScanCompleted(final String path, Uri uri) {
+                                    Logger.d("path===" + path);
+                                }
+                            });
+                            if (PhotoPicker.isEdit) {
+                                toEdit(Uri.fromFile(file));
+                            } else {
+                                PhotoPicker.sTakePhotoListener.onTake(item);
+                                finish();
+                            }
                         }
 
                     } else {
-                        Toast.makeText(this, R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 } else {
-                    Toast.makeText(this, R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                     finish();
                 }
             } else if (requestCode == REQUEST_EDIT) {
@@ -141,7 +183,8 @@ public class OpenCameraResultActivity extends BaseActivity {
             Logger.d("文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
         }
 
-        String name = "IMG-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";
+
+        String name = "IMG-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + (video ? ".mp4" : ".jpg");
         File file = new File(path, name);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);

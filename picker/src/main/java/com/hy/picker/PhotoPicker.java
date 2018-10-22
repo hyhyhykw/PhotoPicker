@@ -33,6 +33,13 @@ public class PhotoPicker {
         isEdit = false;
     }
 
+    private boolean isVideo;
+
+    public PhotoPicker video() {
+        isVideo = true;
+        return this;
+    }
+
     public static void init(PhotoModule photoModule) {
         PhotoContext.setPhotoModule(photoModule);
     }
@@ -68,6 +75,7 @@ public class PhotoPicker {
         Intent intent = new Intent(PhotoContext.getContext(), PictureSelectorActivity.class);
         intent.putExtra("max", max);
         intent.putExtra("gif", gif);
+        intent.putExtra("video", isVideo);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (null != mPicItems) {
             intent.putParcelableArrayListExtra("items", mPicItems);
@@ -83,6 +91,7 @@ public class PhotoPicker {
                     public void onResult() {
                         context.startActivity(new Intent(context, OpenCameraResultActivity.class)
                                 .putExtra("edit", isEdit)
+                                .putExtra("video",isVideo)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 })

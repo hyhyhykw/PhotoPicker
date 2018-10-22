@@ -22,7 +22,6 @@ import android.os.MessageQueue;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Images.Media;
 import android.support.v4.content.FileProvider;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -41,11 +40,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.ObjectsUtils;
@@ -60,8 +61,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.hy.picker.core.util.SizeUtils;
-
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class PictureSelectorActivity extends BaseActivity {
@@ -70,6 +69,7 @@ public class PictureSelectorActivity extends BaseActivity {
     private GridView mGridView;
     private ImageView mBtnBack;
     private TextView mBtnSend;
+    private TextView mTvTitle;
     private PicTypeBtn mPicType;
     private PreviewBtn mPreviewBtn;
     private ListView mCatalogListView;
@@ -84,6 +84,7 @@ public class PictureSelectorActivity extends BaseActivity {
 
     private LinearLayout mLytLoad;
     private boolean gif;
+    private boolean video;
     private GridViewAdapter mGridViewAdapter;
     private CatalogAdapter mCatalogAdapter;
 
@@ -100,7 +101,6 @@ public class PictureSelectorActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picker_activity_selector);
 
-
         mUpdateReceiver = new UpdateReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_UPDATE);
@@ -109,11 +109,13 @@ public class PictureSelectorActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
+
         catalogHeight = PhotoContext.getScreenHeight() - SizeUtils.dp2px(this, 145) - CommonUtils.getStatusBarHeight(this);
 
         Intent intent = getIntent();
         max = intent.getIntExtra("max", 9);
         gif = intent.getBooleanExtra("gif", true);
+        video = intent.getBooleanExtra("video", false);
         mSelectItems = intent.getParcelableArrayListExtra("items");
 
         mLytLoad = findViewById(R.id.picker_photo_load);
@@ -131,6 +133,7 @@ public class PictureSelectorActivity extends BaseActivity {
             }
         });
         mBtnSend = findViewById(R.id.picker_send);
+        mTvTitle = findViewById(R.id.picker_title);
         mPicType = findViewById(R.id.picker_pic_type);
         mPicType.init(this);
         mPicType.setEnabled(false);
@@ -138,6 +141,11 @@ public class PictureSelectorActivity extends BaseActivity {
         mPreviewBtn.init(this);
         mPreviewBtn.setEnabled(null != mSelectItems && !mSelectItems.isEmpty());
 
+        mTvTitle.setText(video ? R.string.picker_picsel_videotype : R.string.picker_picsel_pictype);
+        if (video) {
+            mPreviewBtn.setVisibility(View.GONE);
+            mBtnSend.setVisibility(View.GONE);
+        }
         if (null != mSelectItems) {
             int size = mSelectItems.size();
             if (size == 0) {
@@ -379,23 +387,93 @@ public class PictureSelectorActivity extends BaseActivity {
                         }
                         Logger.e("path==" + path);
                         if (new File(path).exists()) {
-                            PicItemHolder.itemList = new SetList<>();
-                            PicItem item = new PicItem();
-                            item.uri = path;
-                            PicItemHolder.itemList.add(item);
-                            PicItemHolder.itemSelectedList = null;
-                            Intent intent = new Intent(this, PicturePreviewActivity.class);
-                            intent.putExtra("max", max);
-                            startActivityForResult(intent, REQUEST_PREVIEW);
 
-                            MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                                @Override
-                                public void onScanCompleted(String path, Uri uri) {
-                                    updatePictureItems();
-                                }
-                            });
+                            if (!video) {
+                                PicItemHolder.itemList = new SetList<>();
+                                PicItem item = new PicItem();
+                                item.uri = path;
+                                PicItemHolder.itemList.add(item);
+                                PicItemHolder.itemSelectedList = null;
+                                Intent intent = new Intent(this, PicturePreviewActivity.class);
+                                intent.putExtra("max", max);
+                                startActivityForResult(intent, REQUEST_PREVIEW);
+                                MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                                    @Override
+                                    public void onScanCompleted(String path, Uri uri) {
+                                        updatePictureItems();
+                                    }
+                                });
+                            } else {
+                                MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                                    @Override
+                                    public void onScanCompleted(String path, Uri uri) {
+                                        Cursor cursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                                                null,
+                                                MediaStore.Video.Media.DATA + " = ?",
+                                                new String[]{path},
+                                                MediaStore.Video.DEFAULT_SORT_ORDER);
+
+                                        if (null != cursor && cursor.moveToFirst()) {
+                                            // title：MediaStore.Audio.Media.TITLE
+                                            String title = cursor.getString(cursor
+                                                    .getColumnIndexOrThrow(MediaStore.Video.Media.TITLE));
+                                            // path：MediaStore.Audio.Media.DATA
+                                            String url = cursor.getString(cursor
+                                                    .getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
+                                            // duration：MediaStore.Audio.Media.DURATION
+                                            int duration = cursor
+                                                    .getInt(cursor
+                                                            .getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                                            // 大小：MediaStore.Audio.Media.SIZE
+                                            int size = (int) cursor.getLong(cursor
+                                                    .getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
+
+                                            PicItem item = new PicItem();
+                                            item.title = title;
+                                            item.uri = url;
+                                            item.duration = duration;
+                                            item.size = size;
+
+                                            File file = new File(item.uri);
+
+                                            if (!file.exists() || file.length() == 0L) {
+                                                return;
+                                            }
+                                            mAllItemList.add(item);
+                                            int last = item.uri.lastIndexOf("/");
+                                            if (last != -1) {
+                                                String catalog;
+                                                if (last == 0) {
+                                                    catalog = "/";
+                                                } else {
+                                                    int secondLast = item.uri.lastIndexOf("/", last - 1);
+                                                    catalog = item.uri.substring(secondLast + 1, last);
+                                                }
+
+                                                if (mItemMap.containsKey(catalog)) {
+                                                    mItemMap.get(catalog).add(item);
+                                                } else {
+                                                    SetList<PicItem> itemList = new SetList<>();
+                                                    itemList.add(item);
+                                                    mItemMap.put(catalog, itemList);
+                                                    mCatalogList.add(catalog);
+                                                }
+                                            }
+                                            cursor.close();
+                                            mGridViewAdapter.notifyDataSetChanged();
+                                            mCatalogAdapter.notifyDataSetChanged();
+                                        }
+
+                                    }
+                                });
+
+                            }
+
                         } else {
-                            Toast.makeText(this, R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, video ?
+                                            R.string.picker_video_failure :
+                                            R.string.picker_photo_failure,
+                                    Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -418,14 +496,15 @@ public class PictureSelectorActivity extends BaseActivity {
             return;
         }
 
+        Intent intent = video ? new Intent(MediaStore.ACTION_VIDEO_CAPTURE) : new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (!path.exists()) {
             path.mkdirs();
         }
 
-        String name = "IMG-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";
+        String name = "IMG-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + (video ? ".mp4" : ".jpg");
         File file = new File(path, name);
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         if (resInfoList.size() <= 0) {
             Toast.makeText(this, getResources().getString(R.string.picker_voip_cpu_error), Toast.LENGTH_SHORT).show();
@@ -459,34 +538,41 @@ public class PictureSelectorActivity extends BaseActivity {
 
 
     private void updatePictureItems() {
-        String[] projection = new String[]{"_data", "date_added"};
-        String orderBy = "datetaken DESC";
-        Cursor cursor = getContentResolver().query(Media.EXTERNAL_CONTENT_URI, projection, null, null, orderBy);
         mAllItemList = new SetList<>();
         mCatalogList = new SetList<>();
         mItemMap = new ArrayMap<>();
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
+        if (video) {
+            Cursor cursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                    null,
+                    null,
+                    null,
+                    MediaStore.Video.DEFAULT_SORT_ORDER);
+            if (cursor != null && cursor.moveToFirst()) {
                 do {
-                    PicItem item = new PicItem();
-                    item.uri = cursor.getString(0);
-                    if (item.uri == null) {
-                        continue;
-                    }
+                    // title：MediaStore.Audio.Media.TITLE
+                    String title = cursor.getString(cursor
+                            .getColumnIndexOrThrow(MediaStore.Video.Media.TITLE));
+                    // path：MediaStore.Audio.Media.DATA
+                    String url = cursor.getString(cursor
+                            .getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
+                    // duration：MediaStore.Audio.Media.DURATION
+                    int duration = cursor
+                            .getInt(cursor
+                                    .getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                    // 大小：MediaStore.Audio.Media.SIZE
+                    int size = (int) cursor.getLong(cursor
+                            .getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
 
-                    if (!gif && item.isGif()) {
-                        continue;
-                    }
+                    PicItem item = new PicItem();
+                    item.title = title;
+                    item.uri = url;
+                    item.duration = duration;
+                    item.size = size;
 
                     File file = new File(item.uri);
 
                     if (!file.exists() || file.length() == 0L) {
                         continue;
-                    }
-
-                    if (null != mSelectItems && !mSelectItems.isEmpty()) {
-                        boolean remove = mSelectItems.remove(item);
-                        item.setSelected(remove);
                     }
                     mAllItemList.add(item);
                     int last = item.uri.lastIndexOf("/");
@@ -509,10 +595,63 @@ public class PictureSelectorActivity extends BaseActivity {
                         }
                     }
                 } while (cursor.moveToNext());
+                cursor.close();
             }
 
-            cursor.close();
+        } else {
+            String[] projection = new String[]{"_data", "date_added"};
+            String orderBy = "datetaken DESC";
+            Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, orderBy);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        PicItem item = new PicItem();
+                        item.uri = cursor.getString(0);
+                        if (item.uri == null) {
+                            continue;
+                        }
+
+                        if (!gif && item.isGif()) {
+                            continue;
+                        }
+
+                        File file = new File(item.uri);
+
+                        if (!file.exists() || file.length() == 0L) {
+                            continue;
+                        }
+
+                        if (null != mSelectItems && !mSelectItems.isEmpty()) {
+                            boolean remove = mSelectItems.remove(item);
+                            item.setSelected(remove);
+                        }
+                        mAllItemList.add(item);
+                        int last = item.uri.lastIndexOf("/");
+                        if (last != -1) {
+                            String catalog;
+                            if (last == 0) {
+                                catalog = "/";
+                            } else {
+                                int secondLast = item.uri.lastIndexOf("/", last - 1);
+                                catalog = item.uri.substring(secondLast + 1, last);
+                            }
+
+                            if (mItemMap.containsKey(catalog)) {
+                                mItemMap.get(catalog).add(item);
+                            } else {
+                                SetList<PicItem> itemList = new SetList<>();
+                                itemList.add(item);
+                                mItemMap.put(catalog, itemList);
+                                mCatalogList.add(catalog);
+                            }
+                        }
+                    } while (cursor.moveToNext());
+                }
+
+                cursor.close();
+            }
         }
+
 
     }
 
@@ -544,20 +683,6 @@ public class PictureSelectorActivity extends BaseActivity {
             mPreviewBtn.setText(String.format(getResources().getString(R.string.picker_picsel_toolbar_preview_num), sum));
         }
     }
-
-//    private PicItem getItemAt(int index) {
-//
-//        for (String key : mItemMap.keySet()) {
-//            List<PicItem> picItems = mItemMap.get(key);
-//            for (int i = 0; i < picItems.size(); i++) {
-//                if (i == index) {
-//                    return picItems.get(i);
-//                }
-//            }
-//        }
-//
-//        return null;
-//    }
 
 
     private PicItem getItemAt(String catalog, int index) {
@@ -683,6 +808,11 @@ public class PictureSelectorActivity extends BaseActivity {
     public static class PicItem implements Parcelable {
         String uri;
         boolean selected;
+
+        String title;
+        int size;
+        int duration;
+
         public static final Creator<PicItem> CREATOR = new Creator<PicItem>() {
             public PicItem createFromParcel(Parcel source) {
                 return new PicItem(source);
@@ -713,6 +843,30 @@ public class PictureSelectorActivity extends BaseActivity {
             this.selected = selected;
         }
 
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public void setSize(int size) {
+            this.size = size;
+        }
+
+        public int getDuration() {
+            return duration;
+        }
+
+        public void setDuration(int duration) {
+            this.duration = duration;
+        }
+
         public int describeContents() {
             return 0;
         }
@@ -736,11 +890,28 @@ public class PictureSelectorActivity extends BaseActivity {
         public PicItem(Parcel in) {
             uri = in.readString();
             selected = in.readInt() == 1;
+            title = in.readString();
+            size = in.readInt();
+            duration = in.readInt();
         }
 
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(uri);
             dest.writeInt(selected ? 1 : 0);
+            dest.writeString(title);
+            dest.writeInt(size);
+            dest.writeInt(duration);
+        }
+
+        @Override
+        public String toString() {
+            return "PicItem{" +
+                    "uri='" + uri + '\'' +
+                    ", selected=" + selected +
+                    ", title='" + title + '\'' +
+                    ", size=" + size +
+                    ", duration=" + duration +
+                    '}';
         }
     }
 
@@ -812,7 +983,9 @@ public class PictureSelectorActivity extends BaseActivity {
                                 .into(image);
                     }
 
-                    name = getResources().getString(R.string.picker_picsel_catalog_allpic);
+                    name = getResources().getString(video ?
+                            R.string.picker_picsel_catalog_all_video :
+                            R.string.picker_picsel_catalog_allpic);
                     tvNumber.setVisibility(View.GONE);
                     showSelected = mCurrentCatalog.isEmpty();
                 } else {
@@ -853,8 +1026,8 @@ public class PictureSelectorActivity extends BaseActivity {
 
                             mPicType.setText(tvName.getText().toString());
                             hideCatalog();
-                            ((CatalogAdapter) mCatalogListView.getAdapter()).notifyDataSetChanged();
-                            ((GridViewAdapter) mGridView.getAdapter()).notifyDataSetChanged();
+                            mCatalogAdapter.notifyDataSetChanged();
+                            mGridViewAdapter.notifyDataSetChanged();
                         }
                     }
                 });
@@ -892,7 +1065,10 @@ public class PictureSelectorActivity extends BaseActivity {
             if (position == 0) {
                 View cameraView = mInflater.inflate(R.layout.picker_grid_camera, parent, false);
                 ImageButton mask = cameraView.findViewById(R.id.picker_camera_mask);
-
+                TextView tvTitle = cameraView.findViewById(R.id.picker_take_picture);
+                tvTitle.setText(video ?
+                        R.string.picker_picsel_record_video :
+                        R.string.picker_picsel_take_picture);
                 mask.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -929,6 +1105,8 @@ public class PictureSelectorActivity extends BaseActivity {
             AppCompatCheckBox checkBox;
             View itemView;
             ImageView ivGif;
+            RelativeLayout lytVideo;
+            TextView tvTime;
 
             private ViewHolder(View itemView) {
                 this.itemView = itemView;
@@ -936,6 +1114,12 @@ public class PictureSelectorActivity extends BaseActivity {
                 mask = itemView.findViewById(R.id.picker_item_mask);
                 checkBox = itemView.findViewById(R.id.picker_item_checkbox);
                 ivGif = itemView.findViewById(R.id.picker_iv_gif);
+                lytVideo = itemView.findViewById(R.id.picker_lyt_video);
+                tvTime = itemView.findViewById(R.id.picker_video_time);
+                if (video) {
+                    checkBox.setVisibility(View.GONE);
+                    lytVideo.setVisibility(View.VISIBLE);
+                }
             }
 
 
@@ -945,6 +1129,20 @@ public class PictureSelectorActivity extends BaseActivity {
                     item = mAllItemList.get(position - 1);
                 } else {
                     item = getItemAt(mCurrentCatalog, position - 1);
+                }
+                if (video) {
+                    tvTime.setText(CommonUtils.format(item.duration));
+                    mask.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            ArrayList<PictureSelectorActivity.PicItem> picItems = new ArrayList<>();
+                            picItems.add(item);
+                            PhotoPicker.sPhotoListener.onPicked(picItems);
+                            setResult(RESULT_OK);
+                            finish();
+                        }
+                    });
                 }
                 if (item.isGif()) {
                     ivGif.setVisibility(View.VISIBLE);

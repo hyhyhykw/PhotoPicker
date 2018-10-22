@@ -61,4 +61,8 @@
     <item name="picker_btn_undo" type="id"/>
     <item name="picker_load_error" type="id"/>
 
+    <item name="picker_take_picture" type="id"/>
+    <item name="picker_title" type="id"/>
+    <item name="picker_lyt_video" type="id"/>
+    <item name="picker_video_time" type="id"/>
 </resources>
