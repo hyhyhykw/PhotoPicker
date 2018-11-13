@@ -44,7 +44,7 @@ public class PhotoPicker {
         PhotoContext.setPhotoModule(photoModule);
     }
 
-    private int max;
+    private int max = 1;
 
     public PhotoPicker max(int max) {
         this.max = max;
@@ -70,11 +70,19 @@ public class PhotoPicker {
         return this;
     }
 
+    private boolean gifOnly = false;
+
+    public PhotoPicker gifOnly(boolean gifOnly) {
+        this.gifOnly = gifOnly;
+        return this;
+    }
+
     public void start(PhotoListener photoListener) {
         sPhotoListener = photoListener;
         Intent intent = new Intent(PhotoContext.getContext(), PictureSelectorActivity.class);
         intent.putExtra("max", max);
         intent.putExtra("gif", gif);
+        intent.putExtra("gifOnly", gifOnly);
         intent.putExtra("video", isVideo);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (null != mPicItems) {
@@ -91,7 +99,7 @@ public class PhotoPicker {
                     public void onResult() {
                         context.startActivity(new Intent(context, OpenCameraResultActivity.class)
                                 .putExtra("edit", isEdit)
-                                .putExtra("video",isVideo)
+                                .putExtra("video", isVideo)
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 })

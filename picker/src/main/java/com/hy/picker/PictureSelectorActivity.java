@@ -85,6 +85,7 @@ public class PictureSelectorActivity extends BaseActivity {
     private LinearLayout mLytLoad;
     private boolean gif;
     private boolean video;
+    private boolean gifOnly;
     private GridViewAdapter mGridViewAdapter;
     private CatalogAdapter mCatalogAdapter;
 
@@ -115,6 +116,7 @@ public class PictureSelectorActivity extends BaseActivity {
         Intent intent = getIntent();
         max = intent.getIntExtra("max", 9);
         gif = intent.getBooleanExtra("gif", true);
+        gifOnly = intent.getBooleanExtra("gifOnly", false);
         video = intent.getBooleanExtra("video", false);
         mSelectItems = intent.getParcelableArrayListExtra("items");
 
@@ -610,10 +612,16 @@ public class PictureSelectorActivity extends BaseActivity {
                         if (item.uri == null) {
                             continue;
                         }
-
-                        if (!gif && item.isGif()) {
-                            continue;
+                        if (gifOnly) {
+                            if (!item.isGif()) {
+                                continue;
+                            }
+                        } else {
+                            if (!gif && item.isGif()) {
+                                continue;
+                            }
                         }
+
 
                         File file = new File(item.uri);
 
