@@ -15,7 +15,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency.
 ```gradle
 	dependencies {
-	        implementation 'com.github.hyhyhykw:PhotoPicker:2.3'
+	        implementation 'com.github.hyhyhykw:PhotoPicker:2.5'
 	}
 ```
 
@@ -33,53 +33,6 @@ public class MyApp extends Application implements PhotoModule {
         return this;
     }
 }
-```
-
-Step 4. Configuring FileProvider in AndroidManifest.xml<br>
-Create a new xml folder in your project res folder and create file_path.xml where external-path must be configured
-```xml
-<paths>
-
-    <!-- /data/user/0/YourPackageName/cache-->
-    <cache-path
-        name="picker_private_cache"
-        path=""/>
-
-    <files-path
-        name="picker_private_file"
-        path=""/>
-    <!--/storage/emulated/0/Android/data/YourPackageName/cache-->
-    <external-cache-path
-        name="picker_external_cache"
-        path=""/>
-
-    <external-files-path
-        name="picker_external_file"
-        path=""/>
-
-    <external-path
-        name="external_storage_root"
-        path="."/>
-
-    <external-path
-        name="files_root"
-        path="Android/data/YourPackageName/"/>
-</paths>
-```
-
-Then copy the following to AndroidManifest.xml
-```xml
-<provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="YourPackageName.file_provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
-
-        </provider>
 ```
 
 Step 5. Add com.hy.picker.PictureSelectorActivity and com.hy.picker.PicturePreviewActivity to AndroidManifest.xml<br>

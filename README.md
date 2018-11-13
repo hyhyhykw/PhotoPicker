@@ -15,7 +15,7 @@
 第二步：添加依赖
 ```gradle
 	dependencies {
-	        implementation 'com.github.hyhyhykw:PhotoPicker:2.3'
+	        implementation 'com.github.hyhyhykw:PhotoPicker:2.5'
 	}
 ```
 
@@ -35,52 +35,7 @@ public class MyApp extends Application implements PhotoModule {
 }
 ```
 
-第四步：在AndroidManifest.xml中配置FileProvider<br>
-在你的项目资源文件中中新建xml文件夹，并且创建file_path.xml，其中external-path必须配置
-```xml
-<paths>
 
-    <!-- /data/user/0/你的包名/cache-->
-    <cache-path
-        name="picker_private_cache"
-        path=""/>
-
-    <files-path
-        name="picker_private_file"
-        path=""/>
-    <!--/storage/emulated/0/Android/data/你的包名/cache-->
-    <external-cache-path
-        name="picker_external_cache"
-        path=""/>
-
-    <external-files-path
-        name="picker_external_file"
-        path=""/>
-
-    <external-path
-        name="external_storage_root"
-        path="."/>
-
-    <external-path
-        name="files_root"
-        path="Android/data/你的包名/"/>
-</paths>
-```
-
-然后复制以下内容到AndroidManifest.xml中
-```xml
-<provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="你的包名.file_provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
-
-        </provider>
-```
 第五步：添加com.hy.picker.PictureSelectorActivity和com.hy.picker.PicturePreviewActivity到AndroidManifest.xml中<br>
 并且配置主题为PickerWeChatTheme或PickerWhiteTheme或PickerQQTheme，或者自定义主题其中必须包括以下属性<br>
 picker_send_color ：选择按钮的颜色<br>

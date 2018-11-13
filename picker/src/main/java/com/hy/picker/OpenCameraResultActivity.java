@@ -11,11 +11,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
+import com.hy.picker.utils.MyFileProvider;
 
 import java.io.File;
 import java.util.Date;
@@ -192,7 +192,7 @@ public class OpenCameraResultActivity extends BaseActivity {
             Toast.makeText(this, getResources().getString(R.string.picker_voip_cpu_error), Toast.LENGTH_SHORT).show();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mTakePictureUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".file_provider", file);
+                mTakePictureUri = MyFileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".demo.file_provider", file);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {

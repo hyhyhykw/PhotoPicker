@@ -49,6 +49,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
+import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.ObjectsUtils;
 import com.hy.picker.utils.PermissionUtils;
 import com.hy.picker.utils.SetList;
@@ -512,7 +513,7 @@ public class PictureSelectorActivity extends BaseActivity {
             Toast.makeText(this, getResources().getString(R.string.picker_voip_cpu_error), Toast.LENGTH_SHORT).show();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mTakePictureUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".file_provider", file);
+                mTakePictureUri = MyFileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".demo.file_provider", file);
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {
