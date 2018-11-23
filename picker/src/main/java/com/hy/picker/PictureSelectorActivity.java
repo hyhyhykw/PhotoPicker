@@ -22,7 +22,6 @@ import android.os.MessageQueue;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
@@ -544,9 +543,20 @@ public class PictureSelectorActivity extends BaseActivity {
         mAllItemList = new SetList<>();
         mCatalogList = new SetList<>();
         mItemMap = new ArrayMap<>();
+
         if (video) {
+            List<String> projection = new ArrayList<>();
+            projection.add(MediaStore.Video.Media.TITLE);
+            projection.add(MediaStore.Video.Media.DATA);
+            projection.add(MediaStore.Video.Media.MIME_TYPE);
+            projection.add(MediaStore.Video.Media.DATE_ADDED);
+            projection.add(MediaStore.Video.Media.DATE_TAKEN);
+            projection.add(MediaStore.Video.Media.SIZE);
+            projection.add(MediaStore.Video.Media.WIDTH);
+            projection.add(MediaStore.Video.Media.HEIGHT);
+
             Cursor cursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                    null,
+                    projection.toArray(new String[0]),
                     null,
                     null,
                     MediaStore.Video.DEFAULT_SORT_ORDER);
@@ -566,11 +576,19 @@ public class PictureSelectorActivity extends BaseActivity {
                     int size = (int) cursor.getLong(cursor
                             .getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
 
+                    int width = cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.WIDTH));
+                    int height = cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.HEIGHT));
+                    String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.MIME_TYPE));
+
                     PicItem item = new PicItem();
                     item.title = title;
                     item.uri = url;
                     item.duration = duration;
                     item.size = size;
+                    item.width = width;
+                    item.height = height;
+                    item.mimeType = mimeType;
+
 
                     File file = new File(item.uri);
 
@@ -602,14 +620,27 @@ public class PictureSelectorActivity extends BaseActivity {
             }
 
         } else {
-            String[] projection = new String[]{"_data", "date_added"};
+            List<String> projection = new ArrayList<>();
+            projection.add(MediaStore.Images.Media.TITLE);
+            projection.add(MediaStore.Images.Media.DATA);
+            projection.add(MediaStore.Images.Media.MIME_TYPE);
+            projection.add(MediaStore.Images.Media.DATE_ADDED);
+            projection.add(MediaStore.Images.Media.DATE_TAKEN);
+            projection.add(MediaStore.Images.Media.SIZE);
+            projection.add(MediaStore.Images.Media.WIDTH);
+            projection.add(MediaStore.Images.Media.HEIGHT);
+
+//            String[] projection = new String[]{"_data", "date_added"};
             String orderBy = "datetaken DESC";
-            Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, orderBy);
+            Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    projection.toArray(new String[0]), null, null, orderBy);
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
                     do {
                         PicItem item = new PicItem();
-                        item.uri = cursor.getString(0);
+
+                        item.uri = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+
                         if (item.uri == null) {
                             continue;
                         }
@@ -622,6 +653,16 @@ public class PictureSelectorActivity extends BaseActivity {
                                 continue;
                             }
                         }
+                        int width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
+                        int height = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT));
+                        String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
+                        String title = cursor.getString(cursor
+                                .getColumnIndexOrThrow(MediaStore.Images.Media.TITLE));
+
+                        item.width = width;
+                        item.height = height;
+                        item.mimeType = mimeType;
+                        item.title = title;
 
 
                         File file = new File(item.uri);
@@ -821,6 +862,9 @@ public class PictureSelectorActivity extends BaseActivity {
         String title;
         int size;
         int duration;
+        int width;
+        int height;
+        String mimeType;
 
         public static final Creator<PicItem> CREATOR = new Creator<PicItem>() {
             public PicItem createFromParcel(Parcel source) {
@@ -902,6 +946,9 @@ public class PictureSelectorActivity extends BaseActivity {
             title = in.readString();
             size = in.readInt();
             duration = in.readInt();
+            width = in.readInt();
+            height = in.readInt();
+            mimeType = in.readString();
         }
 
         public void writeToParcel(Parcel dest, int flags) {
@@ -910,6 +957,33 @@ public class PictureSelectorActivity extends BaseActivity {
             dest.writeString(title);
             dest.writeInt(size);
             dest.writeInt(duration);
+            dest.writeInt(width);
+            dest.writeInt(height);
+            dest.writeString(mimeType);
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public void setWidth(int width) {
+            this.width = width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public void setHeight(int height) {
+            this.height = height;
+        }
+
+        public String getMimeType() {
+            return mimeType;
+        }
+
+        public void setMimeType(String mimeType) {
+            this.mimeType = mimeType;
         }
 
         @Override
@@ -920,6 +994,9 @@ public class PictureSelectorActivity extends BaseActivity {
                     ", title='" + title + '\'' +
                     ", size=" + size +
                     ", duration=" + duration +
+                    ", width=" + width +
+                    ", height=" + height +
+                    ", mimeType='" + mimeType + '\'' +
                     '}';
         }
     }
