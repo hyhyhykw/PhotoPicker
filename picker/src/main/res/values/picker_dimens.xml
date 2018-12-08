@@ -7,4 +7,5 @@
 
     <dimen name="image_mode_space">32dp</dimen>
 
+    <dimen name="picker_item_divider">1dp</dimen>
 </resources>

@@ -1,15 +1,17 @@
 package com.hy.picker;
 
 
+import android.annotation.TargetApi;
+import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.KeyEvent;
@@ -33,7 +35,9 @@ import com.hy.picker.view.HackyViewPager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -56,15 +60,18 @@ public class PicturePreviewActivity extends BaseActivity {
     private ArrayList<PictureSelectorActivity.PicItem> mItemSelectedList;
     private int mCurrentIndex;
     private boolean mFullScreen;
+    private boolean isPreview;
 
     private int max;
     private TextView mTvEdit;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picker_activity_preview);
 
         initView();
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -75,13 +82,14 @@ public class PicturePreviewActivity extends BaseActivity {
         max = intent.getIntExtra("max", 9);
         boolean isGif = intent.getBooleanExtra("isGif", false);
         mTvEdit.setVisibility(isGif ? View.GONE : View.VISIBLE);
-
+        isPreview = intent.getBooleanExtra("isPreview", false);
 //        mUseOrigin.setChecked(intent.getBooleanExtra("sendOrigin", false));
         mCurrentIndex = intent.getIntExtra("index", 0);
         if (mItemList == null) {
             mItemList = PictureSelectorActivity.PicItemHolder.itemList;
             mItemSelectedList = PictureSelectorActivity.PicItemHolder.itemSelectedList;
         }
+
 
         mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size()));
 
@@ -141,6 +149,7 @@ public class PicturePreviewActivity extends BaseActivity {
         mViewPager.setAdapter(new PreviewAdapter());
         mViewPager.setCurrentItem(mCurrentIndex);
         mViewPager.setOffscreenPageLimit(1);
+
         mViewPager.addOnPageChangeListener(new OnPageChangeListener() {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
@@ -156,6 +165,29 @@ public class PicturePreviewActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+        supportPostponeEnterTransition();//延缓执行 然后在fragment里面的控件加载完成后start
+        if (Build.VERSION.SDK_INT >= 22) {
+
+            setEnterSharedElementCallback(new SharedElementCallback() {
+                @Override
+                public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+
+                    PictureSelectorActivity.PicItem item = mItemList.get(mCurrentIndex);
+//                    ViewCompat.setTransitionName(mViewPager, item.getUri());
+                    String url = item.getUri();
+                    sharedElements.clear();
+                    sharedElements.put(url, mViewPager);
+                }
+            });
+
+            postponeEnterTransition();
+            PictureSelectorActivity.PicItem item = mItemList.get(mCurrentIndex);
+            ViewCompat.setTransitionName(mViewPager, item.getUri());
+            startPostponedEnterTransition();
+
+
+        }
         mTvEdit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,6 +197,27 @@ public class PicturePreviewActivity extends BaseActivity {
         });
         updateToolbar();
     }
+
+    @TargetApi(22)
+    @Override
+    public void supportFinishAfterTransition() {
+        Intent data = new Intent()
+                .putExtra("index", mCurrentIndex)
+                .putExtra("isPreview", isPreview);
+        setResult(RESULT_OK, data);
+        super.supportFinishAfterTransition();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        Intent data = new Intent()
+                .putExtra("index", mCurrentIndex)
+                .putExtra("isPreview", isPreview);
+        setResult(RESULT_OK, data);
+        super.supportFinishAfterTransition();
+    }
+
 
     public static final int REQUEST_EDIT = 0x987;
     public static final int REQUEST_EDIT_PREVIEW = 0x876;
@@ -302,31 +355,32 @@ public class PicturePreviewActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         mFullScreen = !mFullScreen;
-                        View decorView;
-                        byte uiOptions;
+//                        View decorView;
+//                        byte uiOptions;
                         if (mFullScreen) {
-                            if (VERSION.SDK_INT < 16) {
-                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                            } else {
-                                decorView = getWindow().getDecorView();
-                                uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-                                decorView.setSystemUiVisibility(uiOptions);
-                            }
+//                            if (VERSION.SDK_INT < 16) {
+//                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//                            } else {
+//                                decorView = getWindow().getDecorView();
+//                                uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+//                                decorView.setSystemUiVisibility(uiOptions);
+//                            }
 
                             mToolbarTop.setVisibility(View.INVISIBLE);
                             mToolbarBottom.setVisibility(View.INVISIBLE);
                         } else {
-                            CommonUtils.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
-                            if (VERSION.SDK_INT < 16) {
-                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                            } else {
-                                decorView = getWindow().getDecorView();
-                                uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
-                                decorView.setSystemUiVisibility(uiOptions);
-                            }
+
+//                            if (VERSION.SDK_INT < 16) {
+//                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//                            } else {
+//                                decorView = getWindow().getDecorView();
+//                                uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+//                                decorView.setSystemUiVisibility(uiOptions);
+//                            }
 
                             mToolbarTop.setVisibility(View.VISIBLE);
                             mToolbarBottom.setVisibility(View.VISIBLE);
+//                            CommonUtils.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
                         }
                     }
                 });
@@ -339,28 +393,28 @@ public class PicturePreviewActivity extends BaseActivity {
                     @Override
                     public void onViewTap(View view, float x, float y) {
                         mFullScreen = !mFullScreen;
-                        View decorView;
-                        byte uiOptions;
+//                        View decorView;
+//                        byte uiOptions;
                         if (mFullScreen) {
-                            if (VERSION.SDK_INT < 16) {
-                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                            } else {
-                                decorView = getWindow().getDecorView();
-                                uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-                                decorView.setSystemUiVisibility(uiOptions);
-                            }
+//                            if (VERSION.SDK_INT < 16) {
+//                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//                            } else {
+//                                decorView = getWindow().getDecorView();
+//                                uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+//                                decorView.setSystemUiVisibility(uiOptions);
+//                            }
 
                             mToolbarTop.setVisibility(View.INVISIBLE);
                             mToolbarBottom.setVisibility(View.INVISIBLE);
                         } else {
-                            if (VERSION.SDK_INT < 16) {
-                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                            } else {
-                                decorView = getWindow().getDecorView();
-                                uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
-                                decorView.setSystemUiVisibility(uiOptions);
-                            }
-                            CommonUtils.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
+//                            if (VERSION.SDK_INT < 16) {
+//                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//                            } else {
+//                                decorView = getWindow().getDecorView();
+//                                uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+//                                decorView.setSystemUiVisibility(uiOptions);
+//                            }
+//                            CommonUtils.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
                             mToolbarTop.setVisibility(View.VISIBLE);
                             mToolbarBottom.setVisibility(View.VISIBLE);
                         }

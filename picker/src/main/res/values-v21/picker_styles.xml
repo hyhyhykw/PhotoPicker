@@ -1,46 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="PickerEditTheme" parent="Theme.AppCompat.Light.NoActionBar">
-
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
-
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-
-    </style>
-
-    <style name="PickerTextDialog" parent="android:Theme.Holo.Dialog">
-
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
-
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-
-        <item name="android:windowSoftInputMode">stateAlwaysVisible|adjustResize</item>
-
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.8</item>
-
-        <item name="android:windowAnimationStyle">@style/PickerDialogAnimation</item>
-
-    </style>
-
-    <style name="PickerDialogAnimation" parent="android:Animation.Dialog">
-        <item name="android:windowEnterAnimation">@anim/picker_dialog_enter</item>
-        <item name="android:windowExitAnimation">@anim/picker_dialog_exit</item>
-    </style>
-
-    <style name="picker_check_box" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">?attr/picker_send_color</item>
-        <item name="colorControlActivated">?attr/picker_send_color</item>
-    </style>
-
     <style name="PickerWeChatTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="picker_status_black">false</item><!--是否修改状态栏字体为黑色-->
         <item name="picker_send_color">#FF6E40</item>
@@ -55,9 +15,11 @@
         <item name="picker_preview_color_enable">#ffffff</item>
         <item name="picker_photo_back">#000000</item>
 
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <!--白色主题样式，，注意每一项都不能少-->
     <style name="PickerWhiteTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="picker_status_black">true</item><!--是否修改状态栏字体为黑色-->
         <item name="windowActionBar">false</item>
@@ -74,9 +36,11 @@
         <item name="picker_preview_color_enable">#333</item>
         <item name="picker_photo_back">#fff</item>
 
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <!--QQ数字风格样式，注意每一项都不能少-->
     <style name="PickerQQTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="picker_status_black">false</item><!--是否修改状态栏字体为黑色-->
         <item name="windowActionBar">false</item>
@@ -93,6 +57,8 @@
         <item name="picker_preview_color_enable">#7D7DFF</item>
         <item name="picker_photo_back">#fff</item>
 
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
-
 </resources>

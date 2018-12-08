@@ -76,17 +76,12 @@
         android:layout_height="match_parent"
         android:layout_marginTop="1dp">
 
-        <GridView
+        <android.support.v7.widget.RecyclerView
             android:id="@id/picker_photo_grd"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="48dp"
-            android:background="?attr/picker_photo_back"
-            android:gravity="center"
-            android:horizontalSpacing="2dip"
-            android:numColumns="3"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="2dip"/>
+            android:background="?attr/picker_photo_back"/>
 
         <LinearLayout
             android:id="@id/picker_photo_load"
