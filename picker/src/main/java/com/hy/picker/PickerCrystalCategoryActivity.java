@@ -44,9 +44,9 @@ public class PickerCrystalCategoryActivity extends BaseListActivity implements C
     protected void initData() {
         String url;
         if (isOther) {
-            url = CHILD_CATEGORY;
+            url = getString(CHILD_CATEGORY);
         } else {
-            url = CATEGORY;
+            url = getString(CATEGORY);
         }
         NetworkUtils.getInstance()
                 .url(url)

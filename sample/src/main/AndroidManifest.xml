@@ -50,10 +50,23 @@
             android:authorities="${applicationId}.demo.file_provider"
             android:exported="false"
             android:grantUriPermissions="true">
+
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
+
+        <activity
+            android:name="com.hy.crash.CrashErrorActivity"
+            android:theme="@style/CrashWhiteTheme"/>
+
+        <activity
+            android:name="com.hy.crash.CrashErrorLogListActivity"
+            android:theme="@style/CrashWhiteTheme"/>
+
+        <activity
+            android:name="com.hy.crash.CrashLogActivity"
+            android:theme="@style/CrashWhiteTheme"/>
     </application>
 
 </manifest>

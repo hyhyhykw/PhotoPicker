@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.SharedElementCallback;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -173,33 +172,50 @@ public class PictureSelectorActivity extends BaseActivity {
         mCatalogListView = findViewById(R.id.picker_catalog_lst);
 
 
-        if (Build.VERSION.SDK_INT >= 22) {
-            setExitSharedElementCallback(new SharedElementCallback() {
-                @Override
-                public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-
-                    int i = index;
-                    sharedElements.clear();
-                    names.clear();
-                    String url;
-
-                    if (isPreview) {
-                        PicItem item = PicItemHolder.itemSelectedList.get(i);
-                        url = item.uri;
-                        i = mAllItemList.indexOf(item);
-                    } else {
-                        url = mAllItemList.get(i).uri;
-                    }
-
-                    View itemView = mLayoutManager.findViewByPosition(i + 1);
-
-//                        View itemView = lm.findViewByPosition(i);
-//                    ImageView imageView = itemView.findViewById(R.id.picker_photo_image);
-                    //注意这里第二个参数，如果放置的是条目的item则动画不自然。放置对应的imageView则完美
-                    sharedElements.put(url, itemView);
-                }
-            });
-        }
+//        if (Build.VERSION.SDK_INT >= 22) {
+//            setExitSharedElementCallback(new SharedElementCallback() {
+//                @Override
+//                public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+//                    if (mData!=null){
+//                        index = mData.getIntExtra("index", 0);
+//                        isPreview = mData.getBooleanExtra("isPreview", false);
+//
+//                        int i = index;
+//                        sharedElements.clear();
+//                        names.clear();
+//                        String url;
+//
+//                        if (isPreview) {
+//                            PicItem item = PicItemHolder.itemSelectedList.get(i);
+//                            url = item.uri;
+//                            i = mAllItemList.indexOf(item);
+//                        } else {
+//                            url = mAllItemList.get(i).uri;
+//                        }
+//                        names.add(url);
+//                        View itemView = mLayoutManager.findViewByPosition(i + 1);
+//
+////                        View itemView = lm.findViewByPosition(i);
+////                    ImageView imageView = itemView.findViewById(R.id.picker_photo_image);
+//                        //注意这里第二个参数，如果放置的是条目的item则动画不自然。放置对应的imageView则完美
+//                        sharedElements.put(url, itemView);
+//
+//                        mData=null;
+//                    } else{
+//                        View navigationBar = findViewById(android.R.id.navigationBarBackground);
+//                        View statusBar = findViewById(android.R.id.statusBarBackground);
+//                        if (navigationBar != null) {
+//                            names.add(navigationBar.getTransitionName());
+//                            sharedElements.put(navigationBar.getTransitionName(), navigationBar);
+//                        }
+//                        if (statusBar != null) {
+//                            names.add(statusBar.getTransitionName());
+//                            sharedElements.put(statusBar.getTransitionName(), statusBar);
+//                        }
+//                    }
+//                }
+//            });
+//        }
 
         Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
             @Override
@@ -219,14 +235,15 @@ public class PictureSelectorActivity extends BaseActivity {
 
     }
 
-    private int index;
-
-    @Override
-    public void onActivityReenter(int resultCode, Intent data) {
-        super.onActivityReenter(resultCode, data);
-        index = data.getIntExtra("index", 0);
-        isPreview = data.getBooleanExtra("isPreview", false);
-    }
+//    private int index;
+//
+//    private Intent mData;
+//
+//    @Override
+//    public void onActivityReenter(int resultCode, Intent data) {
+//        super.onActivityReenter(resultCode, data);
+//        mData = data;
+//    }
 
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
@@ -352,7 +369,6 @@ public class PictureSelectorActivity extends BaseActivity {
                                 return true;
                             }
                         }
-
                         break;
                 }
                 return false;
@@ -1316,6 +1332,7 @@ public class PictureSelectorActivity extends BaseActivity {
                 }
             });
 
+
             if (video) {
                 tvTime.setText(CommonUtils.format(item.duration));
                 mask.setOnClickListener(new View.OnClickListener() {
@@ -1363,6 +1380,7 @@ public class PictureSelectorActivity extends BaseActivity {
                             .requestPermission(Permission.CAMERA);
                 }
             });
+
         }
     }
 
@@ -1378,9 +1396,7 @@ public class PictureSelectorActivity extends BaseActivity {
                 }
             } else {
                 sum += mItemMap.get(mCurrentCatalog).size();
-
             }
-
             return sum;
         }
 
@@ -1400,7 +1416,6 @@ public class PictureSelectorActivity extends BaseActivity {
                 View cameraView = mInflater.inflate(R.layout.picker_grid_camera, parent, false);
 
                 holder = new CameraHolder(cameraView);
-//                return cameraView;
             } else {
                 View convertView = mInflater.inflate(R.layout.picker_grid_item, parent, false);
                 holder = new ItemHolder(convertView);

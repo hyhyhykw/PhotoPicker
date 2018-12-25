@@ -31,4 +31,12 @@
         <attr name="picker_complete_ringBgColor" format="color"/>
     </declare-styleable>
 
+    <declare-styleable name="PickerScaleImageView">
+        <attr name="pickerSrc" format="reference"/>
+        <attr name="pickerAssetName" format="string"/>
+        <attr name="pickerPanEnabled" format="boolean"/>
+        <attr name="pickerZoomEnabled" format="boolean"/>
+        <attr name="pickerQuickScaleEnabled" format="boolean"/>
+        <attr name="pickerTileBackgroundColor" format="color"/>
+    </declare-styleable>
 </resources>

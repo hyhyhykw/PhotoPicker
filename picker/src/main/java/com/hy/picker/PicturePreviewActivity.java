@@ -26,10 +26,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.github.chrisbanes.photoview.OnViewTapListener;
-import com.github.chrisbanes.photoview.PhotoView;
+import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
+import com.hy.picker.utils.PickerScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
 
 import java.io.File;
@@ -64,6 +64,7 @@ public class PicturePreviewActivity extends BaseActivity {
 
     private int max;
     private TextView mTvEdit;
+    private int mStartIndex;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,7 @@ public class PicturePreviewActivity extends BaseActivity {
         isPreview = intent.getBooleanExtra("isPreview", false);
 //        mUseOrigin.setChecked(intent.getBooleanExtra("sendOrigin", false));
         mCurrentIndex = intent.getIntExtra("index", 0);
+        mStartIndex = mCurrentIndex;
         if (mItemList == null) {
             mItemList = PictureSelectorActivity.PicItemHolder.itemList;
             mItemSelectedList = PictureSelectorActivity.PicItemHolder.itemSelectedList;
@@ -175,9 +177,13 @@ public class PicturePreviewActivity extends BaseActivity {
 
                     PictureSelectorActivity.PicItem item = mItemList.get(mCurrentIndex);
 //                    ViewCompat.setTransitionName(mViewPager, item.getUri());
-                    String url = item.getUri();
-                    sharedElements.clear();
-                    sharedElements.put(url, mViewPager);
+                    if (mStartIndex != mCurrentIndex) {
+                        names.clear();
+                        names.add(item.getUri());
+                        String url = item.getUri();
+                        sharedElements.clear();
+                        sharedElements.put(url, mViewPager);
+                    }
                 }
             });
 
@@ -203,7 +209,8 @@ public class PicturePreviewActivity extends BaseActivity {
     public void supportFinishAfterTransition() {
         Intent data = new Intent()
                 .putExtra("index", mCurrentIndex)
-                .putExtra("isPreview", isPreview);
+                .putExtra("isPreview", isPreview)
+                .putExtra("startIndex", mStartIndex);
         setResult(RESULT_OK, data);
         super.supportFinishAfterTransition();
     }
@@ -213,7 +220,8 @@ public class PicturePreviewActivity extends BaseActivity {
     public void onBackPressed() {
         Intent data = new Intent()
                 .putExtra("index", mCurrentIndex)
-                .putExtra("isPreview", isPreview);
+                .putExtra("isPreview", isPreview)
+                .putExtra("startIndex", mStartIndex);
         setResult(RESULT_OK, data);
         super.supportFinishAfterTransition();
     }
@@ -257,7 +265,7 @@ public class PicturePreviewActivity extends BaseActivity {
                             sendBroadcast(intent);
                         }
                     });
-
+                    mViewPager.getAdapter().notifyDataSetChanged();
                     startActivityForResult(new Intent(this, PictureEditPreviewActivity.class)
                             .putExtra("picItem", item), REQUEST_EDIT_PREVIEW);
                 } else {
@@ -348,9 +356,8 @@ public class PicturePreviewActivity extends BaseActivity {
         @NonNull
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
             PictureSelectorActivity.PicItem picItem = mItemList.get(position);
-            final ImageView imageView;
             if (picItem.isGif()) {
-                imageView = new ImageView(container.getContext());
+                final ImageView imageView = new ImageView(container.getContext());
                 imageView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -385,13 +392,22 @@ public class PicturePreviewActivity extends BaseActivity {
                     }
                 });
 
+                String uri = picItem.getUri();
+                Glide.with(container.getContext())
+                        .load(new File(uri))
+                        .apply(new RequestOptions()
+                                .error(R.drawable.picker_grid_image_default)
+                                .placeholder(R.drawable.picker_grid_image_default))
+                        .into(imageView);
+                container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                return imageView;
 
             } else {
-                imageView = new PhotoView(container.getContext());
 
-                ((PhotoView) imageView).setOnViewTapListener(new OnViewTapListener() {
+                PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
+                imageView.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onViewTap(View view, float x, float y) {
+                    public void onClick(View v) {
                         mFullScreen = !mFullScreen;
 //                        View decorView;
 //                        byte uiOptions;
@@ -421,17 +437,24 @@ public class PicturePreviewActivity extends BaseActivity {
                     }
                 });
 
+
+                String uri = picItem.getUri();
+                imageView.setOrientation(PickerScaleImageView.ORIENTATION_USE_EXIF);
+
+                Glide.with(container.getContext())
+                        .asFile()
+                        .load(new File(uri))
+                        .apply(new RequestOptions()
+                                .error(R.drawable.picker_grid_image_default)
+                                .placeholder(R.drawable.picker_grid_image_default))
+                        .into(new PickerScaleViewTarget(imageView));
+//                imageView.setImage(ImageSource.uri(Uri.fromFile(new File(uri))));
+
+                container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                return imageView;
             }
 
-            String uri = picItem.getUri();
-            Glide.with(container.getContext())
-                    .load(new File(uri))
-                    .apply(new RequestOptions()
-                            .error(R.drawable.picker_grid_image_default)
-                            .placeholder(R.drawable.picker_grid_image_default))
-                    .into(imageView);
-            container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            return imageView;
+
         }
 
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {

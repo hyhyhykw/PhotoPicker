@@ -9,7 +9,6 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -18,9 +17,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.github.chrisbanes.photoview.OnViewTapListener;
-import com.github.chrisbanes.photoview.PhotoView;
+import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.hy.picker.utils.CommonUtils;
+import com.hy.picker.utils.PickerScaleViewTarget;
 
 import java.io.File;
 
@@ -38,7 +37,7 @@ public class PictureEditPreviewActivity extends BaseActivity {
     private TextView mBtnSend;
     //    private AppCompatRadioButton mUseOrigin;
     private AppCompatCheckBox mSelectBox;
-    private PhotoView mPhotoView;
+    private PickerScaleImageView mPhotoView;
     private boolean mFullScreen;
 
     private PictureSelectorActivity.PicItem mPicItem;
@@ -59,10 +58,9 @@ public class PictureEditPreviewActivity extends BaseActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             mToolbarTop.setPadding(0, CommonUtils.getStatusBarHeight(this), 0, 0);
         }
-
-        mPhotoView.setOnViewTapListener(new OnViewTapListener() {
+        mPhotoView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onViewTap(View view, float x, float y) {
+            public void onClick(View v) {
                 mFullScreen = !mFullScreen;
                 View decorView;
                 byte uiOptions;
@@ -96,11 +94,12 @@ public class PictureEditPreviewActivity extends BaseActivity {
 
         String uri = mPicItem.getUri();
         Glide.with(this)
+                .asFile()
                 .load(new File(uri))
                 .apply(new RequestOptions()
                         .error(R.drawable.picker_grid_image_default)
                         .placeholder(R.drawable.picker_grid_image_default))
-                .into(mPhotoView);
+                .into(new PickerScaleViewTarget(mPhotoView));
 
         mWholeView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
