@@ -16,6 +16,7 @@
     <string name="picker_picsel_record_video">录制视频</string>
     <string name="picker_picsel_catalog_allpic">所有图片</string>
     <string name="picker_picsel_catalog_all_video">所有视频</string>
+    <string name="picker_all_video">所有视频</string>
     <string name="picker_picsel_catalog_number">%d张</string>
 
     <!-- PicturePreviewActivity -->
@@ -52,6 +53,7 @@
     <string name="picker_done">完成</string>
     <string name="picker_rotate">旋转</string>
 
+    <string name="picker_all_image">所有图片</string>
     <string name="picker_mosaic_tip">请直接在图片上涂抹虚化</string>
     <string name="picker_undo">撤销</string>
     <string name="picker_all_photo">所有照片</string>

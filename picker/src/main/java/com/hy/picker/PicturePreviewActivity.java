@@ -1,7 +1,6 @@
 package com.hy.picker;
 
 import android.content.Intent;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +26,8 @@ import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.PickerScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
+import com.picker8.model.Photo;
+import com.picker8.utils.MediaListHolder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,11 +51,13 @@ public class PicturePreviewActivity extends BaseActivity {
     //    private AppCompatRadioButton mUseOrigin;
     private AppCompatCheckBox mSelectBox;
     private HackyViewPager mViewPager;
-    private ArrayList<PictureSelectorActivity.PicItem> mItemList;
-    private ArrayList<PictureSelectorActivity.PicItem> mItemSelectedList;
+
+    //    private ArrayList<PictureSelectorActivity.PicItem> mItemList;
+    private ArrayList<Photo> mItemList;
+
     private int mCurrentIndex;
     private boolean mFullScreen;
-//    private boolean isPreview;
+    private boolean isPreview;
 
     private int max;
     private TextView mTvEdit;
@@ -77,14 +80,16 @@ public class PicturePreviewActivity extends BaseActivity {
         max = intent.getIntExtra("max", 9);
         boolean isGif = intent.getBooleanExtra("isGif", false);
         mTvEdit.setVisibility(isGif ? View.GONE : View.VISIBLE);
-//        isPreview = intent.getBooleanExtra("isPreview", false);
+        isPreview = intent.getBooleanExtra("isPreview", false);
 //        mUseOrigin.setChecked(intent.getBooleanExtra("sendOrigin", false));
         mCurrentIndex = intent.getIntExtra("index", 0);
+
+        mItemList = isPreview ? MediaListHolder.selectPhotos : MediaListHolder.currentPhotos;
 //        mStartIndex = mCurrentIndex;
-        if (mItemList == null) {
-            mItemList = PictureSelectorActivity.PicItemHolder.itemList;
-            mItemSelectedList = PictureSelectorActivity.PicItemHolder.itemSelectedList;
-        }
+//        if (mItemList == null) {
+//            mItemList = PictureSelectorActivity.PicItemHolder.itemList;
+//            mItemSelectedList = PictureSelectorActivity.PicItemHolder.itemSelectedList;
+//        }
 
 
         mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size()));
@@ -104,21 +109,23 @@ public class PicturePreviewActivity extends BaseActivity {
         mBtnSend.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<PictureSelectorActivity.PicItem> picItems = new ArrayList<>();
-                if (mItemSelectedList != null) {
-                    for (PictureSelectorActivity.PicItem picItem : mItemSelectedList) {
-                        if (picItem.selected) {
-                            picItems.add(picItem);
-                        }
-                    }
 
-                }
-                for (PictureSelectorActivity.PicItem picItem : mItemList) {
-                    if (picItem.selected) {
-                        picItems.add(picItem);
-                    }
-                }
-                PhotoPicker.sPhotoListener.onPicked(picItems);
+//
+//                ArrayList<PictureSelectorActivity.PicItem> picItems = new ArrayList<>();
+//                if (mItemSelectedList != null) {
+//                    for (PictureSelectorActivity.PicItem picItem : mItemSelectedList) {
+//                        if (picItem.selected) {
+//                            picItems.add(picItem);
+//                        }
+//                    }
+//
+//                }
+//                for (PictureSelectorActivity.PicItem picItem : mItemList) {
+//                    if (picItem.selected) {
+//                        picItems.add(picItem);
+//                    }
+//                }
+                PhotoPicker.sPhotoListener.onPicked(MediaListHolder.selectPhotos);
                 setResult(RESULT_SEND);
                 finish();
             }
@@ -126,16 +133,16 @@ public class PicturePreviewActivity extends BaseActivity {
 
 
         mSelectBox.setText(R.string.picker_picprev_select);
-        mSelectBox.setChecked(mItemList.get(mCurrentIndex).selected);
+        mSelectBox.setChecked(mItemList.get(mCurrentIndex).isSelected());
         mSelectBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (buttonView.isPressed()) {
-                    if (isChecked && getTotalSelectedNum() == max) {
+                    if (isChecked && MediaListHolder.selectPhotos.size() == max) {
                         mSelectBox.setChecked(false);
                         Toast.makeText(PicturePreviewActivity.this, getString(R.string.picker_picsel_selected_max, max), Toast.LENGTH_SHORT).show();
                     } else {
-                        mItemList.get(mCurrentIndex).selected = mSelectBox.isChecked();
+                        mItemList.get(mCurrentIndex).setSelected(mSelectBox.isChecked());
                         updateToolbar();
                     }
                 }
@@ -153,9 +160,10 @@ public class PicturePreviewActivity extends BaseActivity {
             public void onPageSelected(int position) {
                 mCurrentIndex = position;
                 mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size()));
-                PictureSelectorActivity.PicItem item = mItemList.get(position);
-                mSelectBox.setChecked(item.selected);
-                mTvEdit.setVisibility(item.isGif() ? View.GONE : View.VISIBLE);
+
+                Photo photo = mItemList.get(position);
+                mSelectBox.setChecked(photo.isSelected());
+                mTvEdit.setVisibility(photo.isGif() ? View.GONE : View.VISIBLE);
             }
 
             public void onPageScrollStateChanged(int state) {
@@ -191,8 +199,8 @@ public class PicturePreviewActivity extends BaseActivity {
         mTvEdit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                PictureSelectorActivity.PicItem picItem = mItemList.get(mViewPager.getCurrentItem());
-                toEdit(Uri.fromFile(new File(picItem.uri)));
+                Photo photo = mItemList.get(mViewPager.getCurrentItem());
+                toEdit(Uri.fromFile(new File(photo.getUri())));
             }
         });
         updateToolbar();
@@ -222,7 +230,6 @@ public class PicturePreviewActivity extends BaseActivity {
 
 
     public static final int REQUEST_EDIT = 0x987;
-    public static final int REQUEST_EDIT_PREVIEW = 0x876;
     private File mEditFile;
 
     private void toEdit(Uri uri) {
@@ -246,30 +253,18 @@ public class PicturePreviewActivity extends BaseActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_EDIT) {
                 if (mEditFile != null) {
-                    PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
-                    String uriPath = mEditFile.getAbsolutePath();
-                    item.uri = uriPath;
-                    item.selected = true;
-                    mItemList.add(item);
-                    MediaScannerConnection.scanFile(this, new String[]{uriPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                        @Override
-                        public void onScanCompleted(final String path, Uri uri) {
-                            Intent intent = new Intent(PictureSelectorActivity.ACTION_UPDATE);
-                            intent.putExtra(PictureSelectorActivity.ACTION_UPDATE_PATH, path);
-                            sendBroadcast(intent);
-                        }
-                    });
                     mViewPager.getAdapter().notifyDataSetChanged();
-                    startActivityForResult(new Intent(this, PictureEditPreviewActivity.class)
-                            .putExtra("picItem", item), REQUEST_EDIT_PREVIEW);
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
                     Toast.makeText(this, R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                     finish();
                 }
-            } else if (requestCode == REQUEST_EDIT_PREVIEW) {
-                setResult(RESULT_OK);
-                finish();
             }
+//            else if (requestCode == REQUEST_EDIT_PREVIEW) {
+//
+//                finish();
+//            }
         }
     }
 
@@ -300,25 +295,10 @@ public class PicturePreviewActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private int getTotalSelectedNum() {
-        int sum = 0;
-
-        for (int i = 0; i < mItemList.size(); ++i) {
-            if (mItemList.get(i).selected) {
-                ++sum;
-            }
-        }
-
-        if (mItemSelectedList != null) {
-            sum += mItemSelectedList.size();
-        }
-
-        return sum;
-    }
-
 
     private void updateToolbar() {
-        int selNum = getTotalSelectedNum();
+        int selNum = MediaListHolder.selectPhotos.size();
+
         if (mItemList.size() == 1 && selNum == 0) {
             mBtnSend.setText(R.string.picker_picsel_toolbar_send);
 //            mUseOrigin.setText(R.string.rc_picprev_origin);
@@ -349,8 +329,8 @@ public class PicturePreviewActivity extends BaseActivity {
 
         @NonNull
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
-            PictureSelectorActivity.PicItem picItem = mItemList.get(position);
-            if (picItem.isGif()) {
+            Photo photo = mItemList.get(position);
+            if (photo.isGif()) {
                 final ImageView imageView = new ImageView(container.getContext());
                 imageView.setOnClickListener(new OnClickListener() {
                     @Override
@@ -386,7 +366,7 @@ public class PicturePreviewActivity extends BaseActivity {
                     }
                 });
 
-                String uri = picItem.getUri();
+                String uri = photo.getUri();
                 Glide.with(container.getContext())
                         .load(new File(uri))
                         .apply(new RequestOptions()
@@ -432,7 +412,7 @@ public class PicturePreviewActivity extends BaseActivity {
                 });
 
 
-                String uri = picItem.getUri();
+                String uri = photo.getUri();
                 imageView.setOrientation(PickerScaleImageView.ORIENTATION_USE_EXIF);
 
                 Glide.with(container.getContext())

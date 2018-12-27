@@ -5,15 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-
-import com.hy.picker.utils.Logger;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import com.hy.picker.core.IMGMode;
 import com.hy.picker.core.IMGText;
@@ -22,6 +17,15 @@ import com.hy.picker.core.file.IMGDecoder;
 import com.hy.picker.core.file.IMGFileDecoder;
 import com.hy.picker.core.util.IMGUtils;
 import com.hy.picker.core.util.SizeUtils;
+import com.hy.picker.utils.Logger;
+import com.picker8.model.Photo;
+import com.picker8.utils.MediaListHolder;
+import com.picker8.utils.MediaStoreHelper;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Created by felix on 2017/11/14 下午2:26.
@@ -256,7 +260,37 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                         }
                     }
                 }
-                setResult(RESULT_OK);
+
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("video", false);
+                bundle.putString("path", path);
+
+                MediaStoreHelper.getPhoto(this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
+                    @Override
+                    public void onResultCallback(@Nullable Photo photo) {
+                        if (photo == null) {
+                            setResult(RESULT_CANCELED);
+                            finish();
+                            return;
+                        }
+
+                        MediaListHolder.selectPhotos.add(photo);
+                        Intent intent = new Intent(PictureSelectorActivity.ACTION_UPDATE);
+                        intent.putExtra(PictureSelectorActivity.ACTION_UPDATE_PHOTO, photo);
+                        sendBroadcast(intent);
+
+                        startActivity(new Intent(IMGEditActivity.this, PictureEditPreviewActivity.class)
+                                .putExtra("picItem", photo));
+                        setResult(RESULT_OK, new Intent()
+                                .putExtra("photo", photo));
+                        finish();
+                    }
+
+                });
+
+                return;
+            } else {
+                setResult(RESULT_CANCELED);
                 finish();
                 return;
             }

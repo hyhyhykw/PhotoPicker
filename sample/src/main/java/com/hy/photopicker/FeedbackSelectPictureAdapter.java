@@ -37,7 +37,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.hy.picker.PictureSelectorActivity;
+import com.picker8.model.Photo;
 
 
 /**
@@ -45,7 +45,7 @@ import com.hy.picker.PictureSelectorActivity;
  *
  * @author HY
  */
-public class FeedbackSelectPictureAdapter extends BaseRecyclerAdapter<PictureSelectorActivity.PicItem, BaseRecyclerAdapter.BaseViewHolder> {
+public class FeedbackSelectPictureAdapter extends BaseRecyclerAdapter<Photo, BaseRecyclerAdapter.BaseViewHolder> {
 
     public static final int TYPE_PHOTO = 1;
     public static final int TYPE_ADD = 2;
@@ -106,7 +106,7 @@ public class FeedbackSelectPictureAdapter extends BaseRecyclerAdapter<PictureSel
 
         @Override
         public void bind() {
-            PictureSelectorActivity.PicItem item = getItem(getAdapterPosition());
+            Photo item = getItem(getAdapterPosition());
 //            String path = item.getThumbnailSmallPath();
 //            if (TextUtils.isEmpty(path)) {
 //                path = item.getThumbnailBigPath();
@@ -163,6 +163,6 @@ public class FeedbackSelectPictureAdapter extends BaseRecyclerAdapter<PictureSel
     }
 
     public interface OnItemClickListener {
-        void onClick(int position,@Type int type);
+        void onClick(int position, @Type int type);
     }
 }

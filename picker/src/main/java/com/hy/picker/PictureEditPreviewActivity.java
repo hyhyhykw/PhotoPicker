@@ -5,12 +5,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.view.KeyEvent;
+import android.os.Looper;
+import android.os.MessageQueue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +19,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.PickerScaleViewTarget;
+import com.picker8.model.Photo;
+import com.picker8.utils.AndroidLifecycleUtils;
 
 import java.io.File;
 
@@ -30,76 +31,80 @@ import java.io.File;
  * @author HY
  */
 public class PictureEditPreviewActivity extends BaseActivity {
+
     private View mWholeView;
     private View mToolbarTop;
-    private View mToolbarBottom;
     private ImageView mBtnBack;
     private TextView mBtnSend;
     //    private AppCompatRadioButton mUseOrigin;
-    private AppCompatCheckBox mSelectBox;
     private PickerScaleImageView mPhotoView;
     private boolean mFullScreen;
 
-    private PictureSelectorActivity.PicItem mPicItem;
+    private Photo mPicItem;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.picker_activity_edit_preview);
+        if (VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            mToolbarTop.setPadding(0, CommonUtils.getStatusBarHeight(this), 0, 0);
+        }
+
         Intent intent = getIntent();
         mPicItem = intent.getParcelableExtra("picItem");
+
         if (mPicItem == null) {
             Toast.makeText(this, R.string.picker_file_error, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
+
         initView();
 
-        if (VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            mToolbarTop.setPadding(0, CommonUtils.getStatusBarHeight(this), 0, 0);
-        }
-        mPhotoView.setOnClickListener(new OnClickListener() {
+        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
             @Override
-            public void onClick(View v) {
-                mFullScreen = !mFullScreen;
-                View decorView;
-                byte uiOptions;
-                if (mFullScreen) {
-                    if (VERSION.SDK_INT < 16) {
-                        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                    } else {
-                        decorView = getWindow().getDecorView();
-                        uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-                        decorView.setSystemUiVisibility(uiOptions);
-                    }
+            public boolean queueIdle() {
+                if (AndroidLifecycleUtils.canLoadImage(PictureEditPreviewActivity.this)) {
+                    String uri = mPicItem.getUri();
+                    Glide.with(PictureEditPreviewActivity.this)
+                            .asFile()
+                            .load(new File(uri))
+                            .apply(new RequestOptions()
+                                    .error(R.drawable.picker_grid_image_default)
+                                    .placeholder(R.drawable.picker_grid_image_default))
+                            .into(new PickerScaleViewTarget(mPhotoView));
 
-                    mToolbarTop.setVisibility(View.INVISIBLE);
-                    mToolbarBottom.setVisibility(View.INVISIBLE);
-                } else {
-                    CommonUtils.processMIUI(PictureEditPreviewActivity.this, mIsStatusBlack);
-                    if (VERSION.SDK_INT < 16) {
-                        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                    } else {
-                        decorView = getWindow().getDecorView();
-                        uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
-                        decorView.setSystemUiVisibility(uiOptions);
-                    }
-
-                    mToolbarTop.setVisibility(View.VISIBLE);
-                    mToolbarBottom.setVisibility(View.VISIBLE);
                 }
+                return false;
             }
         });
 
 
-        String uri = mPicItem.getUri();
-        Glide.with(this)
-                .asFile()
-                .load(new File(uri))
-                .apply(new RequestOptions()
-                        .error(R.drawable.picker_grid_image_default)
-                        .placeholder(R.drawable.picker_grid_image_default))
-                .into(new PickerScaleViewTarget(mPhotoView));
+        mPhotoView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFullScreen = !mFullScreen;
+//                View decorView;
+//                byte uiOptions;
+                if (mFullScreen) {
+//                    decorView = getWindow().getDecorView();
+//                    uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+//                    decorView.setSystemUiVisibility(uiOptions);
+                    mToolbarTop.setVisibility(View.INVISIBLE);
+                } else {
+//                    CommonUtils.processMIUI(PictureEditPreviewActivity.this, mIsStatusBlack);
+//                    decorView = getWindow().getDecorView();
+//                    uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
+//                    decorView.setSystemUiVisibility(uiOptions);
+
+                    mToolbarTop.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
 
         mWholeView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
@@ -121,19 +126,6 @@ public class PictureEditPreviewActivity extends BaseActivity {
             }
         });
 
-
-        mSelectBox.setText(R.string.picker_picprev_select);
-        mSelectBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mPicItem.setSelected(isChecked);
-                if (buttonView.isPressed()) {
-                    updateToolbar();
-                }
-            }
-        });
-
-        updateToolbar();
     }
 
 
@@ -142,28 +134,15 @@ public class PictureEditPreviewActivity extends BaseActivity {
         mBtnBack = findViewById(R.id.picker_back);
         mBtnSend = findViewById(R.id.picker_sure);
         mWholeView = findViewById(R.id.picker_whole_layout);
-        mToolbarBottom = findViewById(R.id.picker_bottom_bar);
-//        mUseOrigin = findViewById(R.id.origin_check);
-        mSelectBox = findViewById(R.id.picker_select_check);
         mPhotoView = findViewById(R.id.picker_photo_preview);
     }
 
-    protected void onResume() {
-        super.onResume();
-    }
-
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent();
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
 //            intent.putExtra("sendOrigin", mUseOrigin.isChecked());
-            setResult(RESULT_OK, intent);
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
-
-    private void updateToolbar() {
-        mBtnSend.setEnabled(mPicItem.isSelected());
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 
 }

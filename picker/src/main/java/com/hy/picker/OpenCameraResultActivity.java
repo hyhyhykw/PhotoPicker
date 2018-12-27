@@ -3,8 +3,6 @@ package com.hy.picker;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +14,8 @@ import android.widget.Toast;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.MyFileProvider;
+import com.picker8.model.Photo;
+import com.picker8.utils.MediaStoreHelper;
 
 import java.io.File;
 import java.util.Date;
@@ -74,63 +74,32 @@ public class OpenCameraResultActivity extends BaseActivity {
                         path = Environment.getExternalStorageDirectory() + path;
                     }
 
-                    File file = new File(path);
+                    final File file = new File(path);
+
                     if (file.exists()) {
-                        if (video) {
-                            MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                                @Override
-                                public void onScanCompleted(final String path, Uri uri) {
-                                    Cursor cursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                                            null,
-                                            MediaStore.Video.Media.DATA + " = ?",
-                                            new String[]{path},
-                                            MediaStore.Video.DEFAULT_SORT_ORDER);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("path", path);
+                        bundle.putBoolean("video", video);
+                        MediaStoreHelper.getPhoto(this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
+                            @Override
+                            public void onResultCallback(@Nullable Photo photo) {
+                                if (photo == null) {
+                                    Toast.makeText(OpenCameraResultActivity.this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
 
-                                    if (null != cursor && cursor.moveToFirst()) {
-                                        // title：MediaStore.Audio.Media.TITLE
-                                        String title = cursor.getString(cursor
-                                                .getColumnIndexOrThrow(MediaStore.Video.Media.TITLE));
-                                        // path：MediaStore.Audio.Media.DATA
-                                        String url = cursor.getString(cursor
-                                                .getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
-                                        // duration：MediaStore.Audio.Media.DURATION
-                                        int duration = cursor
-                                                .getInt(cursor
-                                                        .getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
-                                        // 大小：MediaStore.Audio.Media.SIZE
-                                        int size = (int) cursor.getLong(cursor
-                                                .getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
-
-                                        PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
-                                        item.title = title;
-                                        item.uri = url;
-                                        item.duration = duration;
-                                        item.size = size;
-
-                                        cursor.close();
-                                        PhotoPicker.sTakePhotoListener.onTake(item);
+                                if (video) {
+                                    PhotoPicker.sTakePhotoListener.onTake(photo);
+                                } else {
+                                    if (PhotoPicker.isEdit) {
+                                        toEdit(Uri.fromFile(file));
+                                    } else {
+                                        PhotoPicker.sTakePhotoListener.onTake(photo);
                                     }
-                                    finish();
                                 }
-                            });
-                        } else {
-                            PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
-                            item.uri = path;
-                            item.selected = true;
-
-                            MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                                @Override
-                                public void onScanCompleted(final String path, Uri uri) {
-                                    Logger.d("path===" + path);
-                                }
-                            });
-                            if (PhotoPicker.isEdit) {
-                                toEdit(Uri.fromFile(file));
-                            } else {
-                                PhotoPicker.sTakePhotoListener.onTake(item);
-                                finish();
                             }
-                        }
+                        });
+
 
                     } else {
                         Toast.makeText(this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
@@ -141,24 +110,11 @@ public class OpenCameraResultActivity extends BaseActivity {
                     finish();
                 }
             } else if (requestCode == REQUEST_EDIT) {
-                if (mEditFile != null) {
-                    PictureSelectorActivity.PicItem item = new PictureSelectorActivity.PicItem();
-                    String uriPath = mEditFile.getAbsolutePath();
-                    item.uri = uriPath;
-                    item.selected = true;
-                    MediaScannerConnection.scanFile(this, new String[]{uriPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                        @Override
-                        public void onScanCompleted(final String path, Uri uri) {
-                            Logger.d("crop path===" + path);
-                        }
-                    });
 
-                    PhotoPicker.sTakePhotoListener.onTake(item);
-                } else {
-                    Toast.makeText(this, R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
-                }
+                Photo photo = data.getParcelableExtra("photo");
+                PhotoPicker.sTakePhotoListener.onTake(photo);
+
                 finish();
-
             } else {
                 finish();
             }

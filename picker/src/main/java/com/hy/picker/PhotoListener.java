@@ -1,5 +1,7 @@
 package com.hy.picker;
 
+import com.picker8.model.Photo;
+
 import java.util.ArrayList;
 
 /**
@@ -9,6 +11,6 @@ import java.util.ArrayList;
  */
 public interface PhotoListener {
 
-    void onPicked(ArrayList<PictureSelectorActivity.PicItem> picItems);
+    void onPicked(ArrayList<Photo> picItems);
 
 }

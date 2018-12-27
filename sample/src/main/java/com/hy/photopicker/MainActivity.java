@@ -1,15 +1,14 @@
 package com.hy.photopicker;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.hy.picker.PhotoListener;
 import com.hy.picker.PhotoPicker;
-import com.hy.picker.PictureSelectorActivity;
 import com.hy.picker.TakePhotoListener;
-import com.hy.picker.utils.Logger;
+import com.picker8.model.Photo;
 
 import java.util.ArrayList;
 
@@ -40,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
             case FeedbackSelectPictureAdapter.TYPE_ADD:
                 new PhotoPicker()
                         .max(9)
+                        .showCamera(false)
                         .select(new ArrayList<>(mFeedbackSelectPictureAdapter.getData()))
                         .start(this);
 //                new PhotoPicker()
@@ -52,14 +52,15 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
         }
     }
 
+
     @Override
-    public void onPicked(ArrayList<PictureSelectorActivity.PicItem> picItems) {
-        Logger.e(picItems.get(0));
-//        mFeedbackSelectPictureAdapter.reset(picItems);
+    public void onPicked(ArrayList<Photo> picItems) {
+
+        mFeedbackSelectPictureAdapter.reset(picItems);
     }
 
     @Override
-    public void onTake(PictureSelectorActivity.PicItem picItem) {
-//        mFeedbackSelectPictureAdapter.addItem(picItem);
+    public void onTake(Photo picItem) {
+        mFeedbackSelectPictureAdapter.addItem(picItem);
     }
 }

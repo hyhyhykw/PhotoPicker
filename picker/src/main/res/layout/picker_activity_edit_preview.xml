@@ -10,6 +10,7 @@
         android:id="@id/picker_photo_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/picker_preview_toolbar"
         android:background="@android:color/black"/>
 
     <RelativeLayout
@@ -69,29 +70,6 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@id/picker_bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:background="?attr/picker_bottom_color"
-        android:clickable="true"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp">
 
-
-        <android.support.v7.widget.AppCompatCheckBox
-            android:id="@id/picker_select_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:checked="true"
-            android:textColor="?attr/picker_title_color"
-            android:textSize="16sp"
-            android:theme="@style/picker_check_box"/>
-
-    </RelativeLayout>
 
 </RelativeLayout>

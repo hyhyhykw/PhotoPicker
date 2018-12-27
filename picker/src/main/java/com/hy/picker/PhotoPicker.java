@@ -6,6 +6,7 @@ import android.os.Environment;
 
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.PermissionUtils;
+import com.picker8.model.Photo;
 import com.yanzhenjie.permission.Permission;
 
 import java.io.File;
@@ -18,6 +19,12 @@ import java.util.ArrayList;
  * @author HY
  */
 public class PhotoPicker {
+
+
+    public static final String EXTRA_SHOW_GIF = "gif";
+    public static final String EXTRA_ONLY_GIF = "gifOnly";
+    public static final String EXTRA_PICK_VIDEO = "video";
+    public static final String EXTRA_ITEMS = "items";
 
     static PhotoListener sPhotoListener;
     static TakePhotoListener sTakePhotoListener;
@@ -56,9 +63,9 @@ public class PhotoPicker {
         return this;
     }
 
-    private ArrayList<PictureSelectorActivity.PicItem> mPicItems;
+    private ArrayList<Photo> mPicItems;
 
-    public PhotoPicker select(ArrayList<PictureSelectorActivity.PicItem> picItems) {
+    public PhotoPicker select(ArrayList<Photo> picItems) {
         mPicItems = picItems;
         return this;
     }
@@ -74,6 +81,14 @@ public class PhotoPicker {
 
     public PhotoPicker gifOnly(boolean gifOnly) {
         this.gifOnly = gifOnly;
+        this.isShowCamera=false;
+        return this;
+    }
+
+    private boolean isShowCamera = true;
+
+    public PhotoPicker showCamera(boolean camera) {
+        isShowCamera = camera;
         return this;
     }
 
@@ -84,6 +99,7 @@ public class PhotoPicker {
         intent.putExtra("gif", gif);
         intent.putExtra("gifOnly", gifOnly);
         intent.putExtra("video", isVideo);
+        intent.putExtra("showCamera", isShowCamera);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (null != mPicItems) {
             intent.putParcelableArrayListExtra("items", mPicItems);
