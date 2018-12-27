@@ -23,8 +23,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.GridLayoutManager;
@@ -100,7 +98,6 @@ public class PictureSelectorActivity extends BaseActivity {
     private int catalogHeight;
 
     private UpdateReceiver mUpdateReceiver;
-    private boolean isPreview;
     private GridLayoutManager mLayoutManager;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -306,27 +303,27 @@ public class PictureSelectorActivity extends BaseActivity {
                 intent.putExtra("max", max);
                 intent.putExtra("isPreview", true);
 
-                if (Build.VERSION.SDK_INT >= 22) {
-                    View view = mLayoutManager.findViewByPosition(index + 1);
-                    ImageView iv = view.findViewById(R.id.picker_photo_image);
-                    String uri = item.getUri();
-
-//                    Pair pair = new Pair<>(iv, uri);
-//                    ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                            PictureSelectorActivity.this, pair);
-
-                    ActivityOptionsCompat options = ActivityOptionsCompat
-                            .makeSceneTransitionAnimation(PictureSelectorActivity.this, iv, uri);// mAdapter.get(position).getUrl()
-//                        startActivity(intent, options.toBundle());
-                    ActivityCompat.startActivityForResult(PictureSelectorActivity.this, intent, REQUEST_PREVIEW, options.toBundle());
-//                        startActivityForResult(intent, REQUEST_PREVIEW, activityOptions.toBundle());
-
+//                if (Build.VERSION.SDK_INT >= 22) {
+//                    View view = mLayoutManager.findViewByPosition(index + 1);
+//                    ImageView iv = view.findViewById(R.id.picker_photo_image);
+//                    String uri = item.getUri();
+//
+////                    Pair pair = new Pair<>(iv, uri);
+////                    ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
+////                            PictureSelectorActivity.this, pair);
+//
 //                    ActivityOptionsCompat options = ActivityOptionsCompat
 //                            .makeSceneTransitionAnimation(PictureSelectorActivity.this, iv, uri);// mAdapter.get(position).getUrl()
-//                    startActivityForResult(intent, REQUEST_PREVIEW, options.toBundle());
-                } else {
-                    startActivityForResult(intent, REQUEST_PREVIEW);
-                }
+////                        startActivity(intent, options.toBundle());
+//                    ActivityCompat.startActivityForResult(PictureSelectorActivity.this, intent, REQUEST_PREVIEW, options.toBundle());
+////                        startActivityForResult(intent, REQUEST_PREVIEW, activityOptions.toBundle());
+//
+////                    ActivityOptionsCompat options = ActivityOptionsCompat
+////                            .makeSceneTransitionAnimation(PictureSelectorActivity.this, iv, uri);// mAdapter.get(position).getUrl()
+////                    startActivityForResult(intent, REQUEST_PREVIEW, options.toBundle());
+//                } else {
+//                }
+                startActivityForResult(intent, REQUEST_PREVIEW);
             }
         });
 
@@ -1313,21 +1310,21 @@ public class PictureSelectorActivity extends BaseActivity {
                     intent.putExtra("isPreview", false);
 
 
-                    if (Build.VERSION.SDK_INT >= 22) {
-//                        View view = mLayoutManager.findViewByPosition(position);
-//                        ImageView iv = view.findViewById(R.id.picker_photo_image);
-                        String uri = PicItemHolder.itemList.get(position - 1).getUri();
-
-//                        Pair pair = new Pair<>(iv, uri);
-//                        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                                PictureSelectorActivity.this, pair);
-
-                        ActivityOptionsCompat options = ActivityOptionsCompat
-                                .makeSceneTransitionAnimation(PictureSelectorActivity.this, itemView, uri);// mAdapter.get(position).getUrl()
-                        ActivityCompat.startActivityForResult(PictureSelectorActivity.this, intent, REQUEST_PREVIEW, options.toBundle());
-                    } else {
-                        startActivityForResult(intent, REQUEST_PREVIEW);
-                    }
+//                    if (Build.VERSION.SDK_INT >= 22) {
+////                        View view = mLayoutManager.findViewByPosition(position);
+////                        ImageView iv = view.findViewById(R.id.picker_photo_image);
+//                        String uri = PicItemHolder.itemList.get(position - 1).getUri();
+//
+////                        Pair pair = new Pair<>(iv, uri);
+////                        ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
+////                                PictureSelectorActivity.this, pair);
+//
+//                        ActivityOptionsCompat options = ActivityOptionsCompat
+//                                .makeSceneTransitionAnimation(PictureSelectorActivity.this, itemView, uri);// mAdapter.get(position).getUrl()
+//                        ActivityCompat.startActivityForResult(PictureSelectorActivity.this, intent, REQUEST_PREVIEW, options.toBundle());
+//                    } else {
+//                    }
+                    startActivityForResult(intent, REQUEST_PREVIEW);
 
                 }
             });

@@ -1,8 +1,5 @@
 package com.hy.picker;
 
-
-import android.annotation.TargetApi;
-import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -11,7 +8,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.KeyEvent;
@@ -35,9 +31,7 @@ import com.hy.picker.view.HackyViewPager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 
 /**
@@ -60,11 +54,11 @@ public class PicturePreviewActivity extends BaseActivity {
     private ArrayList<PictureSelectorActivity.PicItem> mItemSelectedList;
     private int mCurrentIndex;
     private boolean mFullScreen;
-    private boolean isPreview;
+//    private boolean isPreview;
 
     private int max;
     private TextView mTvEdit;
-    private int mStartIndex;
+//    private int mStartIndex;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +77,10 @@ public class PicturePreviewActivity extends BaseActivity {
         max = intent.getIntExtra("max", 9);
         boolean isGif = intent.getBooleanExtra("isGif", false);
         mTvEdit.setVisibility(isGif ? View.GONE : View.VISIBLE);
-        isPreview = intent.getBooleanExtra("isPreview", false);
+//        isPreview = intent.getBooleanExtra("isPreview", false);
 //        mUseOrigin.setChecked(intent.getBooleanExtra("sendOrigin", false));
         mCurrentIndex = intent.getIntExtra("index", 0);
-        mStartIndex = mCurrentIndex;
+//        mStartIndex = mCurrentIndex;
         if (mItemList == null) {
             mItemList = PictureSelectorActivity.PicItemHolder.itemList;
             mItemSelectedList = PictureSelectorActivity.PicItemHolder.itemSelectedList;
@@ -168,32 +162,32 @@ public class PicturePreviewActivity extends BaseActivity {
             }
         });
 
-        supportPostponeEnterTransition();//延缓执行 然后在fragment里面的控件加载完成后start
-        if (Build.VERSION.SDK_INT >= 22) {
-
-            setEnterSharedElementCallback(new SharedElementCallback() {
-                @Override
-                public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-
-                    PictureSelectorActivity.PicItem item = mItemList.get(mCurrentIndex);
-//                    ViewCompat.setTransitionName(mViewPager, item.getUri());
-                    if (mStartIndex != mCurrentIndex) {
-                        names.clear();
-                        names.add(item.getUri());
-                        String url = item.getUri();
-                        sharedElements.clear();
-                        sharedElements.put(url, mViewPager);
-                    }
-                }
-            });
-
-            postponeEnterTransition();
-            PictureSelectorActivity.PicItem item = mItemList.get(mCurrentIndex);
-            ViewCompat.setTransitionName(mViewPager, item.getUri());
-            startPostponedEnterTransition();
-
-
-        }
+//        supportPostponeEnterTransition();//延缓执行 然后在fragment里面的控件加载完成后start
+//        if (Build.VERSION.SDK_INT >= 22) {
+//
+//            setEnterSharedElementCallback(new SharedElementCallback() {
+//                @Override
+//                public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+//
+//                    PictureSelectorActivity.PicItem item = mItemList.get(mCurrentIndex);
+////                    ViewCompat.setTransitionName(mViewPager, item.getUri());
+//                    if (mStartIndex != mCurrentIndex) {
+//                        names.clear();
+//                        names.add(item.getUri());
+//                        String url = item.getUri();
+//                        sharedElements.clear();
+//                        sharedElements.put(url, mViewPager);
+//                    }
+//                }
+//            });
+//
+//            postponeEnterTransition();
+//            PictureSelectorActivity.PicItem item = mItemList.get(mCurrentIndex);
+//            ViewCompat.setTransitionName(mViewPager, item.getUri());
+//            startPostponedEnterTransition();
+//
+//
+//        }
         mTvEdit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -204,27 +198,27 @@ public class PicturePreviewActivity extends BaseActivity {
         updateToolbar();
     }
 
-    @TargetApi(22)
-    @Override
-    public void supportFinishAfterTransition() {
-        Intent data = new Intent()
-                .putExtra("index", mCurrentIndex)
-                .putExtra("isPreview", isPreview)
-                .putExtra("startIndex", mStartIndex);
-        setResult(RESULT_OK, data);
-        super.supportFinishAfterTransition();
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        Intent data = new Intent()
-                .putExtra("index", mCurrentIndex)
-                .putExtra("isPreview", isPreview)
-                .putExtra("startIndex", mStartIndex);
-        setResult(RESULT_OK, data);
-        super.supportFinishAfterTransition();
-    }
+//    @TargetApi(22)
+//    @Override
+//    public void supportFinishAfterTransition() {
+//        Intent data = new Intent()
+//                .putExtra("index", mCurrentIndex)
+//                .putExtra("isPreview", isPreview)
+//                .putExtra("startIndex", mStartIndex);
+//        setResult(RESULT_OK, data);
+//        super.supportFinishAfterTransition();
+//    }
+//
+//
+//    @Override
+//    public void onBackPressed() {
+//        Intent data = new Intent()
+//                .putExtra("index", mCurrentIndex)
+//                .putExtra("isPreview", isPreview)
+//                .putExtra("startIndex", mStartIndex);
+//        setResult(RESULT_OK, data);
+//        super.supportFinishAfterTransition();
+//    }
 
 
     public static final int REQUEST_EDIT = 0x987;
