@@ -37,7 +37,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.picker8.model.Photo;
+import com.picker2.model.Photo;
 
 
 /**

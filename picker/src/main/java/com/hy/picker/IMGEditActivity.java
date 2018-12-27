@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,9 +19,9 @@ import com.hy.picker.core.file.IMGFileDecoder;
 import com.hy.picker.core.util.IMGUtils;
 import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.Logger;
-import com.picker8.model.Photo;
-import com.picker8.utils.MediaListHolder;
-import com.picker8.utils.MediaStoreHelper;
+import com.picker2.model.Photo;
+import com.picker2.utils.MediaListHolder;
+import com.picker2.utils.MediaStoreHelper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -261,32 +262,14 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                     }
                 }
 
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("video", false);
-                bundle.putString("path", path);
 
-                MediaStoreHelper.getPhoto(this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
+                MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
                     @Override
-                    public void onResultCallback(@Nullable Photo photo) {
-                        if (photo == null) {
-                            setResult(RESULT_CANCELED);
-                            finish();
-                            return;
-                        }
-
-                        MediaListHolder.selectPhotos.add(photo);
-                        Intent intent = new Intent(PictureSelectorActivity.ACTION_UPDATE);
-                        intent.putExtra(PictureSelectorActivity.ACTION_UPDATE_PHOTO, photo);
-                        sendBroadcast(intent);
-
-                        startActivity(new Intent(IMGEditActivity.this, PictureEditPreviewActivity.class)
-                                .putExtra("picItem", photo));
-                        setResult(RESULT_OK, new Intent()
-                                .putExtra("photo", photo));
-                        finish();
+                    public void onScanCompleted(final String path, Uri uri) {
+                        getPhoto(path);
                     }
-
                 });
+
 
                 return;
             } else {
@@ -297,6 +280,41 @@ public class IMGEditActivity extends IMGEditBaseActivity {
         }
         setResult(RESULT_CANCELED);
         finish();
+    }
+
+    private void getPhoto(final String path) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("video", false);
+                bundle.putString("path", path);
+                MediaStoreHelper.getPhoto(IMGEditActivity.this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
+                    @Override
+                    public void onResultCallback(@Nullable Photo photo) {
+                        if (photo == null) {
+                            setResult(RESULT_CANCELED);
+                            finish();
+                            return;
+                        }
+
+                        MediaListHolder.selectPhotos.add(photo);
+                        Intent intent = new Intent(PICKER_ACTION_MEDIA_ADD);
+                        intent.putExtra(PICKER_EXTRA_PHOTO, photo);
+                        sendBroadcast(intent);
+
+                        startActivity(new Intent(IMGEditActivity.this, PictureEditPreviewActivity.class)
+                                .putExtra("picItem", photo));
+                        setResult(RESULT_OK, new Intent()
+                                .putExtra("photo", photo));
+                        MediaStoreHelper.destroyLoader(IMGEditActivity.this, 0);
+                        finish();
+                    }
+
+                });
+            }
+        });
+
     }
 
     @Override

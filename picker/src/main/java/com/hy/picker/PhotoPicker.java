@@ -6,7 +6,7 @@ import android.os.Environment;
 
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.PermissionUtils;
-import com.picker8.model.Photo;
+import com.picker2.model.Photo;
 import com.yanzhenjie.permission.Permission;
 
 import java.io.File;

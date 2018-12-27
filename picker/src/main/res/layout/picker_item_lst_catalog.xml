@@ -3,8 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="92dp"
-    android:foreground="@drawable/picker_foreground"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp">
 
     <FrameLayout
         android:id="@id/picker_image_layout"
@@ -26,8 +29,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="14dp"
         android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
         android:layout_toEndOf="@id/picker_image_layout"
         android:layout_toRightOf="@id/picker_image_layout"
         android:orientation="vertical">

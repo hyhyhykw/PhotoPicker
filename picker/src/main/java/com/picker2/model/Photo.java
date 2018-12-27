@@ -1,7 +1,9 @@
-package com.picker8.model;
+package com.picker2.model;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.hy.picker.utils.ObjectsUtils;
@@ -9,16 +11,16 @@ import com.hy.picker.utils.ObjectsUtils;
 /**
  * Created by donglua on 15/6/30.
  */
-public class Photo implements Parcelable {
+public class Photo implements Parcelable, Comparable<Photo> {
 
     private String uri;
-    private boolean selected;
     private String title;
     private long size;
     private long duration;
     private int width;
     private int height;
     private String mimeType;
+    private long time;
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
         public Photo createFromParcel(Parcel source) {
@@ -30,16 +32,15 @@ public class Photo implements Parcelable {
         }
     };
 
-    public Photo( String uri, boolean selected, String title, long size, long duration, int width, int height, String mimeType) {
-
+    public Photo(String uri, String title, long size, long duration, int width, int height, String mimeType, long time) {
         this.uri = uri;
-        this.selected = selected;
         this.title = title;
         this.size = size;
         this.duration = duration;
         this.width = width;
         this.height = height;
         this.mimeType = mimeType;
+        this.time = time;
     }
 
     public Photo() {
@@ -47,13 +48,13 @@ public class Photo implements Parcelable {
 
     public Photo(Parcel in) {
         uri = in.readString();
-        selected = in.readInt() == 1;
         title = in.readString();
         size = in.readLong();
         duration = in.readLong();
         width = in.readInt();
         height = in.readInt();
         mimeType = in.readString();
+        time = in.readLong();
     }
 
     @Override
@@ -76,14 +77,6 @@ public class Photo implements Parcelable {
 
     public void setUri(String uri) {
         this.uri = uri;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     public String getTitle() {
@@ -134,6 +127,14 @@ public class Photo implements Parcelable {
         this.mimeType = mimeType;
     }
 
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -143,29 +144,41 @@ public class Photo implements Parcelable {
         return TextUtils.equals(getMimeType(), "image/gif");
     }
 
+
+    @NonNull
     @Override
     public String toString() {
         return "Photo{" +
                 "uri='" + uri + '\'' +
-                ", selected=" + selected +
                 ", title='" + title + '\'' +
                 ", size=" + size +
                 ", duration=" + duration +
                 ", width=" + width +
                 ", height=" + height +
                 ", mimeType='" + mimeType + '\'' +
+                ", time=" + time +
                 '}';
     }
+
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uri);
-        dest.writeInt(selected ? 1 : 0);
         dest.writeString(title);
         dest.writeLong(size);
         dest.writeLong(duration);
         dest.writeInt(width);
         dest.writeInt(height);
         dest.writeString(mimeType);
+        dest.writeLong(time);
+    }
+
+    @Override
+    public int compareTo(@NonNull Photo o) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return Long.compare(time, o.time);
+        } else {
+            return Long.compare(time, o.time);
+        }
     }
 }

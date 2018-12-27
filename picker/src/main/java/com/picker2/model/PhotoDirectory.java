@@ -1,5 +1,7 @@
-package com.picker8.model;
+package com.picker2.model;
 
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.hy.picker.utils.SetList;
@@ -7,7 +9,7 @@ import com.hy.picker.utils.SetList;
 /**
  * Created by donglua on 15/6/28.
  */
-public class PhotoDirectory {
+public class PhotoDirectory implements Comparable<PhotoDirectory> {
 
     private String id;
     private String coverPath;
@@ -97,4 +99,16 @@ public class PhotoDirectory {
         photos.add(photo);
     }
 
+    public void addPhoto(int index, Photo photo) {
+        photos.add(index, photo);
+    }
+
+    @Override
+    public int compareTo(@NonNull PhotoDirectory o) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return Long.compare(dateAdded, o.dateAdded);
+        } else {
+            return Long.compare(dateAdded, o.dateAdded);
+        }
+    }
 }

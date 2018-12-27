@@ -1,4 +1,4 @@
-package com.picker8.utils;
+package com.picker2.utils;
 
 import android.content.Context;
 import android.provider.MediaStore;

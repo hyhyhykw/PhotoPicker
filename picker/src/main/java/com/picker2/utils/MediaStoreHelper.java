@@ -1,4 +1,4 @@
-package com.picker8.utils;
+package com.picker2.utils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,21 +12,23 @@ import android.support.v4.content.Loader;
 
 import com.hy.picker.PhotoPicker;
 import com.hy.picker.R;
-import com.picker8.model.Photo;
-import com.picker8.model.PhotoDirectory;
+import com.picker2.PickerConstants;
+import com.picker2.model.Photo;
+import com.picker2.model.PhotoDirectory;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by donglua on 15/5/31.
  */
-public class MediaStoreHelper {
+public class MediaStoreHelper implements PickerConstants {
 
     public static void getPhotoDirs(FragmentActivity activity, Bundle args, PhotosResultCallback resultCallback) {
         LoaderManager.getInstance(activity)
-                .initLoader(0, args, new PhotoDirLoaderCallbacks(activity, resultCallback));
+                .initLoader(1, args, new PhotoDirLoaderCallbacks(activity, resultCallback));
     }
 
     public static void getPhoto(FragmentActivity activity, Bundle args, PhotoSingleCallback callback) {
@@ -38,6 +40,7 @@ public class MediaStoreHelper {
         private WeakReference<Context> context;
         private PhotoSingleCallback mCallback;
         private boolean video;
+        private boolean add;
 
         public PhotoLoaderCallback(Context context, PhotoSingleCallback callback) {
             this.context = new WeakReference<>(context);
@@ -49,6 +52,7 @@ public class MediaStoreHelper {
         public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
             String path = bundle.getString("path");
             video = bundle.getBoolean(PhotoPicker.EXTRA_PICK_VIDEO, false);
+            add = bundle.getBoolean(PICKER_EXTRA_ADD, true);
             return new PhotoLoader(context.get(), path, video);
         }
 
@@ -71,6 +75,7 @@ public class MediaStoreHelper {
             String DATE_ADDED;
             String SIZE;
             String WIDTH;
+            String DATE_TAKEN;
             String HEIGHT;
             String BUCKET_DISPLAY_NAME;
             if (video) {
@@ -83,7 +88,7 @@ public class MediaStoreHelper {
                 WIDTH = MediaStore.Video.Media.WIDTH;
                 HEIGHT = MediaStore.Video.Media.HEIGHT;
                 BUCKET_DISPLAY_NAME = MediaStore.Video.Media.BUCKET_DISPLAY_NAME;
-
+                DATE_TAKEN = MediaStore.Video.Media.DATE_TAKEN;
             } else {
                 BUCKET_ID = MediaStore.Images.Media.BUCKET_ID;
                 TITLE = MediaStore.Images.Media.TITLE;
@@ -93,11 +98,14 @@ public class MediaStoreHelper {
                 SIZE = MediaStore.Images.Media.SIZE;
                 WIDTH = MediaStore.Images.Media.WIDTH;
                 HEIGHT = MediaStore.Images.Media.HEIGHT;
+                DATE_TAKEN = MediaStore.Images.Media.DATE_TAKEN;
                 BUCKET_DISPLAY_NAME = MediaStore.Images.Media.BUCKET_DISPLAY_NAME;
             }
 
 
             if (data.moveToFirst()) {
+
+                long datetaken = data.getLong(data.getColumnIndexOrThrow(DATE_TAKEN));
 
                 String bucketId = data.getString(data.getColumnIndexOrThrow(BUCKET_ID));
                 String name = data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME));
@@ -119,18 +127,22 @@ public class MediaStoreHelper {
                 photoDirectory.setId(bucketId);
                 photoDirectory.setName(name);
 
-                Photo photo = new Photo(path, false, title, size, duration, width, height, mimeType);
+                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
 
                 if (!directories.contains(photoDirectory)) {
                     photoDirectory.setCoverPath(path);
                     photoDirectory.addPhoto(photo);
                     photoDirectory.setDateAdded(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
                     directories.add(photoDirectory);
+                    Collections.sort(directories);
                 } else {
                     directories.get(directories.indexOf(photoDirectory))
-                            .addPhoto(photo);
+                            .addPhoto(0, photo);
                 }
-
+                MediaListHolder.allDirectories.get(0).addPhoto(0, photo);
+                if (add) {
+                    MediaListHolder.selectPhotos.add(photo);
+                }
                 if (mCallback != null) {
                     mCallback.onResultCallback(photo);
                 }
@@ -185,22 +197,21 @@ public class MediaStoreHelper {
             String DATA;
             String MIME_TYPE;
             String DATE_ADDED;
-            String DATE_TAKEN;
             String SIZE;
             String WIDTH;
             String HEIGHT;
             String BUCKET_DISPLAY_NAME;
-
+            String DATE_TAKEN;
             if (video) {
                 BUCKET_ID = MediaStore.Video.Media.BUCKET_ID;
                 TITLE = MediaStore.Video.Media.TITLE;
                 DATA = MediaStore.Video.Media.DATA;
                 MIME_TYPE = MediaStore.Video.Media.MIME_TYPE;
                 DATE_ADDED = MediaStore.Video.Media.DATE_ADDED;
-                DATE_TAKEN = MediaStore.Video.Media.DATE_TAKEN;
                 SIZE = MediaStore.Video.Media.SIZE;
                 WIDTH = MediaStore.Video.Media.WIDTH;
                 HEIGHT = MediaStore.Video.Media.HEIGHT;
+                DATE_TAKEN = MediaStore.Video.Media.DATE_TAKEN;
                 BUCKET_DISPLAY_NAME = MediaStore.Video.Media.BUCKET_DISPLAY_NAME;
                 photoDirectoryAll.setName(context.getString(R.string.picker_all_video));
             } else {
@@ -209,10 +220,10 @@ public class MediaStoreHelper {
                 DATA = MediaStore.Images.Media.DATA;
                 MIME_TYPE = MediaStore.Images.Media.MIME_TYPE;
                 DATE_ADDED = MediaStore.Images.Media.DATE_ADDED;
-                DATE_TAKEN = MediaStore.Images.Media.DATE_TAKEN;
                 SIZE = MediaStore.Images.Media.SIZE;
                 WIDTH = MediaStore.Images.Media.WIDTH;
                 HEIGHT = MediaStore.Images.Media.HEIGHT;
+                DATE_TAKEN = MediaStore.Images.Media.DATE_TAKEN;
                 BUCKET_DISPLAY_NAME = MediaStore.Images.Media.BUCKET_DISPLAY_NAME;
                 photoDirectoryAll.setName(context.getString(R.string.picker_all_image));
             }
@@ -220,7 +231,7 @@ public class MediaStoreHelper {
             photoDirectoryAll.setId("ALL");
 
             while (data.moveToNext()) {
-
+                long datetaken = data.getLong(data.getColumnIndexOrThrow(DATE_TAKEN));
                 String bucketId = data.getString(data.getColumnIndexOrThrow(BUCKET_ID));
                 String name = data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME));
                 String path = data.getString(data.getColumnIndexOrThrow(DATA));
@@ -228,7 +239,6 @@ public class MediaStoreHelper {
 
                 String title = data.getString(data.getColumnIndexOrThrow(TITLE));
                 String mimeType = data.getString(data.getColumnIndexOrThrow(MIME_TYPE));
-                String dateTaken = data.getString(data.getColumnIndexOrThrow(DATE_TAKEN));
                 int width = data.getInt(data.getColumnIndexOrThrow(WIDTH));
                 int height = data.getInt(data.getColumnIndexOrThrow(HEIGHT));
                 long duration;
@@ -244,12 +254,13 @@ public class MediaStoreHelper {
                 photoDirectory.setId(bucketId);
                 photoDirectory.setName(name);
 
-                Photo photo = new Photo(path, false, title, size, duration, width, height, mimeType);
+                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
 
                 if (null != photos && !photos.isEmpty()) {
                     boolean remove = photos.remove(photo);
-                    photo.setSelected(remove);
-                    MediaListHolder.selectPhotos.add(photo);
+                    if (remove) {
+                        MediaListHolder.selectPhotos.add(photo);
+                    }
                 }
 
                 if (!directories.contains(photoDirectory)) {
@@ -279,6 +290,10 @@ public class MediaStoreHelper {
         }
     }
 
+
+    public static void destroyLoader(FragmentActivity activity, int id) {
+        LoaderManager.getInstance(activity).destroyLoader(id);
+    }
 
     public interface PhotosResultCallback {
         void onResultCallback(List<PhotoDirectory> directories);

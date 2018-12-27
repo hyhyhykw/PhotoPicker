@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,20 +49,21 @@ import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.MyGridItemDecoration;
 import com.hy.picker.utils.PermissionUtils;
-import com.picker8.model.Photo;
-import com.picker8.model.PhotoDirectory;
-import com.picker8.utils.MediaListHolder;
-import com.picker8.utils.MediaStoreHelper;
+import com.picker2.model.Photo;
+import com.picker2.model.PhotoDirectory;
+import com.picker2.utils.AndroidLifecycleUtils;
+import com.picker2.utils.MediaListHolder;
+import com.picker2.utils.MediaStoreHelper;
 import com.yanzhenjie.permission.Permission;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class PictureSelectorActivity extends BaseActivity {
-    public static final int REQUEST_PREVIEW = 0;
     public static final int REQUEST_CAMERA = 1;
     private RecyclerView mGridView;
     private ImageView mBtnBack;
@@ -73,10 +75,6 @@ public class PictureSelectorActivity extends BaseActivity {
     private RelativeLayout mCatalogWindow;
     private ListView mCatalogListView;
 
-    //    private SetList<PicItem> mAllItemList;
-//    private Map<String, List<PicItem>> mItemMap;
-//    private SetList<String> mCatalogList;
-    private String mCurrentCatalog = "";
     private Uri mTakePictureUri;
     //    private boolean mSendOrigin = false;
     private int max;
@@ -95,7 +93,8 @@ public class PictureSelectorActivity extends BaseActivity {
     private int catalogHeight;
     private boolean isShowCamera;
 
-    private UpdateReceiver mUpdateReceiver;
+    //    private UpdateReceiver mUpdateReceiver;
+    private SelectReceiver mSelectReceiver;
 
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -103,10 +102,13 @@ public class PictureSelectorActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picker_activity_selector);
 
-        mUpdateReceiver = new UpdateReceiver();
+        mSelectReceiver = new SelectReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_UPDATE);
-        registerReceiver(mUpdateReceiver, intentFilter);
+        intentFilter.addAction(PICKER_ACTION_MEDIA_ADD);
+        intentFilter.addAction(PICKER_ACTION_MEDIA_SELECT);
+        intentFilter.addAction(PICKER_ACTION_MEDIA_ADD);
+        registerReceiver(mSelectReceiver, intentFilter);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -134,7 +136,7 @@ public class PictureSelectorActivity extends BaseActivity {
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
         mBtnSend = findViewById(R.id.picker_send);
@@ -168,6 +170,7 @@ public class PictureSelectorActivity extends BaseActivity {
         mCatalogListView = findViewById(R.id.picker_catalog_lst);
         mCatalogWindow = findViewById(R.id.picker_catalog_window);
         mCatalogWindow.setVisibility(View.GONE);
+
 //        if (Build.VERSION.SDK_INT >= 22) {
 //            setExitSharedElementCallback(new SharedElementCallback() {
 //                @Override
@@ -213,6 +216,16 @@ public class PictureSelectorActivity extends BaseActivity {
 //            });
 //        }
 
+        mGridViewAdapter = new GridViewAdapter();
+        mGridView.setAdapter(mGridViewAdapter);
+        mGridView.setLayoutManager(new GridLayoutManager(this, 3));
+        mGridView.addItemDecoration(new MyGridItemDecoration(this));
+
+        mCatalogAdapter = new CatalogAdapter();
+        mCatalogListView.setAdapter(mCatalogAdapter);
+        mCatalogListView.setTranslationY(catalogHeight);
+        mCatalogListView.setVisibility(View.VISIBLE);
+
         Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
             @Override
             public boolean queueIdle() {
@@ -244,15 +257,6 @@ public class PictureSelectorActivity extends BaseActivity {
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
 
-        mGridViewAdapter = new GridViewAdapter();
-        mGridView.setAdapter(mGridViewAdapter);
-        mGridView.setLayoutManager(new GridLayoutManager(this, 3));
-        mGridView.addItemDecoration(new MyGridItemDecoration(this));
-
-        mCatalogAdapter = new CatalogAdapter();
-        mCatalogListView.setAdapter(mCatalogAdapter);
-        mCatalogListView.setTranslationY(catalogHeight);
-        mCatalogListView.setVisibility(View.VISIBLE);
 
         Bundle bundle = new Bundle();
         bundle.putBoolean(PhotoPicker.EXTRA_SHOW_GIF, gif);
@@ -270,6 +274,8 @@ public class PictureSelectorActivity extends BaseActivity {
 
                     mGridViewAdapter.notifyDataSetChanged();
                     mCatalogAdapter.notifyDataSetChanged();
+                    updateToolbar();
+                    MediaStoreHelper.destroyLoader(PictureSelectorActivity.this, 1);
                 }
             });
         } else {
@@ -282,6 +288,8 @@ public class PictureSelectorActivity extends BaseActivity {
                 MediaListHolder.selectPhotos.clear();
                 MediaListHolder.selectPhotos.addAll(mSelectItems);
             }
+            mGridViewAdapter.notifyDataSetChanged();
+            mCatalogAdapter.notifyDataSetChanged();
         }
 
 
@@ -303,7 +311,8 @@ public class PictureSelectorActivity extends BaseActivity {
 //                        }
 //                    }
 //                }
-                PhotoPicker.sPhotoListener.onPicked(MediaListHolder.selectPhotos);
+                PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
+                MediaListHolder.selectPhotos.clear();
                 finish();
             }
         });
@@ -362,7 +371,7 @@ public class PictureSelectorActivity extends BaseActivity {
 ////                    startActivityForResult(intent, REQUEST_PREVIEW, options.toBundle());
 //                } else {
 //                }
-                startActivityForResult(intent, REQUEST_PREVIEW);
+                startActivity(intent);
             }
         });
 
@@ -481,29 +490,17 @@ public class PictureSelectorActivity extends BaseActivity {
             finish();
         } else if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_PREVIEW:
-
-//                    SetList<PicItem> list = PicItemHolder.itemList;
-//                    if (list == null) {
-//                        return;
-//                    }
-//
-//                    for (PicItem it : list) {
-//                        PicItem item = findByUri(it.uri);
-//                        if (item != null) {
-//                            item.selected = it.selected;
-//                        }
-//                    }
-
-                    mGridViewAdapter.notifyDataSetChanged();
-                    mCatalogAdapter.notifyDataSetChanged();
-
-                    updateToolbar();
-                    break;
                 case REQUEST_CAMERA:
                     if (mTakePictureUri != null) {
                         String path = mTakePictureUri.getEncodedPath();// getPathFromUri(this, mTakePhotoUri);
 
+                        if (path == null) {
+                            Toast.makeText(this, video ?
+                                            R.string.picker_video_failure :
+                                            R.string.picker_photo_failure,
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         if (mTakePictureUri.toString().startsWith("content")) {
                             path = path.replaceAll("/external_storage_root", "");
 
@@ -513,36 +510,54 @@ public class PictureSelectorActivity extends BaseActivity {
                         final File file = new File(path);
 
                         if (file.exists()) {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("path", path);
-                            bundle.putBoolean("video", video);
-                            MediaStoreHelper.getPhoto(this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
+                            MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
                                 @Override
-                                public void onResultCallback(@Nullable Photo photo) {
-                                    if (photo == null) {
-                                        Toast.makeText(PictureSelectorActivity.this, video ?
-                                                        R.string.picker_video_failure : R.string.picker_photo_failure,
-                                                Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                    photo.setSelected(true);
-                                    mGridViewAdapter.notifyDataSetChanged();
-                                    mCatalogAdapter.notifyDataSetChanged();
+                                public void onScanCompleted(final String path, Uri uri) {
+                                    getPhoto(path);
                                 }
                             });
-
 
                         } else {
                             Toast.makeText(this, video ?
                                             R.string.picker_video_failure :
                                             R.string.picker_photo_failure,
                                     Toast.LENGTH_SHORT).show();
-                            finish();
                         }
 
                     }
             }
         }
+    }
+
+    private void getPhoto(final String path) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Bundle bundle = new Bundle();
+                bundle.putString("path", path);
+                bundle.putBoolean("video", video);
+
+                MediaStoreHelper.getPhoto(PictureSelectorActivity.this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
+                    @Override
+                    public void onResultCallback(@Nullable Photo photo) {
+                        if (photo == null) {
+                            Toast.makeText(PictureSelectorActivity.this, video ?
+                                            R.string.picker_video_failure : R.string.picker_photo_failure,
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        MediaListHolder.selectPhotos.add(photo);
+//                                    photo.setSelected(true);
+//                        mGridViewAdapter.notifyItemInserted(0);
+//                        mGridViewAdapter.notifyItemRangeChanged(0, mGridViewAdapter.getItemCount());
+                        mGridViewAdapter.notifyDataSetChanged();
+                        mCatalogAdapter.notifyDataSetChanged();
+                        MediaStoreHelper.destroyLoader(PictureSelectorActivity.this, 0);
+                    }
+                });
+            }
+        });
+
     }
 
     @Override
@@ -586,187 +601,42 @@ public class PictureSelectorActivity extends BaseActivity {
         }
     }
 
-    public static final String ACTION_UPDATE = "com.hy.picker.action.UPDATE";
-    public static final String ACTION_UPDATE_PHOTO = "photo";
 
-
-    public class UpdateReceiver extends BroadcastReceiver {
+    public class SelectReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (null == intent) return;
-            if (!ACTION_UPDATE.equals(intent.getAction())) return;
+            String action = intent.getAction();
+            if (action == null) return;
+            switch (action) {
+                case PICKER_ACTION_MEDIA_SELECT: {
+                    Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
+                    if (mGridViewAdapter != null) {
+                        int index;
+                        if (MediaListHolder.currentPhotos.size() > 100) {
+                            index = Collections.binarySearch(MediaListHolder.currentPhotos, photo);
+                        } else {
+                            index = MediaListHolder.currentPhotos.indexOf(photo);
+                        }
 
-            Photo photo = intent.getParcelableExtra(ACTION_UPDATE_PHOTO);
-            // TODO: 2018/12/27
+                        mGridViewAdapter.notifyItemChanged(index);
+                        updateToolbar();
+                    }
+                }
+                break;
+                case PICKER_ACTION_MEDIA_ADD: {
+                    Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
+                    MediaListHolder.selectPhotos.add(photo);
+                    mGridViewAdapter.notifyDataSetChanged();
+//                    mGridViewAdapter.notifyItemRangeChanged(0, mGridViewAdapter.getItemCount());
+                }
+                break;
+            }
+
+
         }
     }
 
-
-//    private void updatePictureItems() {
-//        mAllItemList = new SetList<>();
-//        mCatalogList = new SetList<>();
-//        mItemMap = new ArrayMap<>();
-//
-//        if (video) {
-//            List<String> projection = new ArrayList<>();
-//            projection.add(MediaStore.Video.Media.TITLE);
-//            projection.add(MediaStore.Video.Media.DATA);
-//            projection.add(MediaStore.Video.Media.MIME_TYPE);
-//            projection.add(MediaStore.Video.Media.DATE_ADDED);
-//            projection.add(MediaStore.Video.Media.DATE_TAKEN);
-//            projection.add(MediaStore.Video.Media.SIZE);
-//            projection.add(MediaStore.Video.Media.WIDTH);
-//            projection.add(MediaStore.Video.Media.HEIGHT);
-//
-//            Cursor cursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-//                    projection.toArray(new String[0]),
-//                    null,
-//                    null,
-//                    MediaStore.Video.DEFAULT_SORT_ORDER);
-//            if (cursor != null && cursor.moveToFirst()) {
-//                do {
-//                    // title：MediaStore.Audio.Media.TITLE
-//                    String title = cursor.getString(cursor
-//                            .getColumnIndexOrThrow(MediaStore.Video.Media.TITLE));
-//                    // path：MediaStore.Audio.Media.DATA
-//                    String url = cursor.getString(cursor
-//                            .getColumnIndexOrThrow(MediaStore.Video.Media.DATA));
-//                    // duration：MediaStore.Audio.Media.DURATION
-//                    int duration = cursor
-//                            .getInt(cursor
-//                                    .getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
-//                    // 大小：MediaStore.Audio.Media.SIZE
-//                    int size = (int) cursor.getLong(cursor
-//                            .getColumnIndexOrThrow(MediaStore.Video.Media.SIZE));
-//
-//                    int width = cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.WIDTH));
-//                    int height = cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media.HEIGHT));
-//                    String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.MIME_TYPE));
-//
-//                    PicItem item = new PicItem();
-//                    item.title = title;
-//                    item.uri = url;
-//                    item.duration = duration;
-//                    item.size = size;
-//                    item.width = width;
-//                    item.height = height;
-//                    item.mimeType = mimeType;
-//
-//
-//                    File file = new File(item.uri);
-//
-//                    if (!file.exists() || file.length() == 0L) {
-//                        continue;
-//                    }
-//                    mAllItemList.add(item);
-//                    int last = item.uri.lastIndexOf("/");
-//                    if (last != -1) {
-//                        String catalog;
-//                        if (last == 0) {
-//                            catalog = "/";
-//                        } else {
-//                            int secondLast = item.uri.lastIndexOf("/", last - 1);
-//                            catalog = item.uri.substring(secondLast + 1, last);
-//                        }
-//
-//                        if (mItemMap.containsKey(catalog)) {
-//                            mItemMap.get(catalog).add(item);
-//                        } else {
-//                            SetList<PicItem> itemList = new SetList<>();
-//                            itemList.add(item);
-//                            mItemMap.put(catalog, itemList);
-//                            mCatalogList.add(catalog);
-//                        }
-//                    }
-//                } while (cursor.moveToNext());
-//                cursor.close();
-//            }
-//
-//        } else {
-//            List<String> projection = new ArrayList<>();
-//            projection.add(MediaStore.Images.Media.TITLE);
-//            projection.add(MediaStore.Images.Media.DATA);
-//            projection.add(MediaStore.Images.Media.MIME_TYPE);
-//            projection.add(MediaStore.Images.Media.DATE_ADDED);
-//            projection.add(MediaStore.Images.Media.DATE_TAKEN);
-//            projection.add(MediaStore.Images.Media.SIZE);
-//            projection.add(MediaStore.Images.Media.WIDTH);
-//            projection.add(MediaStore.Images.Media.HEIGHT);
-//
-////            String[] projection = new String[]{"_data", "date_added"};
-//            String orderBy = "datetaken DESC";
-//            Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//                    projection.toArray(new String[0]), null, null, orderBy);
-//            if (cursor != null) {
-//                if (cursor.moveToFirst()) {
-//                    do {
-//                        PicItem item = new PicItem();
-//
-//                        item.uri = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-//
-//                        if (item.uri == null) {
-//                            continue;
-//                        }
-//                        if (gifOnly) {
-//                            if (!item.isGif()) {
-//                                continue;
-//                            }
-//                        } else {
-//                            if (!gif && item.isGif()) {
-//                                continue;
-//                            }
-//                        }
-//                        int width = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.WIDTH));
-//                        int height = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media.HEIGHT));
-//                        String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
-//                        String title = cursor.getString(cursor
-//                                .getColumnIndexOrThrow(MediaStore.Images.Media.TITLE));
-//
-//                        item.width = width;
-//                        item.height = height;
-//                        item.mimeType = mimeType;
-//                        item.title = title;
-//
-//
-//                        File file = new File(item.uri);
-//
-//                        if (!file.exists() || file.length() == 0L) {
-//                            continue;
-//                        }
-//
-//                        if (null != mSelectItems && !mSelectItems.isEmpty()) {
-//                            boolean remove = mSelectItems.remove(item);
-//                            item.setSelected(remove);
-//                        }
-//                        mAllItemList.add(item);
-//                        int last = item.uri.lastIndexOf("/");
-//                        if (last != -1) {
-//                            String catalog;
-//                            if (last == 0) {
-//                                catalog = "/";
-//                            } else {
-//                                int secondLast = item.uri.lastIndexOf("/", last - 1);
-//                                catalog = item.uri.substring(secondLast + 1, last);
-//                            }
-//
-//                            if (mItemMap.containsKey(catalog)) {
-//                                mItemMap.get(catalog).add(item);
-//                            } else {
-//                                SetList<PicItem> itemList = new SetList<>();
-//                                itemList.add(item);
-//                                mItemMap.put(catalog, itemList);
-//                                mCatalogList.add(catalog);
-//                            }
-//                        }
-//                    } while (cursor.moveToNext());
-//                }
-//
-//                cursor.close();
-//            }
-//        }
-//
-//
-//    }
 
     private int getTotalSelectedNum() {
         return MediaListHolder.selectPhotos.size();
@@ -785,51 +655,19 @@ public class PictureSelectorActivity extends BaseActivity {
             mPreviewBtn.setEnabled(true);
             mPreviewBtn.setText(String.format(getResources().getString(R.string.picker_picsel_toolbar_preview_num), sum));
         }
+
     }
 
-
-//    private PicItem getItemAt(String catalog, int index) {
-//        if (!mItemMap.containsKey(catalog)) {
-//            return null;
-//        } else {
-//            List<PicItem> picItems = mItemMap.get(catalog);
-//            if (index >= picItems.size()) {
-//                return null;
-//            } else {
-//                return picItems.get(index);
-//            }
-//        }
-//    }
-//
-//    private PicItem findByUri(String uri) {
-//        for (String key : mItemMap.keySet()) {
-//            for (PicItem item : mItemMap.get(key)) {
-//                if (item.uri.equals(uri)) {
-//                    return item;
-//                }
-//            }
-//        }
-//        return null;
-//    }
 
     private Context getContext() {
         return this;
     }
 
     protected void onDestroy() {
-//        PicItemHolder.itemList = null;
-//        PicItemHolder.itemSelectedList = null;
-
         super.onDestroy();
         PhotoPicker.destroy();
-        unregisterReceiver(mUpdateReceiver);
+        unregisterReceiver(mSelectReceiver);
     }
-
-//    public static class PicItemHolder {
-//        public static SetList<PicItem> itemList;
-//        public static SetList<PicItem> itemSelectedList;
-//
-//    }
 
 
     public static class PreviewBtn extends LinearLayout {
@@ -909,152 +747,6 @@ public class PictureSelectorActivity extends BaseActivity {
         }
     }
 
-//    public static class PicItem implements Parcelable {
-//        String uri;
-//        boolean selected;
-//
-//        String title;
-//        int size;
-//        int duration;
-//        int width;
-//        int height;
-//        String mimeType;
-//
-//        public static final Creator<PicItem> CREATOR = new Creator<PicItem>() {
-//            public PicItem createFromParcel(Parcel source) {
-//                return new PicItem(source);
-//            }
-//
-//            public PicItem[] newArray(int size) {
-//                return new PicItem[size];
-//            }
-//        };
-//
-//        public boolean isGif() {
-//            return uri.toLowerCase().endsWith(".gif");
-//        }
-//
-//        public String getUri() {
-//            return uri;
-//        }
-//
-//        public void setUri(String uri) {
-//            this.uri = uri;
-//        }
-//
-//        public boolean isSelected() {
-//            return selected;
-//        }
-//
-//        public void setSelected(boolean selected) {
-//            this.selected = selected;
-//        }
-//
-//        public String getTitle() {
-//            return title;
-//        }
-//
-//        public void setTitle(String title) {
-//            this.title = title;
-//        }
-//
-//        public int getSize() {
-//            return size;
-//        }
-//
-//        public void setSize(int size) {
-//            this.size = size;
-//        }
-//
-//        public int getDuration() {
-//            return duration;
-//        }
-//
-//        public void setDuration(int duration) {
-//            this.duration = duration;
-//        }
-//
-//        public int describeContents() {
-//            return 0;
-//        }
-//
-//        public PicItem() {
-//        }
-//
-//        @Override
-//        public boolean equals(Object o) {
-//            if (this == o) return true;
-//            if (o == null || getClass() != o.getClass()) return false;
-//            PicItem picItem = (PicItem) o;
-//            return ObjectsUtils.equals(uri, picItem.uri);
-//        }
-//
-//        @Override
-//        public int hashCode() {
-//            return ObjectsUtils.hash(uri);
-//        }
-//
-//        public PicItem(Parcel in) {
-//            uri = in.readString();
-//            selected = in.readInt() == 1;
-//            title = in.readString();
-//            size = in.readInt();
-//            duration = in.readInt();
-//            width = in.readInt();
-//            height = in.readInt();
-//            mimeType = in.readString();
-//        }
-//
-//        public void writeToParcel(Parcel dest, int flags) {
-//            dest.writeString(uri);
-//            dest.writeInt(selected ? 1 : 0);
-//            dest.writeString(title);
-//            dest.writeInt(size);
-//            dest.writeInt(duration);
-//            dest.writeInt(width);
-//            dest.writeInt(height);
-//            dest.writeString(mimeType);
-//        }
-//
-//        public int getWidth() {
-//            return width;
-//        }
-//
-//        public void setWidth(int width) {
-//            this.width = width;
-//        }
-//
-//        public int getHeight() {
-//            return height;
-//        }
-//
-//        public void setHeight(int height) {
-//            this.height = height;
-//        }
-//
-//        public String getMimeType() {
-//            return mimeType;
-//        }
-//
-//        public void setMimeType(String mimeType) {
-//            this.mimeType = mimeType;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return "PicItem{" +
-//                    "uri='" + uri + '\'' +
-//                    ", selected=" + selected +
-//                    ", title='" + title + '\'' +
-//                    ", size=" + size +
-//                    ", duration=" + duration +
-//                    ", width=" + width +
-//                    ", height=" + height +
-//                    ", mimeType='" + mimeType + '\'' +
-//                    '}';
-//        }
-//    }
-
 
     private int selectCateIndex = 0;
 
@@ -1112,15 +804,16 @@ public class PictureSelectorActivity extends BaseActivity {
 
                 PhotoDirectory item = getItem(position);
 
-                Glide.with(getContext())
-                        .asBitmap()
-                        .load(item.getCoverPath())
-                        .thumbnail(0.5f)
-                        .apply(new RequestOptions()
-                                .placeholder(R.drawable.picker_grid_image_default)
-                                .error(R.drawable.picker_grid_image_default))
-                        .into(image);
-
+                if (AndroidLifecycleUtils.canLoadImage(getContext())) {
+                    Glide.with(getContext())
+                            .asBitmap()
+                            .load(item.getCoverPath())
+                            .thumbnail(0.5f)
+                            .apply(new RequestOptions()
+                                    .placeholder(R.drawable.picker_grid_image_default)
+                                    .error(R.drawable.picker_grid_image_default))
+                            .into(image);
+                }
                 if (position == 0) {
                     tvNumber.setVisibility(View.GONE);
                 } else {
@@ -1146,8 +839,6 @@ public class PictureSelectorActivity extends BaseActivity {
                             mCatalogAdapter.notifyDataSetChanged();
                             mGridViewAdapter.notifyDataSetChanged();
                             hideCatalog();
-
-
                         }
                     }
                 });
@@ -1207,7 +898,8 @@ public class PictureSelectorActivity extends BaseActivity {
                             .placeholder(R.drawable.picker_grid_image_default))
                     .into(image);
 
-            checkBox.setChecked(item.isSelected());
+
+            checkBox.setChecked(MediaListHolder.selectPhotos.contains(item));
 
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -1217,9 +909,14 @@ public class PictureSelectorActivity extends BaseActivity {
                             Toast.makeText(getApplicationContext(), getString(R.string.picker_picsel_selected_max, max), Toast.LENGTH_SHORT).show();
                             buttonView.setChecked(false);
                         } else {
-                            item.setSelected(isChecked);
+//                            item.setSelected(isChecked);
+                            if (isChecked) {
+                                MediaListHolder.selectPhotos.add(item);
+                            } else {
+                                MediaListHolder.selectPhotos.remove(item);
+                            }
                         }
-                        if (item.isSelected()) {
+                        if (MediaListHolder.selectPhotos.contains(item)) {
                             mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
                         } else {
                             mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
@@ -1232,7 +929,7 @@ public class PictureSelectorActivity extends BaseActivity {
             });
 
 
-            if (item.isSelected()) {
+            if (MediaListHolder.selectPhotos.contains(item)) {
                 mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
             } else {
                 mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
@@ -1241,20 +938,6 @@ public class PictureSelectorActivity extends BaseActivity {
             mask.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    PicItemHolder.itemList = new SetList<>();
-//                    if (mCurrentCatalog.isEmpty()) {
-//                        PicItemHolder.itemList.addAll(mAllItemList);
-//                        PicItemHolder.itemSelectedList = null;
-//                    } else {
-//                        PicItemHolder.itemList.addAll(mItemMap.get(mCurrentCatalog));
-//                        PicItemHolder.itemSelectedList = new SetList<>();
-//
-//                        for (PicItem item : mItemMap.get(mCurrentCatalog)) {
-//                            if (item.selected) {
-//                                PicItemHolder.itemSelectedList.add(item);
-//                            }
-//                        }
-//                    }
 
                     Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
                     intent.putExtra("index", position);
@@ -1276,7 +959,7 @@ public class PictureSelectorActivity extends BaseActivity {
 //                        ActivityCompat.startActivityForResult(PictureSelectorActivity.this, intent, REQUEST_PREVIEW, options.toBundle());
 //                    } else {
 //                    }
-                    startActivityForResult(intent, REQUEST_PREVIEW);
+                    startActivity(intent);
 
                 }
             });
@@ -1287,9 +970,9 @@ public class PictureSelectorActivity extends BaseActivity {
                 mask.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ArrayList<Photo> picItems = new ArrayList<>();
-                        picItems.add(item);
-                        PhotoPicker.sPhotoListener.onPicked(picItems);
+                        MediaListHolder.selectPhotos.add(item);
+                        PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
+                        MediaListHolder.selectPhotos.clear();
                         finish();
                     }
                 });
@@ -1336,7 +1019,7 @@ public class PictureSelectorActivity extends BaseActivity {
 
         @Override
         public int getItemViewType(int position) {
-            if (isShowCamera) return 1;
+            if (!isShowCamera) return 1;
             else {
                 if (position == 0) {
                     return 0;
@@ -1349,15 +1032,11 @@ public class PictureSelectorActivity extends BaseActivity {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             final RecyclerView.ViewHolder holder;
-            if (isShowCamera) {
-                if (viewType == 0) {
-                    View cameraView = mInflater.inflate(R.layout.picker_grid_camera, parent, false);
 
-                    holder = new CameraHolder(cameraView);
-                } else {
-                    View convertView = mInflater.inflate(R.layout.picker_grid_item, parent, false);
-                    holder = new ItemHolder(convertView);
-                }
+            if (viewType == 0) {
+                View cameraView = mInflater.inflate(R.layout.picker_grid_camera, parent, false);
+
+                holder = new CameraHolder(cameraView);
             } else {
                 View convertView = mInflater.inflate(R.layout.picker_grid_item, parent, false);
                 holder = new ItemHolder(convertView);

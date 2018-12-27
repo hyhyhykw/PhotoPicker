@@ -1,6 +1,5 @@
 package com.hy.picker;
 
-
 import android.content.Intent;
 import android.os.Build;
 import android.os.Build.VERSION;
@@ -19,12 +18,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.PickerScaleViewTarget;
-import com.picker8.model.Photo;
-import com.picker8.utils.AndroidLifecycleUtils;
+import com.picker2.model.Photo;
+import com.picker2.utils.AndroidLifecycleUtils;
 
 import java.io.File;
-
-
 /**
  * Created time : 2018/8/2 8:23.
  *
@@ -45,8 +42,10 @@ public class PictureEditPreviewActivity extends BaseActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.picker_activity_edit_preview);
+
+        initView();
+
         if (VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -62,7 +61,6 @@ public class PictureEditPreviewActivity extends BaseActivity {
             return;
         }
 
-        initView();
 
         Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
             @Override

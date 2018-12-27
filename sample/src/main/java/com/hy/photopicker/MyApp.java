@@ -19,7 +19,7 @@ public class MyApp extends Application implements PhotoModule, CrashModule {
     public void onCreate() {
         super.onCreate();
         PhotoPicker.init(this);
-        CrashHandler.getInstance().install(this, this);
+//        CrashHandler.getInstance().install(this, this);
     }
 
     @Override

@@ -26,8 +26,8 @@ import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.PickerScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
-import com.picker8.model.Photo;
-import com.picker8.utils.MediaListHolder;
+import com.picker2.model.Photo;
+import com.picker2.utils.MediaListHolder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,7 +52,6 @@ public class PicturePreviewActivity extends BaseActivity {
     private AppCompatCheckBox mSelectBox;
     private HackyViewPager mViewPager;
 
-    //    private ArrayList<PictureSelectorActivity.PicItem> mItemList;
     private ArrayList<Photo> mItemList;
 
     private int mCurrentIndex;
@@ -99,10 +98,10 @@ public class PicturePreviewActivity extends BaseActivity {
         mBtnBack.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
+//                Intent intent = new Intent();
 //                intent.putExtra("sendOrigin", mUseOrigin.isChecked());
-                setResult(RESULT_OK, intent);
-                finish();
+//                setResult(RESULT_OK, intent);
+                onBackPressed();
             }
         });
 
@@ -125,7 +124,8 @@ public class PicturePreviewActivity extends BaseActivity {
 //                        picItems.add(picItem);
 //                    }
 //                }
-                PhotoPicker.sPhotoListener.onPicked(MediaListHolder.selectPhotos);
+                PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
+                MediaListHolder.selectPhotos.clear();
                 setResult(RESULT_SEND);
                 finish();
             }
@@ -133,7 +133,8 @@ public class PicturePreviewActivity extends BaseActivity {
 
 
         mSelectBox.setText(R.string.picker_picprev_select);
-        mSelectBox.setChecked(mItemList.get(mCurrentIndex).isSelected());
+
+        mSelectBox.setChecked(MediaListHolder.selectPhotos.contains(mItemList.get(mCurrentIndex)));
         mSelectBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -142,7 +143,12 @@ public class PicturePreviewActivity extends BaseActivity {
                         mSelectBox.setChecked(false);
                         Toast.makeText(PicturePreviewActivity.this, getString(R.string.picker_picsel_selected_max, max), Toast.LENGTH_SHORT).show();
                     } else {
-                        mItemList.get(mCurrentIndex).setSelected(mSelectBox.isChecked());
+
+                        if (isChecked) {
+                            MediaListHolder.selectPhotos.add(mItemList.get(mCurrentIndex));
+                        } else {
+                            MediaListHolder.selectPhotos.remove(mItemList.get(mCurrentIndex));
+                        }
                         updateToolbar();
                     }
                 }
@@ -162,7 +168,7 @@ public class PicturePreviewActivity extends BaseActivity {
                 mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size()));
 
                 Photo photo = mItemList.get(position);
-                mSelectBox.setChecked(photo.isSelected());
+                mSelectBox.setChecked(MediaListHolder.selectPhotos.contains(photo));
                 mTvEdit.setVisibility(photo.isGif() ? View.GONE : View.VISIBLE);
             }
 

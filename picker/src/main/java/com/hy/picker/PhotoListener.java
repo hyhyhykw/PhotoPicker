@@ -1,6 +1,6 @@
 package com.hy.picker;
 
-import com.picker8.model.Photo;
+import com.picker2.model.Photo;
 
 import java.util.ArrayList;
 

@@ -3,6 +3,7 @@ package com.hy.picker;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,8 +15,8 @@ import android.widget.Toast;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.MyFileProvider;
-import com.picker8.model.Photo;
-import com.picker8.utils.MediaStoreHelper;
+import com.picker2.model.Photo;
+import com.picker2.utils.MediaStoreHelper;
 
 import java.io.File;
 import java.util.Date;
@@ -68,6 +69,11 @@ public class OpenCameraResultActivity extends BaseActivity {
                 if (mTakePictureUri != null) {
                     String path = mTakePictureUri.getEncodedPath();// getPathFromUri(this, mTakePhotoUri);
 
+                    if (path==null){
+                        Toast.makeText(this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
+                    }
                     if (mTakePictureUri.toString().startsWith("content")) {
                         path = path.replaceAll("/external_storage_root", "");
 
@@ -77,30 +83,12 @@ public class OpenCameraResultActivity extends BaseActivity {
                     final File file = new File(path);
 
                     if (file.exists()) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("path", path);
-                        bundle.putBoolean("video", video);
-                        MediaStoreHelper.getPhoto(this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
+                        MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
                             @Override
-                            public void onResultCallback(@Nullable Photo photo) {
-                                if (photo == null) {
-                                    Toast.makeText(OpenCameraResultActivity.this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                if (video) {
-                                    PhotoPicker.sTakePhotoListener.onTake(photo);
-                                } else {
-                                    if (PhotoPicker.isEdit) {
-                                        toEdit(Uri.fromFile(file));
-                                    } else {
-                                        PhotoPicker.sTakePhotoListener.onTake(photo);
-                                    }
-                                }
+                            public void onScanCompleted(final String path, Uri uri) {
+                                getPhoto(path,file);
                             }
                         });
-
-
                     } else {
                         Toast.makeText(this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                         finish();
@@ -121,6 +109,41 @@ public class OpenCameraResultActivity extends BaseActivity {
         } else {
             finish();
         }
+
+    }
+
+    private void getPhoto(final String path,final File file) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Bundle bundle = new Bundle();
+                bundle.putString("path", path);
+                bundle.putBoolean("video", video);
+                bundle.putBoolean(PICKER_EXTRA_ADD, false);
+                MediaStoreHelper.getPhoto(OpenCameraResultActivity.this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
+                    @Override
+                    public void onResultCallback(@Nullable Photo photo) {
+                        if (photo == null) {
+                            Toast.makeText(OpenCameraResultActivity.this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        if (video) {
+                            PhotoPicker.sTakePhotoListener.onTake(photo);
+                        } else {
+                            if (PhotoPicker.isEdit) {
+                                toEdit(Uri.fromFile(file));
+                            } else {
+                                PhotoPicker.sTakePhotoListener.onTake(photo);
+                            }
+                        }
+                        MediaStoreHelper.destroyLoader(OpenCameraResultActivity.this, 0);
+                    }
+                });
+            }
+        });
+
 
     }
 

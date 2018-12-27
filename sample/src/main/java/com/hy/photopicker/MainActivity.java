@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import com.hy.picker.PhotoListener;
 import com.hy.picker.PhotoPicker;
 import com.hy.picker.TakePhotoListener;
-import com.picker8.model.Photo;
+import com.picker2.model.Photo;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
             case FeedbackSelectPictureAdapter.TYPE_ADD:
                 new PhotoPicker()
                         .max(9)
-                        .showCamera(false)
+                        .showCamera(true)
                         .select(new ArrayList<>(mFeedbackSelectPictureAdapter.getData()))
                         .start(this);
 //                new PhotoPicker()

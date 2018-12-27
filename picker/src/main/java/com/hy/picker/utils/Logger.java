@@ -35,7 +35,7 @@ public final class Logger {
                 .lastIndexOf(".") + 1);
         tag = String.format(tag, callerClazzName, caller.getMethodName(),
                 caller.getLineNumber()); // 替换
-        String customTagPrefix = "Zanq";
+        String customTagPrefix = "Picker";
         tag = TextUtils.isEmpty(customTagPrefix) ? tag : customTagPrefix + ":"
                 + tag;
         return tag;

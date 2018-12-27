@@ -10,7 +10,7 @@
         android:id="@id/picker_photo_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/picker_preview_toolbar"
+        android:layout_below="@id/picker_preview_toolbar"
         android:background="@android:color/black"/>
 
     <RelativeLayout
@@ -25,17 +25,17 @@
             android:id="@id/picker_back"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/picker_picsel_back_normal"
             android:foreground="@drawable/picker_foreground"
+            android:src="@drawable/picker_picsel_back_normal"
             android:tint="?attr/picker_back_color"/>
 
         <TextView
             android:id="@id/picker_index_total"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginBottom="1dp"
             android:layout_toEndOf="@id/picker_back"
             android:layout_toRightOf="@id/picker_back"
             android:gravity="center_vertical"
@@ -69,7 +69,6 @@
         </FrameLayout>
 
     </RelativeLayout>
-
 
 
 </RelativeLayout>
