@@ -1,6 +1,9 @@
 package com.hy.picker;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.media.MediaScannerConnection;
@@ -30,12 +33,17 @@ import java.util.List;
 public class OpenCameraResultActivity extends BaseActivity {
     public static final int REQUEST_CAMERA = 0x357;
     public static final int REQUEST_EDIT = 0x753;
-    private File mEditFile;
     private boolean video;
+
+    private SureReceiver mSureReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSureReceiver = new SureReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(PICKER_ACTION_MEDIA_SURE);
+        registerReceiver(mSureReceiver, intentFilter);
         video = getIntent().getBooleanExtra("video", false);
         requestCamera();
     }
@@ -43,6 +51,7 @@ public class OpenCameraResultActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mSureReceiver);
         PhotoPicker.destroy();
     }
 
@@ -54,11 +63,11 @@ public class OpenCameraResultActivity extends BaseActivity {
         }
 
         String name = "IMG-EDIT-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";
-        mEditFile = new File(path, name);
+        File editFile = new File(path, name);
 
         startActivityForResult(new Intent(this, IMGEditActivity.class)
                 .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
-                .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, mEditFile.getAbsolutePath()), REQUEST_EDIT);
+                .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, editFile.getAbsolutePath()), REQUEST_EDIT);
     }
 
     @Override
@@ -69,7 +78,7 @@ public class OpenCameraResultActivity extends BaseActivity {
                 if (mTakePictureUri != null) {
                     String path = mTakePictureUri.getEncodedPath();// getPathFromUri(this, mTakePhotoUri);
 
-                    if (path==null){
+                    if (path == null) {
                         Toast.makeText(this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                         finish();
                         return;
@@ -86,7 +95,7 @@ public class OpenCameraResultActivity extends BaseActivity {
                         MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
                             @Override
                             public void onScanCompleted(final String path, Uri uri) {
-                                getPhoto(path,file);
+                                getPhoto(path, file);
                             }
                         });
                     } else {
@@ -97,22 +106,27 @@ public class OpenCameraResultActivity extends BaseActivity {
                     Toast.makeText(this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                     finish();
                 }
-            } else if (requestCode == REQUEST_EDIT) {
-
-                Photo photo = data.getParcelableExtra("photo");
-                PhotoPicker.sTakePhotoListener.onTake(photo);
-
-                finish();
             } else {
                 finish();
             }
         } else {
             finish();
         }
-
     }
 
-    private void getPhoto(final String path,final File file) {
+    private class SureReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (null == intent) return;
+            if (!PICKER_ACTION_MEDIA_SURE.equals(intent.getAction())) return;
+            Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
+            PhotoPicker.sTakePhotoListener.onTake(photo);
+            finish();
+        }
+    }
+
+
+    private void getPhoto(final String path, final File file) {
 
         runOnUiThread(new Runnable() {
             @Override
@@ -123,7 +137,7 @@ public class OpenCameraResultActivity extends BaseActivity {
                 bundle.putBoolean(PICKER_EXTRA_ADD, false);
                 MediaStoreHelper.getPhoto(OpenCameraResultActivity.this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
                     @Override
-                    public void onResultCallback(@Nullable Photo photo) {
+                    public void onResultCallback(@Nullable Photo photo, int updateIndex) {
                         if (photo == null) {
                             Toast.makeText(OpenCameraResultActivity.this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                             return;

@@ -51,7 +51,6 @@ import com.hy.picker.utils.MyGridItemDecoration;
 import com.hy.picker.utils.PermissionUtils;
 import com.picker2.model.Photo;
 import com.picker2.model.PhotoDirectory;
-import com.picker2.utils.AndroidLifecycleUtils;
 import com.picker2.utils.MediaListHolder;
 import com.picker2.utils.MediaStoreHelper;
 import com.yanzhenjie.permission.Permission;
@@ -106,7 +105,7 @@ public class PictureSelectorActivity extends BaseActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(PICKER_ACTION_MEDIA_ADD);
         intentFilter.addAction(PICKER_ACTION_MEDIA_SELECT);
-        intentFilter.addAction(PICKER_ACTION_MEDIA_ADD);
+        intentFilter.addAction(PICKER_ACTION_MEDIA_SEND);
         registerReceiver(mSelectReceiver, intentFilter);
 
 
@@ -236,7 +235,7 @@ public class PictureSelectorActivity extends BaseActivity {
                                 initView();
                             }
                         })
-                        .requestPermission(Permission.READ_EXTERNAL_STORAGE);
+                        .requestPermission(Permission.WRITE_EXTERNAL_STORAGE);
                 return false;
             }
         });
@@ -256,8 +255,6 @@ public class PictureSelectorActivity extends BaseActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
-
-
         Bundle bundle = new Bundle();
         bundle.putBoolean(PhotoPicker.EXTRA_SHOW_GIF, gif);
         bundle.putBoolean(PhotoPicker.EXTRA_ONLY_GIF, gifOnly);
@@ -430,6 +427,8 @@ public class PictureSelectorActivity extends BaseActivity {
 
     private void showCatalog() {
         if (isAnimating) return;
+        mCatalogMask.setVisibility(View.VISIBLE);
+        mCatalogWindow.setVisibility(View.VISIBLE);
         final ObjectAnimator translationY = ObjectAnimator.ofFloat(mCatalogListView, "translationY", catalogHeight, 0);
         translationY.setDuration(300);
         translationY.addListener(new AnimatorListenerAdapter() {
@@ -445,8 +444,6 @@ public class PictureSelectorActivity extends BaseActivity {
                 super.onAnimationStart(animation);
                 mToolbarMask.setVisibility(View.VISIBLE);
                 mBottomBarMask.setVisibility(View.VISIBLE);
-                mCatalogMask.setVisibility(View.VISIBLE);
-                mCatalogWindow.setVisibility(View.VISIBLE);
                 isAnimating = true;
                 isShowing = true;
             }
@@ -486,45 +483,42 @@ public class PictureSelectorActivity extends BaseActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == PicturePreviewActivity.RESULT_SEND) {
-            finish();
-        } else if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_CAMERA:
-                    if (mTakePictureUri != null) {
-                        String path = mTakePictureUri.getEncodedPath();// getPathFromUri(this, mTakePhotoUri);
+        if (resultCode == RESULT_OK) {
+            if (requestCode==REQUEST_CAMERA){
+                if (mTakePictureUri != null) {
+                    String path = mTakePictureUri.getEncodedPath();// getPathFromUri(this, mTakePhotoUri);
 
-                        if (path == null) {
-                            Toast.makeText(this, video ?
-                                            R.string.picker_video_failure :
-                                            R.string.picker_photo_failure,
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        if (mTakePictureUri.toString().startsWith("content")) {
-                            path = path.replaceAll("/external_storage_root", "");
-
-                            path = Environment.getExternalStorageDirectory() + path;
-                        }
-
-                        final File file = new File(path);
-
-                        if (file.exists()) {
-                            MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                                @Override
-                                public void onScanCompleted(final String path, Uri uri) {
-                                    getPhoto(path);
-                                }
-                            });
-
-                        } else {
-                            Toast.makeText(this, video ?
-                                            R.string.picker_video_failure :
-                                            R.string.picker_photo_failure,
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
+                    if (path == null) {
+                        Toast.makeText(this, video ?
+                                        R.string.picker_video_failure :
+                                        R.string.picker_photo_failure,
+                                Toast.LENGTH_SHORT).show();
+                        return;
                     }
+                    if (mTakePictureUri.toString().startsWith("content")) {
+                        path = path.replaceAll("/external_storage_root", "");
+
+                        path = Environment.getExternalStorageDirectory() + path;
+                    }
+
+                    final File file = new File(path);
+
+                    if (file.exists()) {
+                        MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                            @Override
+                            public void onScanCompleted(final String path, Uri uri) {
+                                getPhoto(path);
+                            }
+                        });
+
+                    } else {
+                        Toast.makeText(this, video ?
+                                        R.string.picker_video_failure :
+                                        R.string.picker_photo_failure,
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                }
             }
         }
     }
@@ -539,19 +533,33 @@ public class PictureSelectorActivity extends BaseActivity {
 
                 MediaStoreHelper.getPhoto(PictureSelectorActivity.this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
                     @Override
-                    public void onResultCallback(@Nullable Photo photo) {
+                    public void onResultCallback(@Nullable Photo photo, int updateIndex) {
                         if (photo == null) {
                             Toast.makeText(PictureSelectorActivity.this, video ?
                                             R.string.picker_video_failure : R.string.picker_photo_failure,
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        MediaListHolder.selectPhotos.add(photo);
-//                                    photo.setSelected(true);
-//                        mGridViewAdapter.notifyItemInserted(0);
-//                        mGridViewAdapter.notifyItemRangeChanged(0, mGridViewAdapter.getItemCount());
+
+                        if (selectCateIndex == 0) {
+                            if (MediaListHolder.currentPhotos.isEmpty()) {
+                                MediaListHolder.currentPhotos.add(photo);
+                            } else {
+                                MediaListHolder.currentPhotos.add(0, photo);
+                            }
+                        } else {
+                            if (selectCateIndex == updateIndex) {
+                                if (MediaListHolder.currentPhotos.isEmpty()) {
+                                    MediaListHolder.currentPhotos.add(photo);
+                                } else {
+                                    MediaListHolder.currentPhotos.add(0, photo);
+                                }
+                            }
+                        }
+
                         mGridViewAdapter.notifyDataSetChanged();
                         mCatalogAdapter.notifyDataSetChanged();
+                        updateToolbar();
                         MediaStoreHelper.destroyLoader(PictureSelectorActivity.this, 0);
                     }
                 });
@@ -626,9 +634,34 @@ public class PictureSelectorActivity extends BaseActivity {
                 break;
                 case PICKER_ACTION_MEDIA_ADD: {
                     Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
-                    MediaListHolder.selectPhotos.add(photo);
+//                    MediaListHolder.selectPhotos.add(photo);
+                    int updateIndex = intent.getIntExtra(PICKER_EXTRA_UPDATE_INDEX, selectCateIndex);
+                    if (selectCateIndex == 0) {
+                        if (MediaListHolder.currentPhotos.isEmpty()) {
+                            MediaListHolder.currentPhotos.add(photo);
+                        } else {
+                            MediaListHolder.currentPhotos.add(0, photo);
+                        }
+                    } else {
+                        if (selectCateIndex == updateIndex) {
+                            if (MediaListHolder.currentPhotos.isEmpty()) {
+                                MediaListHolder.currentPhotos.add(photo);
+                            } else {
+                                MediaListHolder.currentPhotos.add(0, photo);
+                            }
+                        }
+                    }
+
+
                     mGridViewAdapter.notifyDataSetChanged();
-//                    mGridViewAdapter.notifyItemRangeChanged(0, mGridViewAdapter.getItemCount());
+                    mCatalogAdapter.notifyDataSetChanged();
+                    updateToolbar();
+                }
+                break;
+                case PICKER_ACTION_MEDIA_SEND: {
+                    PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
+                    MediaListHolder.selectPhotos.clear();
+                    finish();
                 }
                 break;
             }
@@ -804,16 +837,15 @@ public class PictureSelectorActivity extends BaseActivity {
 
                 PhotoDirectory item = getItem(position);
 
-                if (AndroidLifecycleUtils.canLoadImage(getContext())) {
-                    Glide.with(getContext())
-                            .asBitmap()
-                            .load(item.getCoverPath())
-                            .thumbnail(0.5f)
-                            .apply(new RequestOptions()
-                                    .placeholder(R.drawable.picker_grid_image_default)
-                                    .error(R.drawable.picker_grid_image_default))
-                            .into(image);
-                }
+                Glide.with(getContext())
+                        .asBitmap()
+                        .load(item.getCoverPath())
+                        .thumbnail(0.2f)
+                        .apply(new RequestOptions()
+                                .placeholder(R.drawable.picker_grid_image_default)
+                                .error(R.drawable.picker_grid_image_default))
+                        .into(image);
+
                 if (position == 0) {
                     tvNumber.setVisibility(View.GONE);
                 } else {

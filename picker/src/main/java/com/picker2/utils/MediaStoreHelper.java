@@ -18,7 +18,6 @@ import com.picker2.model.PhotoDirectory;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,7 +50,7 @@ public class MediaStoreHelper implements PickerConstants {
         @Override
         public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
             String path = bundle.getString("path");
-            video = bundle.getBoolean(PhotoPicker.EXTRA_PICK_VIDEO, false);
+            video = bundle.getBoolean(EXTRA_PICK_VIDEO, false);
             add = bundle.getBoolean(PICKER_EXTRA_ADD, true);
             return new PhotoLoader(context.get(), path, video);
         }
@@ -60,7 +59,7 @@ public class MediaStoreHelper implements PickerConstants {
         public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
             if (data == null) {
                 if (null != mCallback) {
-                    mCallback.onResultCallback(null);
+                    mCallback.onResultCallback(null, -1);
                 }
                 return;
             }
@@ -129,22 +128,49 @@ public class MediaStoreHelper implements PickerConstants {
 
                 Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
 
+                int updateIndex;
                 if (!directories.contains(photoDirectory)) {
                     photoDirectory.setCoverPath(path);
                     photoDirectory.addPhoto(photo);
                     photoDirectory.setDateAdded(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
-                    directories.add(photoDirectory);
-                    Collections.sort(directories);
+
+                    if (directories.size() == 1) {
+                        directories.add(photoDirectory);
+                    } else {
+                        directories.add(1, photoDirectory);
+                    }
+                    updateIndex = -1;
                 } else {
-                    directories.get(directories.indexOf(photoDirectory))
-                            .addPhoto(0, photo);
+
+                    int index = directories.indexOf(photoDirectory);
+                    PhotoDirectory directory = directories.get(index);
+                    directory.setCoverPath(path);
+                    if (directory.getPhotos().isEmpty()) {
+                        directory.addPhoto(photo);
+                    } else {
+                        directory.addPhoto(0, photo);
+                    }
+                    updateIndex = index;
                 }
-                MediaListHolder.allDirectories.get(0).addPhoto(0, photo);
+
                 if (add) {
-                    MediaListHolder.selectPhotos.add(photo);
+                    if (MediaListHolder.selectPhotos.isEmpty()) {
+                        MediaListHolder.selectPhotos.add(photo);
+                    } else {
+                        MediaListHolder.selectPhotos.add(0, photo);
+                    }
                 }
+
+                PhotoDirectory allDirectory = MediaListHolder.allDirectories.get(0);
+                allDirectory.setCoverPath(path);
+                if (allDirectory.getPhotos().isEmpty()) {
+                    allDirectory.addPhoto(photo);
+                } else {
+                    allDirectory.addPhoto(0, photo);
+                }
+
                 if (mCallback != null) {
-                    mCallback.onResultCallback(photo);
+                    mCallback.onResultCallback(photo, updateIndex);
                 }
             }
 
@@ -300,7 +326,7 @@ public class MediaStoreHelper implements PickerConstants {
     }
 
     public interface PhotoSingleCallback {
-        void onResultCallback(@Nullable Photo photo);
+        void onResultCallback(@Nullable Photo photo, int updateIndex);
     }
 
 }

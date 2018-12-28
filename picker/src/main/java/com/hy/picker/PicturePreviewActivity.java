@@ -9,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.AppCompatCheckBox;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -41,7 +40,7 @@ import java.util.Locale;
  * @author HY
  */
 public class PicturePreviewActivity extends BaseActivity {
-    public static final int RESULT_SEND = 1;
+//    public static final int RESULT_SEND = 1;
     private TextView mIndexTotal;
     private View mWholeView;
     private View mToolbarTop;
@@ -84,12 +83,6 @@ public class PicturePreviewActivity extends BaseActivity {
         mCurrentIndex = intent.getIntExtra("index", 0);
 
         mItemList = isPreview ? MediaListHolder.selectPhotos : MediaListHolder.currentPhotos;
-//        mStartIndex = mCurrentIndex;
-//        if (mItemList == null) {
-//            mItemList = PictureSelectorActivity.PicItemHolder.itemList;
-//            mItemSelectedList = PictureSelectorActivity.PicItemHolder.itemSelectedList;
-//        }
-
 
         mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size()));
 
@@ -98,9 +91,7 @@ public class PicturePreviewActivity extends BaseActivity {
         mBtnBack.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent();
-//                intent.putExtra("sendOrigin", mUseOrigin.isChecked());
-//                setResult(RESULT_OK, intent);
+
                 onBackPressed();
             }
         });
@@ -108,25 +99,8 @@ public class PicturePreviewActivity extends BaseActivity {
         mBtnSend.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//
-//                ArrayList<PictureSelectorActivity.PicItem> picItems = new ArrayList<>();
-//                if (mItemSelectedList != null) {
-//                    for (PictureSelectorActivity.PicItem picItem : mItemSelectedList) {
-//                        if (picItem.selected) {
-//                            picItems.add(picItem);
-//                        }
-//                    }
-//
-//                }
-//                for (PictureSelectorActivity.PicItem picItem : mItemList) {
-//                    if (picItem.selected) {
-//                        picItems.add(picItem);
-//                    }
-//                }
-                PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
-                MediaListHolder.selectPhotos.clear();
-                setResult(RESULT_SEND);
+                sendBroadcast(new Intent(PICKER_ACTION_MEDIA_SEND));
+//                setResult(RESULT_SEND);
                 finish();
             }
         });
@@ -290,17 +264,6 @@ public class PicturePreviewActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
     }
-
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent();
-//            intent.putExtra("sendOrigin", mUseOrigin.isChecked());
-            setResult(RESULT_OK, intent);
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }
-
 
     private void updateToolbar() {
         int selNum = MediaListHolder.selectPhotos.size();

@@ -22,6 +22,7 @@ import com.picker2.model.Photo;
 import com.picker2.utils.AndroidLifecycleUtils;
 
 import java.io.File;
+
 /**
  * Created time : 2018/8/2 8:23.
  *
@@ -109,18 +110,19 @@ public class PictureEditPreviewActivity extends BaseActivity {
         mBtnBack.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
-                finish();
+
+                onBackPressed();
             }
         });
 
         mBtnSend.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                setResult(RESULT_OK);
-                finish();
+                Intent broadcast = new Intent();
+                broadcast.setAction(PICKER_ACTION_MEDIA_SURE);
+                broadcast.putExtra(PICKER_EXTRA_PHOTO, mPicItem);
+                sendBroadcast(broadcast);
+                onBackPressed();
             }
         });
 
@@ -137,9 +139,6 @@ public class PictureEditPreviewActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent();
-//            intent.putExtra("sendOrigin", mUseOrigin.isChecked());
-        setResult(RESULT_OK, intent);
         super.onBackPressed();
     }
 

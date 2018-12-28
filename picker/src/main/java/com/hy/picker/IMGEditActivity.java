@@ -244,6 +244,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                 }
             }
 
+
             Bitmap bitmap = mImgView.saveBitmap();
             if (bitmap != null) {
                 FileOutputStream fos = null;
@@ -291,7 +292,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                 bundle.putString("path", path);
                 MediaStoreHelper.getPhoto(IMGEditActivity.this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
                     @Override
-                    public void onResultCallback(@Nullable Photo photo) {
+                    public void onResultCallback(@Nullable Photo photo, int updateIndex) {
                         if (photo == null) {
                             setResult(RESULT_CANCELED);
                             finish();
@@ -301,12 +302,12 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                         MediaListHolder.selectPhotos.add(photo);
                         Intent intent = new Intent(PICKER_ACTION_MEDIA_ADD);
                         intent.putExtra(PICKER_EXTRA_PHOTO, photo);
+                        intent.putExtra(PICKER_EXTRA_UPDATE_INDEX, updateIndex);
                         sendBroadcast(intent);
 
                         startActivity(new Intent(IMGEditActivity.this, PictureEditPreviewActivity.class)
                                 .putExtra("picItem", photo));
-                        setResult(RESULT_OK, new Intent()
-                                .putExtra("photo", photo));
+
                         MediaStoreHelper.destroyLoader(IMGEditActivity.this, 0);
                         finish();
                     }

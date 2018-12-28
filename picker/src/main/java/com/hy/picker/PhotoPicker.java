@@ -6,6 +6,7 @@ import android.os.Environment;
 
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.PermissionUtils;
+import com.picker2.PickerConstants;
 import com.picker2.model.Photo;
 import com.yanzhenjie.permission.Permission;
 
@@ -18,13 +19,8 @@ import java.util.ArrayList;
  *
  * @author HY
  */
-public class PhotoPicker {
+public class PhotoPicker implements PickerConstants {
 
-
-    public static final String EXTRA_SHOW_GIF = "gif";
-    public static final String EXTRA_ONLY_GIF = "gifOnly";
-    public static final String EXTRA_PICK_VIDEO = "video";
-    public static final String EXTRA_ITEMS = "items";
 
     static PhotoListener sPhotoListener;
     static TakePhotoListener sTakePhotoListener;
@@ -81,7 +77,7 @@ public class PhotoPicker {
 
     public PhotoPicker gifOnly(boolean gifOnly) {
         this.gifOnly = gifOnly;
-        this.isShowCamera=false;
+        this.isShowCamera = false;
         return this;
     }
 
@@ -150,5 +146,13 @@ public class PhotoPicker {
             boolean delete = cache.delete();
             Logger.d("缓存文件：" + cache + "删除" + (delete ? "成功" : "失败"));
         }
+    }
+
+
+    public static void preview(int index, ArrayList<Photo> items) {
+        Intent intent = new Intent(PhotoContext.getContext(), SelectedPicturePreviewActivity.class)
+                .putExtra("index", index)
+                .putExtra("items", items);
+        PhotoContext.getContext().startActivity(intent);
     }
 }

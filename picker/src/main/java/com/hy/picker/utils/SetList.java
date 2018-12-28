@@ -1,10 +1,6 @@
 package com.hy.picker.utils;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * Created time : 2018/8/3 9:04.
@@ -39,4 +35,13 @@ public class SetList<E> extends ArrayList<E> {
         }
     }
 
+    @Override
+    public void add(int index, E element) {
+        int indexOf = indexOf(element);
+        if (indexOf != -1) {
+            set(indexOf, element);
+            return;
+        }
+        super.add(index, element);
+    }
 }
