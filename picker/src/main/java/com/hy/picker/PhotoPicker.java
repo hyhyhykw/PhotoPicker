@@ -81,6 +81,13 @@ public class PhotoPicker implements PickerConstants {
         return this;
     }
 
+    private boolean preview = true;
+
+    public PhotoPicker preview(boolean preview) {
+        this.preview = preview;
+        return this;
+    }
+
     private boolean isShowCamera = true;
 
     public PhotoPicker showCamera(boolean camera) {
@@ -96,6 +103,7 @@ public class PhotoPicker implements PickerConstants {
         intent.putExtra("gifOnly", gifOnly);
         intent.putExtra("video", isVideo);
         intent.putExtra("showCamera", isShowCamera);
+        intent.putExtra("preview", preview);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (null != mPicItems) {
             intent.putParcelableArrayListExtra("items", mPicItems);

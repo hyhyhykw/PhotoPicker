@@ -81,6 +81,7 @@ public class PictureSelectorActivity extends BaseActivity {
 
     private LinearLayout mLytLoad;
     private boolean gif;
+    private boolean preview;
     private boolean video;
     private boolean gifOnly;
     private GridViewAdapter mGridViewAdapter;
@@ -118,6 +119,7 @@ public class PictureSelectorActivity extends BaseActivity {
         Intent intent = getIntent();
         max = intent.getIntExtra("max", 9);
         gif = intent.getBooleanExtra("gif", true);
+        preview = intent.getBooleanExtra("preview", true);
         gifOnly = intent.getBooleanExtra("gifOnly", false);
         video = intent.getBooleanExtra("video", false);
         isShowCamera = intent.getBooleanExtra("showCamera", false);
@@ -322,6 +324,12 @@ public class PictureSelectorActivity extends BaseActivity {
             }
         });
 
+        if (preview) {
+            mPreviewBtn.setVisibility(View.VISIBLE);
+        } else {
+            mPreviewBtn.setVisibility(View.GONE);
+        }
+
         mPreviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -484,7 +492,7 @@ public class PictureSelectorActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode==REQUEST_CAMERA){
+            if (requestCode == REQUEST_CAMERA) {
                 if (mTakePictureUri != null) {
                     String path = mTakePictureUri.getEncodedPath();// getPathFromUri(this, mTakePhotoUri);
 
@@ -971,11 +979,11 @@ public class PictureSelectorActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
 
-                    Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
-                    intent.putExtra("index", position);
-                    intent.putExtra("isGif", item.isGif());
-                    intent.putExtra("max", max);
-
+                    if (preview) {
+                        Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
+                        intent.putExtra("index", position);
+                        intent.putExtra("isGif", item.isGif());
+                        intent.putExtra("max", max);
 
 //                    if (Build.VERSION.SDK_INT >= 22) {
 ////                        View view = mLayoutManager.findViewByPosition(position);
@@ -991,7 +999,37 @@ public class PictureSelectorActivity extends BaseActivity {
 //                        ActivityCompat.startActivityForResult(PictureSelectorActivity.this, intent, REQUEST_PREVIEW, options.toBundle());
 //                    } else {
 //                    }
-                    startActivity(intent);
+                        startActivity(intent);
+                    } else {
+                        if (max == 1) {
+                            ArrayList<Photo> list = new ArrayList<>();
+                            list.add(item);
+                            PhotoPicker.sPhotoListener.onPicked(list);
+                            finish();
+                        } else {
+                            checkBox.toggle();
+                            boolean isChecked = checkBox.isChecked();
+                            if (getTotalSelectedNum() == max && isChecked) {
+                                Toast.makeText(getApplicationContext(), getString(R.string.picker_picsel_selected_max, max), Toast.LENGTH_SHORT).show();
+                                checkBox.setChecked(false);
+                            } else {
+//                            item.setSelected(isChecked);
+                                if (isChecked) {
+                                    MediaListHolder.selectPhotos.add(item);
+                                } else {
+                                    MediaListHolder.selectPhotos.remove(item);
+                                }
+                            }
+                            if (MediaListHolder.selectPhotos.contains(item)) {
+                                mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
+                            } else {
+                                mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
+                            }
+
+                            updateToolbar();
+                        }
+                    }
+
 
                 }
             });

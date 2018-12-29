@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
                         .max(9)
                         .showCamera(true)
                         .select(new ArrayList<>(mFeedbackSelectPictureAdapter.getData()))
+                        .preview(false)
                         .start(this);
 //                new PhotoPicker()
 //                        .edit(true)
