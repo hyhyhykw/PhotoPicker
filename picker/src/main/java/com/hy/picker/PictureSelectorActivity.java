@@ -16,6 +16,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
+import android.os.MessageQueue;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -55,7 +57,6 @@ import com.yanzhenjie.permission.Permission;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -227,22 +228,21 @@ public class PictureSelectorActivity extends BaseActivity {
 
         mLytLoad.setVisibility(View.VISIBLE);
 
-        new PermissionUtils(PictureSelectorActivity.this)
-                .setPermissionListener(new PermissionUtils.PermissionListener() {
-                    @Override
-                    public void onResult() {
-                        initView();
-                    }
-                })
-                .requestPermission(Permission.WRITE_EXTERNAL_STORAGE);
 
-//        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
-//            @Override
-//            public boolean queueIdle() {
-//
-//                return false;
-//            }
-//        });
+        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
+            @Override
+            public boolean queueIdle() {
+                new PermissionUtils(PictureSelectorActivity.this)
+                        .setPermissionListener(new PermissionUtils.PermissionListener() {
+                            @Override
+                            public void onResult() {
+                                initView();
+                            }
+                        })
+                        .requestPermission(Permission.WRITE_EXTERNAL_STORAGE);
+                return false;
+            }
+        });
 
 
     }
@@ -257,6 +257,7 @@ public class PictureSelectorActivity extends BaseActivity {
 //        mData = data;
 //    }
 
+
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
         Bundle bundle = new Bundle();
@@ -264,16 +265,17 @@ public class PictureSelectorActivity extends BaseActivity {
         bundle.putBoolean(PhotoPicker.EXTRA_ONLY_GIF, gifOnly);
         bundle.putBoolean(PhotoPicker.EXTRA_PICK_VIDEO, video);
         bundle.putParcelableArrayList(PhotoPicker.EXTRA_ITEMS, mSelectItems);
+        if (null == mSelectItems || mSelectItems.isEmpty()) {
+            MediaListHolder.selectPhotos.clear();
+        } else {
+            MediaListHolder.selectPhotos.clear();
+            MediaListHolder.selectPhotos.addAll(mSelectItems);
+        }
+
         if (MediaListHolder.allDirectories.isEmpty()) {
-
-
             MediaStoreHelper.getPhotoDirs(this, bundle, new MediaStoreHelper.PhotosResultCallback() {
                 @Override
-                public void onResultCallback(List<PhotoDirectory> directories) {
-                    MediaListHolder.allDirectories.clear();
-                    MediaListHolder.allDirectories.addAll(directories);
-                    MediaListHolder.currentPhotos.clear();
-                    MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories.get(selectCateIndex).getPhotos());
+                public void onResultCallback() {
                     MediaStoreHelper.destroyLoader(PictureSelectorActivity.this, 1);
 
 
@@ -283,7 +285,10 @@ public class PictureSelectorActivity extends BaseActivity {
                     if (mLytLoad.getVisibility() == View.VISIBLE) {
                         mLytLoad.setVisibility(View.GONE);
                     }
+
                 }
+
+
             });
         } else {
 
@@ -294,17 +299,15 @@ public class PictureSelectorActivity extends BaseActivity {
             selectCateIndex = 0;
             MediaListHolder.currentPhotos.clear();
             MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories.get(selectCateIndex).getPhotos());
-            if (null == mSelectItems || mSelectItems.isEmpty()) {
-                MediaListHolder.selectPhotos.clear();
-            } else {
-                MediaListHolder.selectPhotos.clear();
-                MediaListHolder.selectPhotos.addAll(mSelectItems);
-            }
+//            if (null == mSelectItems || mSelectItems.isEmpty()) {
+//                MediaListHolder.selectPhotos.clear();
+//            } else {
+//                MediaListHolder.selectPhotos.clear();
+//                MediaListHolder.selectPhotos.addAll(mSelectItems);
+//            }
             mGridViewAdapter.notifyDataSetChanged();
             mCatalogAdapter.notifyDataSetChanged();
         }
-
-
 
 
         mBtnSend.setOnClickListener(new View.OnClickListener() {
@@ -639,11 +642,8 @@ public class PictureSelectorActivity extends BaseActivity {
                     Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
                     if (mGridViewAdapter != null) {
                         int index;
-                        if (MediaListHolder.currentPhotos.size() > 100) {
-                            index = Collections.binarySearch(MediaListHolder.currentPhotos, photo);
-                        } else {
-                            index = MediaListHolder.currentPhotos.indexOf(photo);
-                        }
+
+                        index = MediaListHolder.currentPhotos.indexOf(photo);
 
                         mGridViewAdapter.notifyItemChanged(index);
                         updateToolbar();

@@ -169,6 +169,7 @@ public class MediaStoreHelper implements PickerConstants {
                     allDirectory.addPhoto(0, photo);
                 }
 
+
                 if (mCallback != null) {
                     mCallback.onResultCallback(photo, updateIndex);
                 }
@@ -212,7 +213,7 @@ public class MediaStoreHelper implements PickerConstants {
 
             if (data == null) return;
 
-            List<PhotoDirectory> directories = new ArrayList<>();
+            List<PhotoDirectory> directories = MediaListHolder.allDirectories;
             PhotoDirectory photoDirectoryAll = new PhotoDirectory();
 
             Context context = this.context.get();
@@ -282,13 +283,6 @@ public class MediaStoreHelper implements PickerConstants {
 
                 Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
 
-                if (null != photos && !photos.isEmpty()) {
-                    boolean remove = photos.remove(photo);
-                    if (remove) {
-                        MediaListHolder.selectPhotos.add(photo);
-                    }
-                }
-
                 if (!directories.contains(photoDirectory)) {
                     photoDirectory.setCoverPath(path);
                     photoDirectory.addPhoto(photo);
@@ -300,13 +294,14 @@ public class MediaStoreHelper implements PickerConstants {
                 }
 
                 photoDirectoryAll.addPhoto(photo);
+                MediaListHolder.currentPhotos.add(photo);
             }
             if (photoDirectoryAll.getPhotos().size() > 0) {
                 photoDirectoryAll.setCoverPath(photoDirectoryAll.getPhotos().get(0).getUri());
             }
             directories.add(0, photoDirectoryAll);
             if (resultCallback != null) {
-                resultCallback.onResultCallback(directories);
+                resultCallback.onResultCallback();
             }
         }
 
@@ -322,7 +317,7 @@ public class MediaStoreHelper implements PickerConstants {
     }
 
     public interface PhotosResultCallback {
-        void onResultCallback(List<PhotoDirectory> directories);
+        void onResultCallback();
     }
 
     public interface PhotoSingleCallback {

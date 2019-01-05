@@ -2,7 +2,8 @@ package com.picker2.model;
 
 import android.text.TextUtils;
 
-import com.hy.picker.utils.SetList;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by donglua on 15/6/28.
@@ -13,7 +14,7 @@ public class PhotoDirectory {
     private String coverPath;
     private String name;
     private long dateAdded;
-    private SetList<Photo> photos = new SetList<>();
+    private List<Photo> photos = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
@@ -85,11 +86,11 @@ public class PhotoDirectory {
         this.dateAdded = dateAdded;
     }
 
-    public SetList<Photo> getPhotos() {
+    public List<Photo> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(SetList<Photo> photos) {
+    public void setPhotos(List<Photo> photos) {
         this.photos = photos;
     }
 
