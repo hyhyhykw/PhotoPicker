@@ -38,10 +38,8 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
                 break;
             case FeedbackSelectPictureAdapter.TYPE_ADD:
                 new PhotoPicker()
-                        .max(9)
                         .showCamera(true)
-                        .select(new ArrayList<>(mFeedbackSelectPictureAdapter.getData()))
-                        .preview(true)
+                        .video()
                         .start(this);
 //                new PhotoPicker()
 //                        .edit(true)
@@ -57,11 +55,11 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
     @Override
     public void onPicked(ArrayList<Photo> picItems) {
 
-        mFeedbackSelectPictureAdapter.reset(picItems);
+//        mFeedbackSelectPictureAdapter.reset(picItems);
     }
 
     @Override
     public void onTake(Photo picItem) {
-        mFeedbackSelectPictureAdapter.addItem(picItem);
+//        mFeedbackSelectPictureAdapter.addItem(picItem);
     }
 }
