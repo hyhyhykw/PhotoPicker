@@ -21,6 +21,7 @@ import android.os.MessageQueue;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -144,6 +145,8 @@ public class PictureSelectorActivity extends BaseActivity {
         mPicType = findViewById(R.id.picker_pic_type);
         mPicType.init(this);
         mPicType.setEnabled(false);
+        mPicType.setText(video ? R.string.picker_all_video : R.string.picker_all_image);
+
         mPreviewBtn = findViewById(R.id.picker_preview);
         mPreviewBtn.init(this);
         mPreviewBtn.setEnabled(null != mSelectItems && !mSelectItems.isEmpty());
@@ -311,6 +314,8 @@ public class PictureSelectorActivity extends BaseActivity {
                 finish();
             }
         });
+
+        mPicType.setText(video ? R.string.picker_all_video : R.string.picker_all_image);
 
         mPicType.setEnabled(true);
         mPicType.setOnClickListener(new View.OnClickListener() {
@@ -756,6 +761,10 @@ public class PictureSelectorActivity extends BaseActivity {
         }
 
         public void setText(String text) {
+            mText.setText(text);
+        }
+
+        public void setText(@StringRes int text) {
             mText.setText(text);
         }
 
