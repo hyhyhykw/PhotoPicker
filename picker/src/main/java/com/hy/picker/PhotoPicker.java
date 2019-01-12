@@ -8,6 +8,7 @@ import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.PermissionUtils;
 import com.picker2.PickerConstants;
 import com.picker2.model.Photo;
+import com.picker2.utils.MediaListHolder;
 import com.yanzhenjie.permission.Permission;
 
 import java.io.File;
@@ -30,6 +31,10 @@ public class PhotoPicker implements PickerConstants {
         sTakePhotoListener = null;
         sPhotoListener = null;
         isEdit = false;
+
+        MediaListHolder.currentPhotos.clear();
+        MediaListHolder.selectPhotos.clear();
+        MediaListHolder.allDirectories.clear();
     }
 
     public PhotoPicker() {

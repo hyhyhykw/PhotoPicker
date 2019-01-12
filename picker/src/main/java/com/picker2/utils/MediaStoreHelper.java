@@ -197,6 +197,7 @@ public class MediaStoreHelper implements PickerConstants {
             this.resultCallback = resultCallback;
         }
 
+
         @NonNull
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -209,100 +210,106 @@ public class MediaStoreHelper implements PickerConstants {
         }
 
         @Override
-        public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        public void onLoadFinished(@NonNull Loader<Cursor> loader, final Cursor data) {
 
             if (data == null) return;
 
-            List<PhotoDirectory> directories = MediaListHolder.allDirectories;
-            PhotoDirectory photoDirectoryAll = new PhotoDirectory();
+            final List<PhotoDirectory> directories = MediaListHolder.allDirectories;
+            final PhotoDirectory photoDirectoryAll = new PhotoDirectory();
 
-            Context context = this.context.get();
+            final Context context = this.context.get();
             if (context == null) return;
 
-            String BUCKET_ID;
-            String TITLE;
-            String DATA;
-            String MIME_TYPE;
-            String DATE_ADDED;
-            String SIZE;
-            String WIDTH;
-            String HEIGHT;
-            String BUCKET_DISPLAY_NAME;
-            String DATE_TAKEN;
-            if (video) {
-                BUCKET_ID = MediaStore.Video.Media.BUCKET_ID;
-                TITLE = MediaStore.Video.Media.TITLE;
-                DATA = MediaStore.Video.Media.DATA;
-                MIME_TYPE = MediaStore.Video.Media.MIME_TYPE;
-                DATE_ADDED = MediaStore.Video.Media.DATE_ADDED;
-                SIZE = MediaStore.Video.Media.SIZE;
-                WIDTH = MediaStore.Video.Media.WIDTH;
-                HEIGHT = MediaStore.Video.Media.HEIGHT;
-                DATE_TAKEN = MediaStore.Video.Media.DATE_TAKEN;
-                BUCKET_DISPLAY_NAME = MediaStore.Video.Media.BUCKET_DISPLAY_NAME;
-                photoDirectoryAll.setName(context.getString(R.string.picker_all_video));
-            } else {
-                BUCKET_ID = MediaStore.Images.Media.BUCKET_ID;
-                TITLE = MediaStore.Images.Media.TITLE;
-                DATA = MediaStore.Images.Media.DATA;
-                MIME_TYPE = MediaStore.Images.Media.MIME_TYPE;
-                DATE_ADDED = MediaStore.Images.Media.DATE_ADDED;
-                SIZE = MediaStore.Images.Media.SIZE;
-                WIDTH = MediaStore.Images.Media.WIDTH;
-                HEIGHT = MediaStore.Images.Media.HEIGHT;
-                DATE_TAKEN = MediaStore.Images.Media.DATE_TAKEN;
-                BUCKET_DISPLAY_NAME = MediaStore.Images.Media.BUCKET_DISPLAY_NAME;
-                photoDirectoryAll.setName(context.getString(R.string.picker_all_image));
-            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final String BUCKET_ID;
+                    final String TITLE;
+                    final String DATA;
+                    final String MIME_TYPE;
+                    final String DATE_ADDED;
+                    final String SIZE;
+                    final String WIDTH;
+                    final String HEIGHT;
+                    final String BUCKET_DISPLAY_NAME;
+                    final String DATE_TAKEN;
+                    if (video) {
+                        BUCKET_ID = MediaStore.Video.Media.BUCKET_ID;
+                        TITLE = MediaStore.Video.Media.TITLE;
+                        DATA = MediaStore.Video.Media.DATA;
+                        MIME_TYPE = MediaStore.Video.Media.MIME_TYPE;
+                        DATE_ADDED = MediaStore.Video.Media.DATE_ADDED;
+                        SIZE = MediaStore.Video.Media.SIZE;
+                        WIDTH = MediaStore.Video.Media.WIDTH;
+                        HEIGHT = MediaStore.Video.Media.HEIGHT;
+                        DATE_TAKEN = MediaStore.Video.Media.DATE_TAKEN;
+                        BUCKET_DISPLAY_NAME = MediaStore.Video.Media.BUCKET_DISPLAY_NAME;
+                        photoDirectoryAll.setName(context.getString(R.string.picker_all_video));
+                    } else {
+                        BUCKET_ID = MediaStore.Images.Media.BUCKET_ID;
+                        TITLE = MediaStore.Images.Media.TITLE;
+                        DATA = MediaStore.Images.Media.DATA;
+                        MIME_TYPE = MediaStore.Images.Media.MIME_TYPE;
+                        DATE_ADDED = MediaStore.Images.Media.DATE_ADDED;
+                        SIZE = MediaStore.Images.Media.SIZE;
+                        WIDTH = MediaStore.Images.Media.WIDTH;
+                        HEIGHT = MediaStore.Images.Media.HEIGHT;
+                        DATE_TAKEN = MediaStore.Images.Media.DATE_TAKEN;
+                        BUCKET_DISPLAY_NAME = MediaStore.Images.Media.BUCKET_DISPLAY_NAME;
+                        photoDirectoryAll.setName(context.getString(R.string.picker_all_image));
+                    }
 
-            photoDirectoryAll.setId("ALL");
+                    photoDirectoryAll.setId("ALL");
 
-            while (data.moveToNext()) {
-                long datetaken = data.getLong(data.getColumnIndexOrThrow(DATE_TAKEN));
-                String bucketId = data.getString(data.getColumnIndexOrThrow(BUCKET_ID));
-                String name = data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME));
-                String path = data.getString(data.getColumnIndexOrThrow(DATA));
-                long size = data.getInt(data.getColumnIndexOrThrow(SIZE));
+                    while (data.moveToNext()) {
+                        long datetaken = data.getLong(data.getColumnIndexOrThrow(DATE_TAKEN));
+                        String bucketId = data.getString(data.getColumnIndexOrThrow(BUCKET_ID));
+                        String name = data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME));
+                        String path = data.getString(data.getColumnIndexOrThrow(DATA));
+                        long size = data.getInt(data.getColumnIndexOrThrow(SIZE));
 
-                String title = data.getString(data.getColumnIndexOrThrow(TITLE));
-                String mimeType = data.getString(data.getColumnIndexOrThrow(MIME_TYPE));
-                int width = data.getInt(data.getColumnIndexOrThrow(WIDTH));
-                int height = data.getInt(data.getColumnIndexOrThrow(HEIGHT));
-                long duration;
-                if (video) {
-                    duration = data.getLong(data.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
-                } else {
-                    duration = 0;
+                        String title = data.getString(data.getColumnIndexOrThrow(TITLE));
+                        String mimeType = data.getString(data.getColumnIndexOrThrow(MIME_TYPE));
+                        int width = data.getInt(data.getColumnIndexOrThrow(WIDTH));
+                        int height = data.getInt(data.getColumnIndexOrThrow(HEIGHT));
+                        long duration;
+                        if (video) {
+                            duration = data.getLong(data.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                        } else {
+                            duration = 0;
+                        }
+
+                        if (size < 1) continue;
+
+                        PhotoDirectory photoDirectory = new PhotoDirectory();
+                        photoDirectory.setId(bucketId);
+                        photoDirectory.setName(name);
+
+                        Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
+
+                        if (!directories.contains(photoDirectory)) {
+                            photoDirectory.setCoverPath(path);
+                            photoDirectory.addPhoto(photo);
+                            photoDirectory.setDateAdded(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
+                            directories.add(photoDirectory);
+                        } else {
+                            directories.get(directories.indexOf(photoDirectory))
+                                    .addPhoto(photo);
+                        }
+
+                        photoDirectoryAll.addPhoto(photo);
+                        MediaListHolder.currentPhotos.add(photo);
+                    }
+                    if (photoDirectoryAll.getPhotos().size() > 0) {
+                        photoDirectoryAll.setCoverPath(photoDirectoryAll.getPhotos().get(0).getUri());
+                    }
+                    directories.add(0, photoDirectoryAll);
+                    if (resultCallback != null) {
+                        resultCallback.onResultCallback();
+                    }
                 }
+            }).start();
 
-                if (size < 1) continue;
-
-                PhotoDirectory photoDirectory = new PhotoDirectory();
-                photoDirectory.setId(bucketId);
-                photoDirectory.setName(name);
-
-                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
-
-                if (!directories.contains(photoDirectory)) {
-                    photoDirectory.setCoverPath(path);
-                    photoDirectory.addPhoto(photo);
-                    photoDirectory.setDateAdded(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
-                    directories.add(photoDirectory);
-                } else {
-                    directories.get(directories.indexOf(photoDirectory))
-                            .addPhoto(photo);
-                }
-
-                photoDirectoryAll.addPhoto(photo);
-                MediaListHolder.currentPhotos.add(photo);
-            }
-            if (photoDirectoryAll.getPhotos().size() > 0) {
-                photoDirectoryAll.setCoverPath(photoDirectoryAll.getPhotos().get(0).getUri());
-            }
-            directories.add(0, photoDirectoryAll);
-            if (resultCallback != null) {
-                resultCallback.onResultCallback();
-            }
         }
 
         @Override

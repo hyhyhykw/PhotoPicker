@@ -272,42 +272,25 @@ public class PictureSelectorActivity extends BaseActivity {
             MediaListHolder.selectPhotos.addAll(mSelectItems);
         }
 
-        if (MediaListHolder.allDirectories.isEmpty()) {
-            MediaStoreHelper.getPhotoDirs(this, bundle, new MediaStoreHelper.PhotosResultCallback() {
-                @Override
-                public void onResultCallback() {
-                    MediaStoreHelper.destroyLoader(PictureSelectorActivity.this, 1);
-
-
-                    mGridViewAdapter.notifyDataSetChanged();
-                    mCatalogAdapter.notifyDataSetChanged();
-                    updateToolbar();
-                    if (mLytLoad.getVisibility() == View.VISIBLE) {
-                        mLytLoad.setVisibility(View.GONE);
+        MediaStoreHelper.getPhotoDirs(this, bundle, new MediaStoreHelper.PhotosResultCallback() {
+            @Override
+            public void onResultCallback() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MediaStoreHelper.destroyLoader(PictureSelectorActivity.this, 1);
+                        mGridViewAdapter.notifyDataSetChanged();
+                        mCatalogAdapter.notifyDataSetChanged();
+                        updateToolbar();
+                        if (mLytLoad.getVisibility() == View.VISIBLE) {
+                            mLytLoad.setVisibility(View.GONE);
+                        }
                     }
-
-                }
-
-
-            });
-        } else {
-
-            if (mLytLoad.getVisibility() == View.VISIBLE) {
-                mLytLoad.setVisibility(View.GONE);
+                });
             }
 
-            selectCateIndex = 0;
-            MediaListHolder.currentPhotos.clear();
-            MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories.get(selectCateIndex).getPhotos());
-//            if (null == mSelectItems || mSelectItems.isEmpty()) {
-//                MediaListHolder.selectPhotos.clear();
-//            } else {
-//                MediaListHolder.selectPhotos.clear();
-//                MediaListHolder.selectPhotos.addAll(mSelectItems);
-//            }
-            mGridViewAdapter.notifyDataSetChanged();
-            mCatalogAdapter.notifyDataSetChanged();
-        }
+
+        });
 
 
         mBtnSend.setOnClickListener(new View.OnClickListener() {
