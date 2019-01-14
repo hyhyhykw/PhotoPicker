@@ -121,6 +121,21 @@ public class MediaStoreHelper implements PickerConstants {
                 long duration;
                 if (video) {
                     duration = data.getLong(data.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                    MediaMetadataRetriever retr = new MediaMetadataRetriever();//获取视频第一帧
+                    retr.setDataSource(path);
+                    String orientation;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        orientation = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+                    } else {
+                        orientation = "0";
+                    }
+                    if ("90".equals(orientation)) {
+                        int temp = width;
+                        width = height;
+                        height = temp;
+                    }
+                    Logger.e("width===========" + width);
+                    Logger.e("height===========" + height);
                 } else {
                     duration = 0;
                 }
