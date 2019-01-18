@@ -14,7 +14,6 @@ import android.support.v4.content.Loader;
 
 import com.hy.picker.PhotoPicker;
 import com.hy.picker.R;
-import com.hy.picker.utils.Logger;
 import com.picker2.PickerConstants;
 import com.picker2.model.Photo;
 import com.picker2.model.PhotoDirectory;
@@ -134,8 +133,6 @@ public class MediaStoreHelper implements PickerConstants {
                         width = height;
                         height = temp;
                     }
-                    Logger.e("width===========" + width);
-                    Logger.e("height===========" + height);
                 } else {
                     duration = 0;
                 }
@@ -144,8 +141,6 @@ public class MediaStoreHelper implements PickerConstants {
                 photoDirectory.setId(bucketId);
                 photoDirectory.setName(name);
 
-                Logger.e("width===========" + width);
-                Logger.e("height===========" + height);
 
                 Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
 
@@ -310,8 +305,6 @@ public class MediaStoreHelper implements PickerConstants {
                                 width = height;
                                 height = temp;
                             }
-                            Logger.e("width===========" + width);
-                            Logger.e("height===========" + height);
                         } else {
                             duration = 0;
                         }

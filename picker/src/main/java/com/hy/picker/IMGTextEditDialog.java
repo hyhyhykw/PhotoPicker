@@ -11,8 +11,6 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 
-import com.hy.picker.R;
-
 import com.hy.picker.core.IMGText;
 import com.hy.picker.view.IMGColorGroup;
 
@@ -22,8 +20,6 @@ import com.hy.picker.view.IMGColorGroup;
 
 public class IMGTextEditDialog extends Dialog implements View.OnClickListener,
         RadioGroup.OnCheckedChangeListener {
-
-    private static final String TAG = "IMGTextEditDialog";
 
     private EditText mEditText;
 

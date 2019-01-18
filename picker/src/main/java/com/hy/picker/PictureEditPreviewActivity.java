@@ -1,11 +1,13 @@
 package com.hy.picker;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.MessageQueue;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
+import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.PickerScaleViewTarget;
 import com.picker2.model.Photo;
@@ -39,11 +42,16 @@ public class PictureEditPreviewActivity extends BaseActivity {
     private boolean mFullScreen;
 
     private Photo mPicItem;
-
+    private Drawable mDefaultDrawable;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picker_activity_edit_preview);
+
+        mDefaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
+        if (null == mDefaultDrawable) {
+            mDefaultDrawable = ContextCompat.getDrawable(this, R.drawable.picker_grid_image_default);
+        }
 
         initView();
 
@@ -72,8 +80,8 @@ public class PictureEditPreviewActivity extends BaseActivity {
                             .asFile()
                             .load(new File(uri))
                             .apply(new RequestOptions()
-                                    .error(R.drawable.picker_grid_image_default)
-                                    .placeholder(R.drawable.picker_grid_image_default))
+                                    .error(mDefaultDrawable)
+                                    .placeholder(mDefaultDrawable))
                             .into(new PickerScaleViewTarget(mPhotoView));
 
                 }

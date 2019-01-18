@@ -1,11 +1,13 @@
 package com.hy.picker;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
+import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.PickerScaleViewTarget;
@@ -40,7 +43,7 @@ import java.util.Locale;
  * @author HY
  */
 public class PicturePreviewActivity extends BaseActivity {
-//    public static final int RESULT_SEND = 1;
+    //    public static final int RESULT_SEND = 1;
     private TextView mIndexTotal;
     private View mWholeView;
     private View mToolbarTop;
@@ -55,18 +58,21 @@ public class PicturePreviewActivity extends BaseActivity {
 
     private int mCurrentIndex;
     private boolean mFullScreen;
-    private boolean isPreview;
 
     private int max;
     private TextView mTvEdit;
-//    private int mStartIndex;
-
+    //    private int mStartIndex;
+    private Drawable mDefaultDrawable;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picker_activity_preview);
 
         initView();
+        mDefaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
+        if (null == mDefaultDrawable) {
+            mDefaultDrawable = ContextCompat.getDrawable(this, R.drawable.picker_grid_image_default);
+        }
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -78,7 +84,7 @@ public class PicturePreviewActivity extends BaseActivity {
         max = intent.getIntExtra("max", 9);
         boolean isGif = intent.getBooleanExtra("isGif", false);
         mTvEdit.setVisibility(isGif ? View.GONE : View.VISIBLE);
-        isPreview = intent.getBooleanExtra("isPreview", false);
+        boolean isPreview = intent.getBooleanExtra("isPreview", false);
 //        mUseOrigin.setChecked(intent.getBooleanExtra("sendOrigin", false));
         mCurrentIndex = intent.getIntExtra("index", 0);
 
@@ -150,32 +156,6 @@ public class PicturePreviewActivity extends BaseActivity {
             }
         });
 
-//        supportPostponeEnterTransition();//延缓执行 然后在fragment里面的控件加载完成后start
-//        if (Build.VERSION.SDK_INT >= 22) {
-//
-//            setEnterSharedElementCallback(new SharedElementCallback() {
-//                @Override
-//                public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-//
-//                    PictureSelectorActivity.PicItem item = mItemList.get(mCurrentIndex);
-////                    ViewCompat.setTransitionName(mViewPager, item.getUri());
-//                    if (mStartIndex != mCurrentIndex) {
-//                        names.clear();
-//                        names.add(item.getUri());
-//                        String url = item.getUri();
-//                        sharedElements.clear();
-//                        sharedElements.put(url, mViewPager);
-//                    }
-//                }
-//            });
-//
-//            postponeEnterTransition();
-//            PictureSelectorActivity.PicItem item = mItemList.get(mCurrentIndex);
-//            ViewCompat.setTransitionName(mViewPager, item.getUri());
-//            startPostponedEnterTransition();
-//
-//
-//        }
         mTvEdit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,29 +165,6 @@ public class PicturePreviewActivity extends BaseActivity {
         });
         updateToolbar();
     }
-
-//    @TargetApi(22)
-//    @Override
-//    public void supportFinishAfterTransition() {
-//        Intent data = new Intent()
-//                .putExtra("index", mCurrentIndex)
-//                .putExtra("isPreview", isPreview)
-//                .putExtra("startIndex", mStartIndex);
-//        setResult(RESULT_OK, data);
-//        super.supportFinishAfterTransition();
-//    }
-//
-//
-//    @Override
-//    public void onBackPressed() {
-//        Intent data = new Intent()
-//                .putExtra("index", mCurrentIndex)
-//                .putExtra("isPreview", isPreview)
-//                .putExtra("startIndex", mStartIndex);
-//        setResult(RESULT_OK, data);
-//        super.supportFinishAfterTransition();
-//    }
-
 
     public static final int REQUEST_EDIT = 0x987;
     private File mEditFile;
@@ -241,10 +198,7 @@ public class PicturePreviewActivity extends BaseActivity {
                     finish();
                 }
             }
-//            else if (requestCode == REQUEST_EDIT_PREVIEW) {
-//
-//                finish();
-//            }
+
         }
     }
 
@@ -339,8 +293,8 @@ public class PicturePreviewActivity extends BaseActivity {
                 Glide.with(container.getContext())
                         .load(new File(uri))
                         .apply(new RequestOptions()
-                                .error(R.drawable.picker_grid_image_default)
-                                .placeholder(R.drawable.picker_grid_image_default))
+                                .error(mDefaultDrawable)
+                                .placeholder(mDefaultDrawable))
                         .into(imageView);
                 container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 return imageView;
@@ -388,8 +342,8 @@ public class PicturePreviewActivity extends BaseActivity {
                         .asFile()
                         .load(new File(uri))
                         .apply(new RequestOptions()
-                                .error(R.drawable.picker_grid_image_default)
-                                .placeholder(R.drawable.picker_grid_image_default))
+                                .error(mDefaultDrawable)
+                                .placeholder(mDefaultDrawable))
                         .into(new PickerScaleViewTarget(imageView));
 //                imageView.setImage(ImageSource.uri(Uri.fromFile(new File(uri))));
 

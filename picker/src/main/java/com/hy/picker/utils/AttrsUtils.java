@@ -2,6 +2,7 @@ package com.hy.picker.utils;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 
 public class AttrsUtils {
@@ -19,6 +20,22 @@ public class AttrsUtils {
         int color = array.getColor(0, -1);
         array.recycle();
         return color;
+    }
+
+    /**
+     * get attrs color
+     *
+     * @param mContext
+     * @param attr
+     * @return
+     */
+    public static Drawable getTypeValueDrawable(Context mContext, int attr) {
+        TypedValue typedValue = new TypedValue();
+        int[] attribute = new int[]{attr};
+        TypedArray array = mContext.obtainStyledAttributes(typedValue.resourceId, attribute);
+        Drawable drawable = array.getDrawable(0);
+        array.recycle();
+        return drawable;
     }
 
     /**

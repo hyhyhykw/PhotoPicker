@@ -1,10 +1,12 @@
 package com.hy.picker;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
+import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.PickerScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
@@ -39,11 +42,18 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
     private int mCurrentIndex;
     private ArrayList<Photo> mItemList;
 
+    private Drawable mDefaultDrawable;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picker_activity_selected_preview);
         initView();
+        mDefaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
+        if (null == mDefaultDrawable) {
+            mDefaultDrawable = ContextCompat.getDrawable(this, R.drawable.picker_grid_image_default);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             mToolbarTop.setPadding(0, CommonUtils.getStatusBarHeight(this), 0, 0);
@@ -57,7 +67,6 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 onBackPressed();
             }
         });
@@ -75,6 +84,7 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
                 mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size()));
 
             }
+
             public void onPageScrollStateChanged(int state) {
             }
         });
@@ -108,8 +118,8 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
                 Glide.with(container.getContext())
                         .load(new File(uri))
                         .apply(new RequestOptions()
-                                .error(R.drawable.picker_grid_image_default)
-                                .placeholder(R.drawable.picker_grid_image_default))
+                                .error(mDefaultDrawable)
+                                .placeholder(mDefaultDrawable))
                         .into(imageView);
                 container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 return imageView;
@@ -132,8 +142,8 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
                         .asFile()
                         .load(new File(uri))
                         .apply(new RequestOptions()
-                                .error(R.drawable.picker_grid_image_default)
-                                .placeholder(R.drawable.picker_grid_image_default))
+                                .error(mDefaultDrawable)
+                                .placeholder(mDefaultDrawable))
                         .into(new PickerScaleViewTarget(imageView));
 //                imageView.setImage(ImageSource.uri(Uri.fromFile(new File(uri))));
 

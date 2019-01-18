@@ -13,6 +13,9 @@
     <attr name="picker_preview_color_disable" format="color"/>
     <attr name="picker_preview_color_enable" format="color"/>
     <attr name="picker_photo_back" format="color"/>
+
+    <attr name="picker_image_default" format="reference"/>
+
     <attr name="picker_status_black" format="boolean"/>
 
     <declare-styleable name="IMGColorRadio" tools:ignore="ResourceName">

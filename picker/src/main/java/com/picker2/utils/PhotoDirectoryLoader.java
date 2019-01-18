@@ -66,7 +66,7 @@ public class PhotoDirectoryLoader extends CursorLoader {
                     selectionArgs = new String[]{"image/jpeg", "image/png", "image/bmp", "image/gif"};
                 } else {
                     selections = MIME_TYPE + "=? or " + MIME_TYPE + "=? or " + MIME_TYPE + "=?";
-                    selectionArgs = new String[]{"image/jpeg", "image/png", "image/jpg"};
+                    selectionArgs = new String[]{"image/jpeg", "image/png", "image/bmp"};
                 }
             }
 

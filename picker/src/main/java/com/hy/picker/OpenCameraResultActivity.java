@@ -177,7 +177,7 @@ public class OpenCameraResultActivity extends BaseActivity {
         }
 
 
-        String name = "IMG-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + (video ? ".mp4" : ".jpg");
+        String name = (video ? "VIDEO-" : "IMG-") + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + (video ? ".mp4" : ".jpg");
         File file = new File(path, name);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
