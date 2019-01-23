@@ -56,7 +56,7 @@ import com.hy.picker.utils.PermissionUtils;
 import com.picker2.model.Photo;
 import com.picker2.model.PhotoDirectory;
 import com.picker2.utils.MediaListHolder;
-import com.picker2.utils.MediaStoreHelper;
+import com.picker2.utils.MediaScannerUtils;
 import com.yanzhenjie.permission.Permission;
 
 import java.io.File;
@@ -218,11 +218,6 @@ public class PictureSelectorActivity extends BaseActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(PhotoPicker.EXTRA_SHOW_GIF, gif);
-        bundle.putBoolean(PhotoPicker.EXTRA_ONLY_GIF, gifOnly);
-        bundle.putBoolean(PhotoPicker.EXTRA_PICK_VIDEO, video);
-        bundle.putParcelableArrayList(PhotoPicker.EXTRA_ITEMS, mSelectItems);
         if (null == mSelectItems || mSelectItems.isEmpty()) {
             MediaListHolder.selectPhotos.clear();
         } else {
@@ -230,13 +225,15 @@ public class PictureSelectorActivity extends BaseActivity {
             MediaListHolder.selectPhotos.addAll(mSelectItems);
         }
 
-        MediaStoreHelper.getPhotoDirs(this, bundle, new MediaStoreHelper.PhotosResultCallback() {
-            @Override
-            public void onResultCallback() {
-                runOnUiThread(new Runnable() {
+
+        new MediaScannerUtils.Builder(this)
+                .gif(gif)
+                .gifOnly(gifOnly)
+                .video(video)
+                .build()
+                .scanner(new MediaScannerUtils.OnResultListener() {
                     @Override
-                    public void run() {
-                        MediaStoreHelper.destroyLoader(PictureSelectorActivity.this, 1);
+                    public void onResult(boolean success) {
                         mGridViewAdapter.notifyDataSetChanged();
                         mCatalogAdapter.notifyDataSetChanged();
                         updateToolbar();
@@ -245,10 +242,6 @@ public class PictureSelectorActivity extends BaseActivity {
                         }
                     }
                 });
-            }
-
-
-        });
 
 
         mBtnSend.setOnClickListener(new View.OnClickListener() {
@@ -444,16 +437,13 @@ public class PictureSelectorActivity extends BaseActivity {
     }
 
     private void getPhoto(final String path) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Bundle bundle = new Bundle();
-                bundle.putString("path", path);
-                bundle.putBoolean("video", video);
-
-                MediaStoreHelper.getPhoto(PictureSelectorActivity.this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
+        new MediaScannerUtils.Builder(PictureSelectorActivity.this)
+                .path(path)
+                .video(video)
+                .build()
+                .scanner(new MediaScannerUtils.OnSingleResultListener() {
                     @Override
-                    public void onResultCallback(@Nullable Photo photo, int updateIndex) {
+                    public void onResult(@Nullable Photo photo, int updateIndex) {
                         if (photo == null) {
                             Toast.makeText(PictureSelectorActivity.this, video ?
                                             R.string.picker_video_failure : R.string.picker_photo_failure,
@@ -480,11 +470,8 @@ public class PictureSelectorActivity extends BaseActivity {
                         mGridViewAdapter.notifyDataSetChanged();
                         mCatalogAdapter.notifyDataSetChanged();
                         updateToolbar();
-                        MediaStoreHelper.destroyLoader(PictureSelectorActivity.this, 0);
                     }
                 });
-            }
-        });
 
     }
 

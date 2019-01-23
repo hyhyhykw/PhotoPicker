@@ -19,7 +19,7 @@ import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.MyFileProvider;
 import com.picker2.model.Photo;
-import com.picker2.utils.MediaStoreHelper;
+import com.picker2.utils.MediaScannerUtils;
 
 import java.io.File;
 import java.util.Date;
@@ -127,17 +127,13 @@ public class OpenCameraResultActivity extends BaseActivity {
 
 
     private void getPhoto(final String path, final File file) {
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Bundle bundle = new Bundle();
-                bundle.putString("path", path);
-                bundle.putBoolean("video", video);
-                bundle.putBoolean(PICKER_EXTRA_ADD, false);
-                MediaStoreHelper.getPhoto(OpenCameraResultActivity.this, bundle, new MediaStoreHelper.PhotoSingleCallback() {
+        new MediaScannerUtils.Builder(OpenCameraResultActivity.this)
+                .path(path)
+                .video(video)
+                .build()
+                .scanner(new MediaScannerUtils.OnSingleResultListener() {
                     @Override
-                    public void onResultCallback(@Nullable Photo photo, int updateIndex) {
+                    public void onResult(@Nullable Photo photo, int updateIndex) {
                         if (photo == null) {
                             Toast.makeText(OpenCameraResultActivity.this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                             return;
@@ -152,12 +148,8 @@ public class OpenCameraResultActivity extends BaseActivity {
                                 PhotoPicker.sTakePhotoListener.onTake(photo);
                             }
                         }
-                        MediaStoreHelper.destroyLoader(OpenCameraResultActivity.this, 0);
                     }
                 });
-            }
-        });
-
 
     }
 
