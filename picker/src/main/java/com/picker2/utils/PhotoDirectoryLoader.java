@@ -13,6 +13,7 @@ import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
 public class PhotoDirectoryLoader extends CursorLoader {
 
     public static final String[] IMAGE_PROJECTION = {
+            MediaStore.Images.Media._ID,
             MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media.TITLE,
             MediaStore.Images.Media.DATA,
@@ -26,6 +27,7 @@ public class PhotoDirectoryLoader extends CursorLoader {
     };
 
     public static final String[] VIDEO_PROJECTION = {
+            MediaStore.Video.Media._ID,
             MediaStore.Video.Media.BUCKET_ID,
             MediaStore.Video.Media.TITLE,
             MediaStore.Video.Media.DATA,
@@ -38,8 +40,6 @@ public class PhotoDirectoryLoader extends CursorLoader {
             MediaStore.Video.Media.HEIGHT,
             MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
     };
-
-
 
     public PhotoDirectoryLoader(Context context, boolean showGif, boolean gifOnly, boolean video) {
         super(context);

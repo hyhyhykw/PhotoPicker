@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import com.hy.picker.PhotoListener;
 import com.hy.picker.PhotoPicker;
 import com.hy.picker.TakePhotoListener;
+import com.hy.picker.utils.Logger;
 import com.picker2.model.Photo;
 
 import java.util.ArrayList;
@@ -54,7 +55,9 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
 
     @Override
     public void onPicked(ArrayList<Photo> picItems) {
-
+        for (Photo picItem : picItems) {
+            Logger.e(picItem);
+        }
 //        mFeedbackSelectPictureAdapter.reset(picItems);
     }
 

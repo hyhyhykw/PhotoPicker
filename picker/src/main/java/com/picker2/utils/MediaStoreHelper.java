@@ -3,6 +3,7 @@ package com.picker2.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,14 +13,17 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 
+import com.hy.picker.PhotoContext;
 import com.hy.picker.PhotoPicker;
 import com.hy.picker.R;
+import com.hy.picker.utils.Logger;
+import com.hy.picker.utils.MyFileProvider;
 import com.picker2.PickerConstants;
 import com.picker2.model.Photo;
 import com.picker2.model.PhotoDirectory;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -119,20 +123,34 @@ public class MediaStoreHelper implements PickerConstants {
                 int height = data.getInt(data.getColumnIndexOrThrow(HEIGHT));
                 long duration;
                 if (video) {
-                    duration = data.getLong(data.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+
                     MediaMetadataRetriever retr = new MediaMetadataRetriever();//获取视频第一帧
-                    retr.setDataSource(path);
+//                    retr.setDataSource(path);
+                    File file = new File(path);
+                    Uri uri;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        uri = MyFileProvider.getUriForFile(PhotoContext.getContext(),
+                                PhotoContext.getContext().getApplicationContext().getPackageName() + ".demo.file_provider", file);
+
+                    } else {
+                        uri = Uri.fromFile(file);
+                    }
+                    retr.setDataSource(PhotoContext.getContext(), uri);
+
                     String orientation;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                         orientation = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
                     } else {
                         orientation = "0";
                     }
+
                     if ("90".equals(orientation)) {
                         int temp = width;
                         width = height;
                         height = temp;
                     }
+
+                    duration = data.getLong(data.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
                 } else {
                     duration = 0;
                 }
@@ -206,7 +224,6 @@ public class MediaStoreHelper implements PickerConstants {
         private PhotosResultCallback resultCallback;
 
         private boolean video;
-        private ArrayList<Photo> photos;
 
         public PhotoDirLoaderCallbacks(Context context, PhotosResultCallback resultCallback) {
             this.context = new WeakReference<>(context);
@@ -220,7 +237,6 @@ public class MediaStoreHelper implements PickerConstants {
             boolean gif = args.getBoolean(PhotoPicker.EXTRA_SHOW_GIF, false);
             boolean gifOnly = args.getBoolean(PhotoPicker.EXTRA_ONLY_GIF, false);
             video = args.getBoolean(PhotoPicker.EXTRA_PICK_VIDEO, false);
-            photos = args.getParcelableArrayList(PhotoPicker.EXTRA_ITEMS);
 
             return new PhotoDirectoryLoader(context.get(), gif, gifOnly, video);
         }
@@ -239,6 +255,7 @@ public class MediaStoreHelper implements PickerConstants {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+
                     final String BUCKET_ID;
                     final String TITLE;
                     final String DATA;
@@ -249,6 +266,7 @@ public class MediaStoreHelper implements PickerConstants {
                     final String HEIGHT;
                     final String BUCKET_DISPLAY_NAME;
                     final String DATE_TAKEN;
+
                     if (video) {
                         BUCKET_ID = MediaStore.Video.Media.BUCKET_ID;
                         TITLE = MediaStore.Video.Media.TITLE;
@@ -261,6 +279,7 @@ public class MediaStoreHelper implements PickerConstants {
                         DATE_TAKEN = MediaStore.Video.Media.DATE_TAKEN;
                         BUCKET_DISPLAY_NAME = MediaStore.Video.Media.BUCKET_DISPLAY_NAME;
                         photoDirectoryAll.setName(context.getString(R.string.picker_all_video));
+
                     } else {
                         BUCKET_ID = MediaStore.Images.Media.BUCKET_ID;
                         TITLE = MediaStore.Images.Media.TITLE;
@@ -278,11 +297,13 @@ public class MediaStoreHelper implements PickerConstants {
                     photoDirectoryAll.setId("ALL");
 
                     while (data.moveToNext()) {
+                        long size = data.getInt(data.getColumnIndexOrThrow(SIZE));
+                        if (size < 1) continue;
+
                         long datetaken = data.getLong(data.getColumnIndexOrThrow(DATE_TAKEN));
                         String bucketId = data.getString(data.getColumnIndexOrThrow(BUCKET_ID));
                         String name = data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME));
                         String path = data.getString(data.getColumnIndexOrThrow(DATA));
-                        long size = data.getInt(data.getColumnIndexOrThrow(SIZE));
 
                         String title = data.getString(data.getColumnIndexOrThrow(TITLE));
                         String mimeType = data.getString(data.getColumnIndexOrThrow(MIME_TYPE));
@@ -292,24 +313,44 @@ public class MediaStoreHelper implements PickerConstants {
 
                         if (video) {
                             duration = data.getLong(data.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
-                            MediaMetadataRetriever retr = new MediaMetadataRetriever();//获取视频第一帧
-                            retr.setDataSource(path);
+                            if (duration < 1000) continue;
+
                             String orientation;
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                                orientation = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-                            } else {
+                            try {
+                                MediaMetadataRetriever retr = new MediaMetadataRetriever();//获取视频第一帧
+
+                                File file = new File(path);
+                                Uri uri;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    uri = MyFileProvider.getUriForFile(PhotoContext.getContext(),
+                                            PhotoContext.getContext().getApplicationContext().getPackageName() + ".demo.file_provider", file);
+
+                                } else {
+                                    uri = Uri.fromFile(file);
+                                }
+                                retr.setDataSource(PhotoContext.getContext(), uri);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                                    orientation = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+                                } else {
+                                    orientation = "0";
+                                }
+                            } catch (Exception e) {
                                 orientation = "0";
+                                Logger.e("发生错误  文件路径:" + path, e);
                             }
+
+
                             if ("90".equals(orientation)) {
                                 int temp = width;
                                 width = height;
                                 height = temp;
                             }
+
+
                         } else {
                             duration = 0;
                         }
 
-                        if (size < 1) continue;
 
                         PhotoDirectory photoDirectory = new PhotoDirectory();
                         photoDirectory.setId(bucketId);
