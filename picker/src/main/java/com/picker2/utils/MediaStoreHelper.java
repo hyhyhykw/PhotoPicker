@@ -252,134 +252,129 @@ public class MediaStoreHelper implements PickerConstants {
             final Context context = this.context.get();
             if (context == null) return;
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
 
-                    final String BUCKET_ID;
-                    final String TITLE;
-                    final String DATA;
-                    final String MIME_TYPE;
-                    final String DATE_ADDED;
-                    final String SIZE;
-                    final String WIDTH;
-                    final String HEIGHT;
-                    final String BUCKET_DISPLAY_NAME;
-                    final String DATE_TAKEN;
+            final String BUCKET_ID;
+            final String TITLE;
+            final String DATA;
+            final String MIME_TYPE;
+            final String DATE_ADDED;
+            final String SIZE;
+            final String WIDTH;
+            final String HEIGHT;
+            final String BUCKET_DISPLAY_NAME;
+            final String DATE_TAKEN;
 
-                    if (video) {
-                        BUCKET_ID = MediaStore.Video.Media.BUCKET_ID;
-                        TITLE = MediaStore.Video.Media.TITLE;
-                        DATA = MediaStore.Video.Media.DATA;
-                        MIME_TYPE = MediaStore.Video.Media.MIME_TYPE;
-                        DATE_ADDED = MediaStore.Video.Media.DATE_ADDED;
-                        SIZE = MediaStore.Video.Media.SIZE;
-                        WIDTH = MediaStore.Video.Media.WIDTH;
-                        HEIGHT = MediaStore.Video.Media.HEIGHT;
-                        DATE_TAKEN = MediaStore.Video.Media.DATE_TAKEN;
-                        BUCKET_DISPLAY_NAME = MediaStore.Video.Media.BUCKET_DISPLAY_NAME;
-                        photoDirectoryAll.setName(context.getString(R.string.picker_all_video));
+            if (video) {
+                BUCKET_ID = MediaStore.Video.Media.BUCKET_ID;
+                TITLE = MediaStore.Video.Media.TITLE;
+                DATA = MediaStore.Video.Media.DATA;
+                MIME_TYPE = MediaStore.Video.Media.MIME_TYPE;
+                DATE_ADDED = MediaStore.Video.Media.DATE_ADDED;
+                SIZE = MediaStore.Video.Media.SIZE;
+                WIDTH = MediaStore.Video.Media.WIDTH;
+                HEIGHT = MediaStore.Video.Media.HEIGHT;
+                DATE_TAKEN = MediaStore.Video.Media.DATE_TAKEN;
+                BUCKET_DISPLAY_NAME = MediaStore.Video.Media.BUCKET_DISPLAY_NAME;
+                photoDirectoryAll.setName(context.getString(R.string.picker_all_video));
 
-                    } else {
-                        BUCKET_ID = MediaStore.Images.Media.BUCKET_ID;
-                        TITLE = MediaStore.Images.Media.TITLE;
-                        DATA = MediaStore.Images.Media.DATA;
-                        MIME_TYPE = MediaStore.Images.Media.MIME_TYPE;
-                        DATE_ADDED = MediaStore.Images.Media.DATE_ADDED;
-                        SIZE = MediaStore.Images.Media.SIZE;
-                        WIDTH = MediaStore.Images.Media.WIDTH;
-                        HEIGHT = MediaStore.Images.Media.HEIGHT;
-                        DATE_TAKEN = MediaStore.Images.Media.DATE_TAKEN;
-                        BUCKET_DISPLAY_NAME = MediaStore.Images.Media.BUCKET_DISPLAY_NAME;
-                        photoDirectoryAll.setName(context.getString(R.string.picker_all_image));
-                    }
+            } else {
+                BUCKET_ID = MediaStore.Images.Media.BUCKET_ID;
+                TITLE = MediaStore.Images.Media.TITLE;
+                DATA = MediaStore.Images.Media.DATA;
+                MIME_TYPE = MediaStore.Images.Media.MIME_TYPE;
+                DATE_ADDED = MediaStore.Images.Media.DATE_ADDED;
+                SIZE = MediaStore.Images.Media.SIZE;
+                WIDTH = MediaStore.Images.Media.WIDTH;
+                HEIGHT = MediaStore.Images.Media.HEIGHT;
+                DATE_TAKEN = MediaStore.Images.Media.DATE_TAKEN;
+                BUCKET_DISPLAY_NAME = MediaStore.Images.Media.BUCKET_DISPLAY_NAME;
+                photoDirectoryAll.setName(context.getString(R.string.picker_all_image));
+            }
 
-                    photoDirectoryAll.setId("ALL");
+            photoDirectoryAll.setId("ALL");
 
-                    while (data.moveToNext()) {
-                        long size = data.getInt(data.getColumnIndexOrThrow(SIZE));
-                        if (size < 1) continue;
+            while (data.moveToNext()) {
+                long size = data.getInt(data.getColumnIndexOrThrow(SIZE));
+                if (size < 1) continue;
 
-                        long datetaken = data.getLong(data.getColumnIndexOrThrow(DATE_TAKEN));
-                        String bucketId = data.getString(data.getColumnIndexOrThrow(BUCKET_ID));
-                        String name = data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME));
-                        String path = data.getString(data.getColumnIndexOrThrow(DATA));
+                long datetaken = data.getLong(data.getColumnIndexOrThrow(DATE_TAKEN));
+                String bucketId = data.getString(data.getColumnIndexOrThrow(BUCKET_ID));
+                String name = data.getString(data.getColumnIndexOrThrow(BUCKET_DISPLAY_NAME));
+                String path = data.getString(data.getColumnIndexOrThrow(DATA));
 
-                        String title = data.getString(data.getColumnIndexOrThrow(TITLE));
-                        String mimeType = data.getString(data.getColumnIndexOrThrow(MIME_TYPE));
-                        int width = data.getInt(data.getColumnIndexOrThrow(WIDTH));
-                        int height = data.getInt(data.getColumnIndexOrThrow(HEIGHT));
-                        long duration;
+                String title = data.getString(data.getColumnIndexOrThrow(TITLE));
+                String mimeType = data.getString(data.getColumnIndexOrThrow(MIME_TYPE));
+                int width = data.getInt(data.getColumnIndexOrThrow(WIDTH));
+                int height = data.getInt(data.getColumnIndexOrThrow(HEIGHT));
+                long duration;
 
-                        if (video) {
-                            duration = data.getLong(data.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
-                            if (duration < 1000) continue;
+                if (video) {
+                    duration = data.getLong(data.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                    if (duration < 1000) continue;
 
-                            String orientation;
-                            try {
-                                MediaMetadataRetriever retr = new MediaMetadataRetriever();//获取视频第一帧
+                    String orientation;
+                    try {
+                        MediaMetadataRetriever retr = new MediaMetadataRetriever();//获取视频第一帧
 
-                                File file = new File(path);
-                                Uri uri;
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    uri = MyFileProvider.getUriForFile(PhotoContext.getContext(),
-                                            PhotoContext.getContext().getApplicationContext().getPackageName() + ".demo.file_provider", file);
-
-                                } else {
-                                    uri = Uri.fromFile(file);
-                                }
-                                retr.setDataSource(PhotoContext.getContext(), uri);
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                                    orientation = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-                                } else {
-                                    orientation = "0";
-                                }
-                            } catch (Exception e) {
-                                orientation = "0";
-                                Logger.e("发生错误  文件路径:" + path, e);
-                            }
-
-
-                            if ("90".equals(orientation)) {
-                                int temp = width;
-                                width = height;
-                                height = temp;
-                            }
-
+                        File file = new File(path);
+                        Uri uri;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            uri = MyFileProvider.getUriForFile(PhotoContext.getContext(),
+                                    PhotoContext.getContext().getApplicationContext().getPackageName() + ".demo.file_provider", file);
 
                         } else {
-                            duration = 0;
+                            uri = Uri.fromFile(file);
                         }
-
-
-                        PhotoDirectory photoDirectory = new PhotoDirectory();
-                        photoDirectory.setId(bucketId);
-                        photoDirectory.setName(name);
-
-                        Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
-
-                        if (!directories.contains(photoDirectory)) {
-                            photoDirectory.setCoverPath(path);
-                            photoDirectory.addPhoto(photo);
-                            photoDirectory.setDateAdded(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
-                            directories.add(photoDirectory);
+                        retr.setDataSource(PhotoContext.getContext(), uri);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                            orientation = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
                         } else {
-                            directories.get(directories.indexOf(photoDirectory))
-                                    .addPhoto(photo);
+                            orientation = "0";
                         }
+                    } catch (Exception e) {
+                        orientation = "0";
+                        Logger.e("发生错误  文件路径:" + path, e);
+                    }
 
-                        photoDirectoryAll.addPhoto(photo);
-                        MediaListHolder.currentPhotos.add(photo);
+
+                    if ("90".equals(orientation)) {
+                        int temp = width;
+                        width = height;
+                        height = temp;
                     }
-                    if (photoDirectoryAll.getPhotos().size() > 0) {
-                        photoDirectoryAll.setCoverPath(photoDirectoryAll.getPhotos().get(0).getUri());
-                    }
-                    directories.add(0, photoDirectoryAll);
-                    if (resultCallback != null) {
-                        resultCallback.onResultCallback();
-                    }
+
+
+                } else {
+                    duration = 0;
                 }
-            }).start();
+
+
+                PhotoDirectory photoDirectory = new PhotoDirectory();
+                photoDirectory.setId(bucketId);
+                photoDirectory.setName(name);
+
+                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
+
+                if (!directories.contains(photoDirectory)) {
+                    photoDirectory.setCoverPath(path);
+                    photoDirectory.addPhoto(photo);
+                    photoDirectory.setDateAdded(data.getLong(data.getColumnIndexOrThrow(DATE_ADDED)));
+                    directories.add(photoDirectory);
+                } else {
+                    directories.get(directories.indexOf(photoDirectory))
+                            .addPhoto(photo);
+                }
+
+                photoDirectoryAll.addPhoto(photo);
+                MediaListHolder.currentPhotos.add(photo);
+            }
+            if (photoDirectoryAll.getPhotos().size() > 0) {
+                photoDirectoryAll.setCoverPath(photoDirectoryAll.getPhotos().get(0).getUri());
+            }
+            directories.add(0, photoDirectoryAll);
+            if (resultCallback != null) {
+                resultCallback.onResultCallback();
+            }
 
         }
 
