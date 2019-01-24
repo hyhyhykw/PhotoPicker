@@ -3,22 +3,16 @@ package com.picker2.utils;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.hy.picker.PhotoContext;
 import com.hy.picker.R;
-import com.hy.picker.utils.Logger;
-import com.hy.picker.utils.MyFileProvider;
 import com.picker2.model.Photo;
 import com.picker2.model.PhotoDirectory;
 
-import java.io.File;
 import java.util.List;
 
 import static android.provider.MediaStore.MediaColumns.DATA;
@@ -266,39 +260,6 @@ public class MediaScannerUtils {
                 if (mBuilder.video) {
                     duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
                     if (duration < 1000) continue;
-
-                    String orientation;
-                    try {
-                        MediaMetadataRetriever retr = new MediaMetadataRetriever();//获取视频第一帧
-
-                        File file = new File(path);
-                        Uri uri;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            uri = MyFileProvider.getUriForFile(PhotoContext.getContext(),
-                                    PhotoContext.getContext().getApplicationContext().getPackageName() + ".demo.file_provider", file);
-
-                        } else {
-                            uri = Uri.fromFile(file);
-                        }
-                        retr.setDataSource(PhotoContext.getContext(), uri);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                            orientation = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-                        } else {
-                            orientation = "0";
-                        }
-                    } catch (Exception e) {
-                        orientation = "0";
-                        Logger.e("发生错误  文件路径:" + path, e);
-                    }
-
-
-                    if ("90".equals(orientation)) {
-                        int temp = width;
-                        width = height;
-                        height = temp;
-                    }
-
-
                 } else {
                     duration = 0;
                 }
@@ -444,32 +405,6 @@ public class MediaScannerUtils {
                 if (mBuilder.video) {
                     duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
                     if (duration < 1000) return null;
-                    MediaMetadataRetriever retr = new MediaMetadataRetriever();//获取视频第一帧
-//                    retr.setDataSource(path);
-                    File file = new File(path);
-                    Uri uri;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        uri = MyFileProvider.getUriForFile(PhotoContext.getContext(),
-                                PhotoContext.getContext().getApplicationContext().getPackageName() + ".demo.file_provider", file);
-
-                    } else {
-                        uri = Uri.fromFile(file);
-                    }
-                    retr.setDataSource(PhotoContext.getContext(), uri);
-
-                    String orientation;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        orientation = retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-                    } else {
-                        orientation = "0";
-                    }
-
-                    if ("90".equals(orientation)) {
-                        int temp = width;
-                        width = height;
-                        height = temp;
-                    }
-
 
                 } else {
                     duration = 0;
