@@ -405,7 +405,6 @@ public class MediaScannerUtils {
                 if (mBuilder.video) {
                     duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
                     if (duration < 1000) return null;
-
                 } else {
                     duration = 0;
                 }
