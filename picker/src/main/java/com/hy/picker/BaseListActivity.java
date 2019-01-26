@@ -2,8 +2,8 @@ package com.hy.picker;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -29,21 +29,11 @@ public abstract class BaseListActivity extends BaseActivity implements Constants
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
         ibBack = findViewById(R.id.picker_back);
-        ibBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        ibBack.setOnClickListener(v -> onBackPressed());
         rvCrystal = findViewById(R.id.picker_rcy_crystal);
         mLytLoad = findViewById(R.id.picker_photo_load);
         mLytLoadError = findViewById(R.id.picker_load_error);
-        mLytLoadError.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                reload();
-            }
-        });
+        mLytLoadError.setOnClickListener(v -> reload());
         initView();
     }
 

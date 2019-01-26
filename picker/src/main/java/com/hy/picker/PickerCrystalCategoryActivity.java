@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Looper;
 import android.os.MessageQueue;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.gson.Gson;
 import com.hy.picker.adapter.CrystalCategoryAdapter;
@@ -31,12 +31,9 @@ public class PickerCrystalCategoryActivity extends BaseListActivity implements C
         rvCrystal.setLayoutManager(new LinearLayoutManager(this));
 
         isOther = getIntent().getBooleanExtra("other", false);
-        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
-            @Override
-            public boolean queueIdle() {
-                initData();
-                return false;
-            }
+        Looper.myQueue().addIdleHandler(() -> {
+            initData();
+            return false;
         });
     }
 

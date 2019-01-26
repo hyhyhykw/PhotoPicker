@@ -1,6 +1,6 @@
 package com.hy.picker.utils;
 
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 
 /**
  * Created time : 2018/11/13 14:34.

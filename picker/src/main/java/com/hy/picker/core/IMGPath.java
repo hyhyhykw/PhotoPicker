@@ -14,11 +14,11 @@ public class IMGPath {
 
     protected Path path;
 
-    private int color = Color.RED;
+    private int color;
 
-    private float width = BASE_MOSAIC_WIDTH;
+    private float width;
 
-    private IMGMode mode = IMGMode.DOODLE;
+    private IMGMode mode;
 
     public static final float BASE_DOODLE_WIDTH = 20f;
 

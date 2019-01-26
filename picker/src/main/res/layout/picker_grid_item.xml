@@ -31,7 +31,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/picker_sp_grid_mask">
 
-        <android.support.v7.widget.AppCompatCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@id/picker_item_checkbox"
             style="@style/Widget.AppCompat.CompoundButton.CheckBox"
             android:layout_width="32dp"

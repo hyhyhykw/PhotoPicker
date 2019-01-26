@@ -119,15 +119,10 @@ public class PhotoPicker implements PickerConstants {
     public void openCamera(final Context context, TakePhotoListener takePhotoListener) {
         sTakePhotoListener = takePhotoListener;
         new PermissionUtils(context)
-                .setPermissionListener(new PermissionUtils.PermissionListener() {
-                    @Override
-                    public void onResult() {
-                        context.startActivity(new Intent(context, OpenCameraResultActivity.class)
-                                .putExtra("edit", isEdit)
-                                .putExtra("video", isVideo)
-                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                    }
-                })
+                .setPermissionListener(() -> context.startActivity(new Intent(context, OpenCameraResultActivity.class)
+                        .putExtra("edit", isEdit)
+                        .putExtra("video", isVideo)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)))
                 .requestPermission(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE);
     }
 
@@ -146,12 +141,7 @@ public class PhotoPicker implements PickerConstants {
     private static void delete(File cache) {
         if (cache.isDirectory()) {
 
-            File[] files = cache.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return !pathname.isDirectory() && pathname.getAbsolutePath().startsWith("IMG-EDIT");
-                }
-            });
+            File[] files = cache.listFiles(pathname -> !pathname.isDirectory() && pathname.getAbsolutePath().startsWith("IMG-EDIT"));
             for (File file : files) {
                 delete(file);
             }

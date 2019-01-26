@@ -1,6 +1,6 @@
 package com.hy.picker.adapter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -81,23 +81,15 @@ public class CrystalAdapter extends BaseRecyclerAdapter<CrystalResult.Crystal, C
             } else {
                 mIvDownload.setEnabled(true);
                 mIvDownload.setImageResource(R.drawable.picker_download);
-                mIvDownload.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        download(position, exist);
-                    }
-                });
+                mIvDownload.setOnClickListener(v -> download(position, exist));
             }
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (exist.isExist()) {
-                        if (mOnItemClickListener != null) {
-                            mOnItemClickListener.onClick(exist);
-                        }
-                    } else {
-                        showDownloadDialog(position, exist);
+            itemView.setOnClickListener(v -> {
+                if (exist.isExist()) {
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onClick(exist);
                     }
+                } else {
+                    showDownloadDialog(position, exist);
                 }
             });
         }
@@ -108,12 +100,7 @@ public class CrystalAdapter extends BaseRecyclerAdapter<CrystalResult.Crystal, C
                     .content(R.string.picker_sticker_not_download)
                     .positiveText(android.R.string.ok)
                     .negativeText(R.string.picker_cancel)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            download(position, exist);
-                        }
-                    })
+                    .onPositive((dialog, which) -> download(position, exist))
                     .show();
         }
 

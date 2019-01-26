@@ -3,7 +3,7 @@ package com.hy.picker;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.media.ExifInterface;
+import androidx.exifinterface.media.ExifInterface;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.ViewSwitcher;

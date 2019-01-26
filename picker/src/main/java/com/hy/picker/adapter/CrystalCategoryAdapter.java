@@ -1,6 +1,6 @@
 package com.hy.picker.adapter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,11 +46,8 @@ public class CrystalCategoryAdapter extends BaseRecyclerAdapter<CrystalCategory.
                     .load(item.getImage())
                     .into(mIvCrystal);
             mTvName.setText(item.getName());
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (null != mOnItemClickListener) mOnItemClickListener.onClick(item);
-                }
+            itemView.setOnClickListener(v -> {
+                if (null != mOnItemClickListener) mOnItemClickListener.onClick(item);
             });
         }
     }

@@ -1,5 +1,6 @@
 package com.hy.picker.core.sticker;
 
+import android.annotation.SuppressLint;
 import android.graphics.Matrix;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -32,6 +33,7 @@ public class IMGStickerAdjustHelper implements View.OnTouchListener {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {

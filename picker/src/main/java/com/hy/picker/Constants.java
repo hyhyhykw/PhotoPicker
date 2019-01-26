@@ -1,6 +1,6 @@
 package com.hy.picker;
 
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 /**
  * Created time : 2018/8/28 9:46.

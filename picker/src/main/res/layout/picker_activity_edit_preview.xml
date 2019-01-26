@@ -27,7 +27,8 @@
             android:layout_height="48dp"
             android:foreground="@drawable/picker_foreground"
             android:src="@drawable/picker_picsel_back_normal"
-            android:tint="?attr/picker_back_color"/>
+            android:tint="?attr/picker_back_color"
+            tools:ignore="ContentDescription"/>
 
         <TextView
             android:id="@id/picker_index_total"

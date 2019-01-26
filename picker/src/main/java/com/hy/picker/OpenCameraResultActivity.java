@@ -12,7 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.widget.Toast;
 
 import com.hy.picker.utils.CommonUtils;
@@ -92,12 +92,7 @@ public class OpenCameraResultActivity extends BaseActivity {
                     final File file = new File(path);
 
                     if (file.exists()) {
-                        MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                            @Override
-                            public void onScanCompleted(final String path, Uri uri) {
-                                getPhoto(path, file);
-                            }
-                        });
+                        MediaScannerConnection.scanFile(this, new String[]{path}, null, (path1, uri) -> getPhoto(path1, file));
                     } else {
                         Toast.makeText(this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                         finish();
@@ -131,22 +126,19 @@ public class OpenCameraResultActivity extends BaseActivity {
                 .path(path)
                 .video(video)
                 .build()
-                .scanner(new MediaScannerUtils.OnSingleResultListener() {
-                    @Override
-                    public void onResult(@Nullable Photo photo, int updateIndex) {
-                        if (photo == null) {
-                            Toast.makeText(OpenCameraResultActivity.this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
-                            return;
-                        }
+                .scanner((photo, updateIndex) -> {
+                    if (photo == null) {
+                        Toast.makeText(OpenCameraResultActivity.this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                        if (video) {
-                            PhotoPicker.sTakePhotoListener.onTake(photo);
+                    if (video) {
+                        PhotoPicker.sTakePhotoListener.onTake(photo);
+                    } else {
+                        if (PhotoPicker.isEdit) {
+                            toEdit(Uri.fromFile(file));
                         } else {
-                            if (PhotoPicker.isEdit) {
-                                toEdit(Uri.fromFile(file));
-                            } else {
-                                PhotoPicker.sTakePhotoListener.onTake(photo);
-                            }
+                            PhotoPicker.sTakePhotoListener.onTake(photo);
                         }
                     }
                 });

@@ -1,5 +1,7 @@
 package com.hy.picker.core.homing;
 
+import androidx.annotation.NonNull;
+
 /**
  * Created by felix on 2017/11/28 下午4:14.
  */
@@ -42,6 +44,7 @@ public class IMGHoming {
         return Float.compare(sHoming.rotate, eHoming.rotate) != 0;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "IMGHoming{" +

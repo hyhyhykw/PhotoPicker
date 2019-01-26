@@ -16,10 +16,8 @@
 package com.hy.picker.utils;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hy.picker.R;
 import com.yanzhenjie.permission.AndPermission;
@@ -50,19 +48,9 @@ public final class PermissionSetting {
                 .title(R.string.picker_title_dialog)
                 .content(message)
                 .positiveText(R.string.picker_setting)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        settingService.execute();
-                    }
-                })
+                .onPositive((dialog, which) -> settingService.execute())
                 .negativeText(R.string.picker_no)
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        settingService.cancel();
-                    }
-                }).show();
+                .onNegative((dialog, which) -> settingService.cancel()).show();
 
     }
 }

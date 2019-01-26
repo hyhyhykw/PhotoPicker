@@ -63,12 +63,7 @@ public class CrystalDownloadUtils {
 
     private void addTask(final AsyncTask<String, Integer, File> task) {
         mDownloadListener.onStart();
-        singleThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                task.execute();
-            }
-        });
+        singleThreadPool.execute(task::execute);
     }
 
     public static class DownloadTask extends AsyncTask<String, Integer, File> {

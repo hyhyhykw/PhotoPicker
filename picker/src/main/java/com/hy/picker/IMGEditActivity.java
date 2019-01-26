@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -263,12 +263,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                 }
 
 
-                MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                    @Override
-                    public void onScanCompleted(final String path, Uri uri) {
-                        getPhoto(path);
-                    }
-                });
+                MediaScannerConnection.scanFile(this, new String[]{path}, null, (path1, uri) -> getPhoto(path1));
 
 
                 return;
@@ -287,26 +282,23 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                 .video(false)
                 .path(path)
                 .build()
-                .scanner(new MediaScannerUtils.OnSingleResultListener() {
-                    @Override
-                    public void onResult(@Nullable Photo photo, int updateIndex) {
-                        if (photo == null) {
-                            setResult(RESULT_CANCELED);
-                            finish();
-                            return;
-                        }
-
-                        MediaListHolder.selectPhotos.add(photo);
-                        Intent intent = new Intent(PICKER_ACTION_MEDIA_ADD);
-                        intent.putExtra(PICKER_EXTRA_PHOTO, photo);
-                        intent.putExtra(PICKER_EXTRA_UPDATE_INDEX, updateIndex);
-                        sendBroadcast(intent);
-
-                        startActivity(new Intent(IMGEditActivity.this, PictureEditPreviewActivity.class)
-                                .putExtra("picItem", photo));
-
+                .scanner((photo, updateIndex) -> {
+                    if (photo == null) {
+                        setResult(RESULT_CANCELED);
                         finish();
+                        return;
                     }
+
+                    MediaListHolder.selectPhotos.add(photo);
+                    Intent intent = new Intent(PICKER_ACTION_MEDIA_ADD);
+                    intent.putExtra(PICKER_EXTRA_PHOTO, photo);
+                    intent.putExtra(PICKER_EXTRA_UPDATE_INDEX, updateIndex);
+                    sendBroadcast(intent);
+
+                    startActivity(new Intent(IMGEditActivity.this, PictureEditPreviewActivity.class)
+                            .putExtra("picItem", photo));
+
+                    finish();
                 });
 
 

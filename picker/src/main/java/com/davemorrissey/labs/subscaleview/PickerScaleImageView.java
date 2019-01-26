@@ -14,15 +14,15 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.annotation.Nullable;
-import android.support.media.ExifInterface;
+import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.annotation.AnyThread;
-import android.support.annotation.NonNull;
+import androidx.annotation.AnyThread;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -332,16 +332,14 @@ public class PickerScaleImageView extends View {
         setDoubleTapZoomDpi(160);
         setMinimumTileDpi(320);
         setGestureDetector(context);
-        this.handler = new Handler(new Handler.Callback() {
-            public boolean handleMessage(Message message) {
-                if (message.what == MESSAGE_LONG_CLICK && onLongClickListener != null) {
-                    maxTouchCount = 0;
-                    PickerScaleImageView.super.setOnLongClickListener(onLongClickListener);
-                    performLongClick();
-                    PickerScaleImageView.super.setOnLongClickListener(null);
-                }
-                return true;
+        this.handler = new Handler(message -> {
+            if (message.what == MESSAGE_LONG_CLICK && onLongClickListener != null) {
+                maxTouchCount = 0;
+                PickerScaleImageView.super.setOnLongClickListener(onLongClickListener);
+                performLongClick();
+                PickerScaleImageView.super.setOnLongClickListener(null);
             }
+            return true;
         });
         // Handle XML attributes
         if (attr != null) {
@@ -1613,7 +1611,7 @@ public class PickerScaleImageView extends View {
         TilesInitTask(PickerScaleImageView view, Context context, DecoderFactory<? extends ImageRegionDecoder> decoderFactory, Uri source) {
             this.viewRef = new WeakReference<>(view);
             this.contextRef = new WeakReference<>(context);
-            this.decoderFactoryRef = new WeakReference<DecoderFactory<? extends ImageRegionDecoder>>(decoderFactory);
+            this.decoderFactoryRef = new WeakReference<>(decoderFactory);
             this.source = source;
         }
 
@@ -1797,7 +1795,7 @@ public class PickerScaleImageView extends View {
         BitmapLoadTask(PickerScaleImageView view, Context context, DecoderFactory<? extends ImageDecoder> decoderFactory, Uri source, boolean preview) {
             this.viewRef = new WeakReference<>(view);
             this.contextRef = new WeakReference<>(context);
-            this.decoderFactoryRef = new WeakReference<DecoderFactory<? extends ImageDecoder>>(decoderFactory);
+            this.decoderFactoryRef = new WeakReference<>(decoderFactory);
             this.source = source;
             this.preview = preview;
         }

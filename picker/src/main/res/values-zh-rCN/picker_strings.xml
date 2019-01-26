@@ -11,7 +11,11 @@
     <string name="picker_picsel_videotype">视频</string>
     <string name="picker_picsel_toolbar_preview">预览</string>
     <string name="picker_picsel_toolbar_preview_num">预览(%d)</string>
-    <string name="picker_picsel_selected_max">您最多只能选择%d张图片</string>
+
+    <plurals name="picker_picsel_selected_max">
+        <item quantity="other">您最多只能选择%d张图片</item>
+    </plurals>
+
     <string name="picker_picsel_take_picture">拍摄照片</string>
     <string name="picker_picsel_record_video">录制视频</string>
     <string name="picker_picsel_catalog_allpic">所有图片</string>
@@ -19,6 +23,7 @@
     <string name="picker_all_video">所有视频</string>
     <string name="picker_picsel_catalog_number">%d张</string>
 
+    <string name="picker_app_name">FireBaseAllDemo</string>
     <!-- PicturePreviewActivity -->
     <!--<string name="picker_picprev_origin">原图</string>-->
     <!--<string name="picker_picprev_origin_size">原图(%s)</string>-->

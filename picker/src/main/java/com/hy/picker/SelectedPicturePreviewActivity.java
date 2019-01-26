@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -64,12 +64,7 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
 
         mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size()));
 
-        mBtnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        mBtnBack.setOnClickListener(v -> onBackPressed());
 
         mViewPager.setAdapter(new PreviewAdapter());
         mViewPager.setCurrentItem(mCurrentIndex);
@@ -107,12 +102,7 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
             Photo photo = mItemList.get(position);
             if (photo.isGif()) {
                 final ImageView imageView = new ImageView(container.getContext());
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        finish();
-                    }
-                });
+                imageView.setOnClickListener(v -> finish());
 
                 String uri = photo.getUri();
                 Glide.with(container.getContext())
@@ -127,12 +117,7 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
             } else {
 
                 PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        finish();
-                    }
-                });
+                imageView.setOnClickListener(v -> finish());
 
 
                 String uri = photo.getUri();

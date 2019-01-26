@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Looper;
 import android.os.MessageQueue;
-import android.support.v7.widget.GridLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.gson.Gson;
 import com.hy.picker.adapter.CrystalAdapter;
@@ -36,12 +36,9 @@ public class PickerCrystalActivity extends BaseListActivity implements CrystalAd
         rvCrystal.setAdapter(mCrystalAdapter);
         rvCrystal.setLayoutManager(new GridLayoutManager(this, 3));
 
-        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
-            @Override
-            public boolean queueIdle() {
-                initData();
-                return false;
-            }
+        Looper.myQueue().addIdleHandler(() -> {
+            initData();
+            return false;
         });
     }
 

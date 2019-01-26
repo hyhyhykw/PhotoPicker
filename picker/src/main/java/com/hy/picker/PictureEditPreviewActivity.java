@@ -7,7 +7,7 @@ import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.MessageQueue;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -71,67 +71,52 @@ public class PictureEditPreviewActivity extends BaseActivity {
         }
 
 
-        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
-            @Override
-            public boolean queueIdle() {
-                if (AndroidLifecycleUtils.canLoadImage(PictureEditPreviewActivity.this)) {
-                    String uri = mPicItem.getUri();
-                    Glide.with(PictureEditPreviewActivity.this)
-                            .asFile()
-                            .load(new File(uri))
-                            .apply(new RequestOptions()
-                                    .error(mDefaultDrawable)
-                                    .placeholder(mDefaultDrawable))
-                            .into(new PickerScaleViewTarget(mPhotoView));
+        Looper.myQueue().addIdleHandler(() -> {
+            if (AndroidLifecycleUtils.canLoadImage(PictureEditPreviewActivity.this)) {
+                String uri = mPicItem.getUri();
+                Glide.with(PictureEditPreviewActivity.this)
+                        .asFile()
+                        .load(new File(uri))
+                        .apply(new RequestOptions()
+                                .error(mDefaultDrawable)
+                                .placeholder(mDefaultDrawable))
+                        .into(new PickerScaleViewTarget(mPhotoView));
 
-                }
-                return false;
             }
+            return false;
         });
 
 
-        mPhotoView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mFullScreen = !mFullScreen;
+        mPhotoView.setOnClickListener(v -> {
+            mFullScreen = !mFullScreen;
 //                View decorView;
 //                byte uiOptions;
-                if (mFullScreen) {
+            if (mFullScreen) {
 //                    decorView = getWindow().getDecorView();
 //                    uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
 //                    decorView.setSystemUiVisibility(uiOptions);
-                    mToolbarTop.setVisibility(View.INVISIBLE);
-                } else {
+                mToolbarTop.setVisibility(View.INVISIBLE);
+            } else {
 //                    CommonUtils.processMIUI(PictureEditPreviewActivity.this, mIsStatusBlack);
 //                    decorView = getWindow().getDecorView();
 //                    uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
 //                    decorView.setSystemUiVisibility(uiOptions);
 
-                    mToolbarTop.setVisibility(View.VISIBLE);
-                }
+                mToolbarTop.setVisibility(View.VISIBLE);
             }
         });
 
 
         mWholeView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-        mBtnBack.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mBtnBack.setOnClickListener(v -> onBackPressed());
 
-                onBackPressed();
-            }
-        });
-
-        mBtnSend.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent broadcast = new Intent();
-                broadcast.setAction(PICKER_ACTION_MEDIA_SURE);
-                broadcast.putExtra(PICKER_EXTRA_PHOTO, mPicItem);
-                sendBroadcast(broadcast);
-                onBackPressed();
-            }
+        mBtnSend.setOnClickListener(v -> {
+            Intent broadcast = new Intent();
+            broadcast.setAction(PICKER_ACTION_MEDIA_SURE);
+            broadcast.putExtra(PICKER_EXTRA_PHOTO, mPicItem);
+            sendBroadcast(broadcast);
+            onBackPressed();
         });
 
     }

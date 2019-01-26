@@ -1,9 +1,6 @@
 package com.hy.photopicker;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
 import com.hy.picker.PhotoListener;
 import com.hy.picker.PhotoPicker;
@@ -12,6 +9,10 @@ import com.hy.picker.utils.Logger;
 import com.picker2.model.Photo;
 
 import java.util.ArrayList;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity implements FeedbackSelectPictureAdapter.OnItemClickListener, PhotoListener, TakePhotoListener {
     RecyclerView mRcyPhoto;

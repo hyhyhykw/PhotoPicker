@@ -3,10 +3,11 @@ package com.picker2.model;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.hy.picker.utils.ObjectsUtils;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by donglua on 15/6/30.

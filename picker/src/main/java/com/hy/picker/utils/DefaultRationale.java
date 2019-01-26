@@ -16,7 +16,7 @@
 package com.hy.picker.utils;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -43,18 +43,8 @@ public final class DefaultRationale implements Rationale {
                 .title(R.string.picker_title_dialog)
                 .content(message)
                 .positiveText(R.string.picker_resume)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        executor.execute();
-                    }
-                })
+                .onPositive((dialog, which) -> executor.execute())
                 .negativeText(R.string.picker_cancel)
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        executor.cancel();
-                    }
-                }).show();
+                .onNegative((dialog, which) -> executor.cancel()).show();
     }
 }

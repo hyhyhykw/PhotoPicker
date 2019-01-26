@@ -76,7 +76,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="1dp">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@id/picker_photo_grd"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -135,7 +135,8 @@
                 class="com.hy.picker.PictureSelectorActivity$PicTypeBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="16dp">
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp">
 
                 <TextView
                     android:id="@id/picker_type_text"

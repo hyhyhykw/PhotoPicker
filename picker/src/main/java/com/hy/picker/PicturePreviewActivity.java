@@ -6,11 +6,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -35,6 +30,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
 
 /**
@@ -94,43 +95,35 @@ public class PicturePreviewActivity extends BaseActivity {
 
         mWholeView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
-        mBtnBack.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mBtnBack.setOnClickListener(v -> onBackPressed());
 
-                onBackPressed();
-            }
-        });
-
-        mBtnSend.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendBroadcast(new Intent(PICKER_ACTION_MEDIA_SEND));
+        mBtnSend.setOnClickListener(v -> {
+            sendBroadcast(new Intent(PICKER_ACTION_MEDIA_SEND));
 //                setResult(RESULT_SEND);
-                finish();
-            }
+            finish();
         });
 
 
         mSelectBox.setText(R.string.picker_picprev_select);
 
         mSelectBox.setChecked(MediaListHolder.selectPhotos.contains(mItemList.get(mCurrentIndex)));
-        mSelectBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (buttonView.isPressed()) {
-                    if (isChecked && MediaListHolder.selectPhotos.size() == max) {
-                        mSelectBox.setChecked(false);
-                        Toast.makeText(PicturePreviewActivity.this, getString(R.string.picker_picsel_selected_max, max), Toast.LENGTH_SHORT).show();
-                    } else {
+        mSelectBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (buttonView.isPressed()) {
+                if (isChecked && MediaListHolder.selectPhotos.size() == max) {
+                    mSelectBox.setChecked(false);
 
-                        if (isChecked) {
-                            MediaListHolder.selectPhotos.add(mItemList.get(mCurrentIndex));
-                        } else {
-                            MediaListHolder.selectPhotos.remove(mItemList.get(mCurrentIndex));
-                        }
-                        updateToolbar();
+
+                    Toast.makeText(PicturePreviewActivity.this,
+                            getResources().getQuantityString(R.plurals.picker_picsel_selected_max,1,max)
+                            , Toast.LENGTH_SHORT).show();
+                } else {
+
+                    if (isChecked) {
+                        MediaListHolder.selectPhotos.add(mItemList.get(mCurrentIndex));
+                    } else {
+                        MediaListHolder.selectPhotos.remove(mItemList.get(mCurrentIndex));
                     }
+                    updateToolbar();
                 }
             }
         });
@@ -156,12 +149,9 @@ public class PicturePreviewActivity extends BaseActivity {
             }
         });
 
-        mTvEdit.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Photo photo = mItemList.get(mViewPager.getCurrentItem());
-                toEdit(Uri.fromFile(new File(photo.getUri())));
-            }
+        mTvEdit.setOnClickListener(v -> {
+            Photo photo = mItemList.get(mViewPager.getCurrentItem());
+            toEdit(Uri.fromFile(new File(photo.getUri())));
         });
         updateToolbar();
     }
@@ -255,13 +245,11 @@ public class PicturePreviewActivity extends BaseActivity {
             Photo photo = mItemList.get(position);
             if (photo.isGif()) {
                 final ImageView imageView = new ImageView(container.getContext());
-                imageView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mFullScreen = !mFullScreen;
+                imageView.setOnClickListener(v -> {
+                    mFullScreen = !mFullScreen;
 //                        View decorView;
 //                        byte uiOptions;
-                        if (mFullScreen) {
+                    if (mFullScreen) {
 //                            if (VERSION.SDK_INT < 16) {
 //                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //                            } else {
@@ -270,9 +258,9 @@ public class PicturePreviewActivity extends BaseActivity {
 //                                decorView.setSystemUiVisibility(uiOptions);
 //                            }
 
-                            mToolbarTop.setVisibility(View.INVISIBLE);
-                            mToolbarBottom.setVisibility(View.INVISIBLE);
-                        } else {
+                        mToolbarTop.setVisibility(View.INVISIBLE);
+                        mToolbarBottom.setVisibility(View.INVISIBLE);
+                    } else {
 
 //                            if (VERSION.SDK_INT < 16) {
 //                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -282,10 +270,9 @@ public class PicturePreviewActivity extends BaseActivity {
 //                                decorView.setSystemUiVisibility(uiOptions);
 //                            }
 
-                            mToolbarTop.setVisibility(View.VISIBLE);
-                            mToolbarBottom.setVisibility(View.VISIBLE);
+                        mToolbarTop.setVisibility(View.VISIBLE);
+                        mToolbarBottom.setVisibility(View.VISIBLE);
 //                            CommonUtils.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
-                        }
                     }
                 });
 
@@ -302,13 +289,11 @@ public class PicturePreviewActivity extends BaseActivity {
             } else {
 
                 PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
-                imageView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mFullScreen = !mFullScreen;
+                imageView.setOnClickListener(v -> {
+                    mFullScreen = !mFullScreen;
 //                        View decorView;
 //                        byte uiOptions;
-                        if (mFullScreen) {
+                    if (mFullScreen) {
 //                            if (VERSION.SDK_INT < 16) {
 //                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //                            } else {
@@ -317,9 +302,9 @@ public class PicturePreviewActivity extends BaseActivity {
 //                                decorView.setSystemUiVisibility(uiOptions);
 //                            }
 
-                            mToolbarTop.setVisibility(View.INVISIBLE);
-                            mToolbarBottom.setVisibility(View.INVISIBLE);
-                        } else {
+                        mToolbarTop.setVisibility(View.INVISIBLE);
+                        mToolbarBottom.setVisibility(View.INVISIBLE);
+                    } else {
 //                            if (VERSION.SDK_INT < 16) {
 //                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //                            } else {
@@ -328,9 +313,8 @@ public class PicturePreviewActivity extends BaseActivity {
 //                                decorView.setSystemUiVisibility(uiOptions);
 //                            }
 //                            CommonUtils.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
-                            mToolbarTop.setVisibility(View.VISIBLE);
-                            mToolbarBottom.setVisibility(View.VISIBLE);
-                        }
+                        mToolbarTop.setVisibility(View.VISIBLE);
+                        mToolbarBottom.setVisibility(View.VISIBLE);
                     }
                 });
 

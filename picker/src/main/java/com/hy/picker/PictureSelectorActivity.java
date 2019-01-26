@@ -18,15 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
-import android.os.MessageQueue;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,7 +28,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,7 +55,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@SuppressWarnings("ResultOfMethodCallIgnored")
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+@SuppressWarnings({"ResultOfMethodCallIgnored", "FieldCanBeLocal"})
 public class PictureSelectorActivity extends BaseActivity {
     public static final int REQUEST_CAMERA = 1;
     private RecyclerView mGridView;
@@ -144,12 +142,7 @@ public class PictureSelectorActivity extends BaseActivity {
         mCatalogMask = findViewById(R.id.picker_catalog_mask);
 
 
-        mBtnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        mBtnBack.setOnClickListener(v -> onBackPressed());
         mBtnSend = findViewById(R.id.picker_send);
         mTvTitle = findViewById(R.id.picker_title);
         mPicType = findViewById(R.id.picker_pic_type);
@@ -197,19 +190,11 @@ public class PictureSelectorActivity extends BaseActivity {
         mLytLoad.setVisibility(View.VISIBLE);
 
 
-        Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
-            @Override
-            public boolean queueIdle() {
-                new PermissionUtils(PictureSelectorActivity.this)
-                        .setPermissionListener(new PermissionUtils.PermissionListener() {
-                            @Override
-                            public void onResult() {
-                                initView();
-                            }
-                        })
-                        .requestPermission(Permission.WRITE_EXTERNAL_STORAGE);
-                return false;
-            }
+        Looper.myQueue().addIdleHandler(() -> {
+            new PermissionUtils(PictureSelectorActivity.this)
+                    .setPermissionListener(this::initView)
+                    .requestPermission(Permission.WRITE_EXTERNAL_STORAGE);
+            return false;
         });
 
 
@@ -231,38 +216,27 @@ public class PictureSelectorActivity extends BaseActivity {
                 .gifOnly(gifOnly)
                 .video(video)
                 .build()
-                .scanner(new MediaScannerUtils.OnResultListener() {
-                    @Override
-                    public void onResult(boolean success) {
-                        mGridViewAdapter.notifyDataSetChanged();
-                        mCatalogAdapter.notifyDataSetChanged();
-                        updateToolbar();
-                        if (mLytLoad.getVisibility() == View.VISIBLE) {
-                            mLytLoad.setVisibility(View.GONE);
-                        }
+                .scanner(success -> {
+                    mGridViewAdapter.notifyDataSetChanged();
+                    mCatalogAdapter.notifyDataSetChanged();
+                    updateToolbar();
+                    if (mLytLoad.getVisibility() == View.VISIBLE) {
+                        mLytLoad.setVisibility(View.GONE);
                     }
                 });
 
 
-        mBtnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mBtnSend.setOnClickListener(v -> {
 
-                PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
-                MediaListHolder.selectPhotos.clear();
-                finish();
-            }
+            PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
+            MediaListHolder.selectPhotos.clear();
+            finish();
         });
 
         mPicType.setText(video ? R.string.picker_all_video : R.string.picker_all_image);
 
         mPicType.setEnabled(true);
-        mPicType.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showCatalog();
-            }
-        });
+        mPicType.setOnClickListener(v -> showCatalog());
 
         if (preview) {
             mPreviewBtn.setVisibility(View.VISIBLE);
@@ -270,19 +244,16 @@ public class PictureSelectorActivity extends BaseActivity {
             mPreviewBtn.setVisibility(View.GONE);
         }
 
-        mPreviewBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mPreviewBtn.setOnClickListener(v -> {
 
-                Photo item = MediaListHolder.selectPhotos.get(0);
-                Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
+            Photo item = MediaListHolder.selectPhotos.get(0);
+            Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
 //                intent.putExtra("sendOrigin", mSendOrigin);
-                intent.putExtra("isGif", item.isGif());
-                intent.putExtra("max", max);
-                intent.putExtra("isPreview", true);
+            intent.putExtra("isGif", item.isGif());
+            intent.putExtra("max", max);
+            intent.putExtra("isPreview", true);
 
-                startActivity(intent);
-            }
+            startActivity(intent);
         });
 
 
@@ -306,24 +277,21 @@ public class PictureSelectorActivity extends BaseActivity {
                 }
             }
         });
-        mCatalogListView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        listLastY = event.getY();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        if (mScrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {//判断是否在滑动
-                            if (canDown && event.getY() - listLastY >= 20) {//判断到达顶部后是否又向下滑动了20像素 可以修改
-                                hideCatalog();
-                                return true;
-                            }
+        mCatalogListView.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    listLastY = event.getY();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (mScrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {//判断是否在滑动
+                        if (canDown && event.getY() - listLastY >= 20) {//判断到达顶部后是否又向下滑动了20像素 可以修改
+                            hideCatalog();
+                            return true;
                         }
-                        break;
-                }
-                return false;
+                    }
+                    break;
             }
+            return false;
         });
     }
 
@@ -417,12 +385,7 @@ public class PictureSelectorActivity extends BaseActivity {
                     final File file = new File(path);
 
                     if (file.exists()) {
-                        MediaScannerConnection.scanFile(this, new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                            @Override
-                            public void onScanCompleted(final String path, Uri uri) {
-                                getPhoto(path);
-                            }
-                        });
+                        MediaScannerConnection.scanFile(this, new String[]{path}, null, (path1, uri) -> getPhoto(path1));
 
                     } else {
                         Toast.makeText(this, video ?
@@ -441,36 +404,33 @@ public class PictureSelectorActivity extends BaseActivity {
                 .path(path)
                 .video(video)
                 .build()
-                .scanner(new MediaScannerUtils.OnSingleResultListener() {
-                    @Override
-                    public void onResult(@Nullable Photo photo, int updateIndex) {
-                        if (photo == null) {
-                            Toast.makeText(PictureSelectorActivity.this, video ?
-                                            R.string.picker_video_failure : R.string.picker_photo_failure,
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        }
+                .scanner((photo, updateIndex) -> {
+                    if (photo == null) {
+                        Toast.makeText(PictureSelectorActivity.this, video ?
+                                        R.string.picker_video_failure : R.string.picker_photo_failure,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                        if (selectCateIndex == 0) {
+                    if (selectCateIndex == 0) {
+                        if (MediaListHolder.currentPhotos.isEmpty()) {
+                            MediaListHolder.currentPhotos.add(photo);
+                        } else {
+                            MediaListHolder.currentPhotos.add(0, photo);
+                        }
+                    } else {
+                        if (selectCateIndex == updateIndex) {
                             if (MediaListHolder.currentPhotos.isEmpty()) {
                                 MediaListHolder.currentPhotos.add(photo);
                             } else {
                                 MediaListHolder.currentPhotos.add(0, photo);
                             }
-                        } else {
-                            if (selectCateIndex == updateIndex) {
-                                if (MediaListHolder.currentPhotos.isEmpty()) {
-                                    MediaListHolder.currentPhotos.add(photo);
-                                } else {
-                                    MediaListHolder.currentPhotos.add(0, photo);
-                                }
-                            }
                         }
-
-                        mGridViewAdapter.notifyDataSetChanged();
-                        mCatalogAdapter.notifyDataSetChanged();
-                        updateToolbar();
                     }
+
+                    mGridViewAdapter.notifyDataSetChanged();
+                    mCatalogAdapter.notifyDataSetChanged();
+                    updateToolbar();
                 });
 
     }
@@ -754,32 +714,24 @@ public class PictureSelectorActivity extends BaseActivity {
                                 .error(mDefaultDrawable))
                         .into(image);
 
-                if (position == 0) {
-                    tvNumber.setVisibility(View.GONE);
-                } else {
-                    tvNumber.setVisibility(View.VISIBLE);
-                    tvNumber.setText(String.format(getResources().getString(R.string.picker_picsel_catalog_number), item.getPhotos().size()));
-                }
+                tvNumber.setText(String.format(getResources().getString(R.string.picker_picsel_catalog_number), item.getPhotos().size()));
 
                 tvName.setText(item.getName());
                 selected.setVisibility(showSelected ? View.VISIBLE : View.INVISIBLE);
 
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (position == selectCateIndex) {
-                            hideCatalog();
-                        } else {
-                            selectCateIndex = position;
-                            mPicType.setText(tvName.getText().toString());
+                itemView.setOnClickListener(v -> {
+                    if (position == selectCateIndex) {
+                        hideCatalog();
+                    } else {
+                        selectCateIndex = position;
+                        mPicType.setText(tvName.getText().toString());
 
-                            MediaListHolder.currentPhotos.clear();
-                            MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories.get(position).getPhotos());
+                        MediaListHolder.currentPhotos.clear();
+                        MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories.get(position).getPhotos());
 
-                            mCatalogAdapter.notifyDataSetChanged();
-                            mGridViewAdapter.notifyDataSetChanged();
-                            hideCatalog();
-                        }
+                        mCatalogAdapter.notifyDataSetChanged();
+                        mGridViewAdapter.notifyDataSetChanged();
+                        hideCatalog();
                     }
                 });
             }
@@ -841,13 +793,62 @@ public class PictureSelectorActivity extends BaseActivity {
 
             checkBox.setChecked(MediaListHolder.selectPhotos.contains(item));
 
-            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (buttonView.isPressed()) {
+            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (buttonView.isPressed()) {
+                    if (getTotalSelectedNum() == max && isChecked) {
+                        Toast.makeText(getApplicationContext(),
+                                getResources().getQuantityString(R.plurals.picker_picsel_selected_max, 1, max),
+                                Toast.LENGTH_SHORT).show();
+                        buttonView.setChecked(false);
+                    } else {
+//                            item.setSelected(isChecked);
+                        if (isChecked) {
+                            MediaListHolder.selectPhotos.add(item);
+                        } else {
+                            MediaListHolder.selectPhotos.remove(item);
+                        }
+                    }
+                    if (MediaListHolder.selectPhotos.contains(item)) {
+                        mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
+                    } else {
+                        mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
+                    }
+
+                    updateToolbar();
+                }
+
+            });
+
+
+            if (MediaListHolder.selectPhotos.contains(item)) {
+                mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
+            } else {
+                mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
+            }
+
+            mask.setOnClickListener(v -> {
+
+                if (preview) {
+                    Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
+                    intent.putExtra("index", position);
+                    intent.putExtra("isGif", item.isGif());
+                    intent.putExtra("max", max);
+
+                    startActivity(intent);
+                } else {
+                    if (max == 1) {
+                        ArrayList<Photo> list = new ArrayList<>();
+                        list.add(item);
+                        PhotoPicker.sPhotoListener.onPicked(list);
+                        finish();
+                    } else {
+                        checkBox.toggle();
+                        boolean isChecked = checkBox.isChecked();
                         if (getTotalSelectedNum() == max && isChecked) {
-                            Toast.makeText(getApplicationContext(), getString(R.string.picker_picsel_selected_max, max), Toast.LENGTH_SHORT).show();
-                            buttonView.setChecked(false);
+                            Toast.makeText(getApplicationContext(),
+                                    getResources().getQuantityString(R.plurals.picker_picsel_selected_max, 1, max),
+                                    Toast.LENGTH_SHORT).show();
+                            checkBox.setChecked(false);
                         } else {
 //                            item.setSelected(isChecked);
                             if (isChecked) {
@@ -864,73 +865,19 @@ public class PictureSelectorActivity extends BaseActivity {
 
                         updateToolbar();
                     }
-
                 }
-            });
 
 
-            if (MediaListHolder.selectPhotos.contains(item)) {
-                mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
-            } else {
-                mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
-            }
-
-            mask.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (preview) {
-                        Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
-                        intent.putExtra("index", position);
-                        intent.putExtra("isGif", item.isGif());
-                        intent.putExtra("max", max);
-
-                        startActivity(intent);
-                    } else {
-                        if (max == 1) {
-                            ArrayList<Photo> list = new ArrayList<>();
-                            list.add(item);
-                            PhotoPicker.sPhotoListener.onPicked(list);
-                            finish();
-                        } else {
-                            checkBox.toggle();
-                            boolean isChecked = checkBox.isChecked();
-                            if (getTotalSelectedNum() == max && isChecked) {
-                                Toast.makeText(getApplicationContext(), getString(R.string.picker_picsel_selected_max, max), Toast.LENGTH_SHORT).show();
-                                checkBox.setChecked(false);
-                            } else {
-//                            item.setSelected(isChecked);
-                                if (isChecked) {
-                                    MediaListHolder.selectPhotos.add(item);
-                                } else {
-                                    MediaListHolder.selectPhotos.remove(item);
-                                }
-                            }
-                            if (MediaListHolder.selectPhotos.contains(item)) {
-                                mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
-                            } else {
-                                mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
-                            }
-
-                            updateToolbar();
-                        }
-                    }
-
-
-                }
             });
 
 
             if (video) {
                 tvTime.setText(CommonUtils.format(item.getDuration()));
-                mask.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        MediaListHolder.selectPhotos.add(item);
-                        PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
-                        MediaListHolder.selectPhotos.clear();
-                        finish();
-                    }
+                mask.setOnClickListener(v -> {
+                    MediaListHolder.selectPhotos.add(item);
+                    PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
+                    MediaListHolder.selectPhotos.clear();
+                    finish();
                 });
             }
         }
@@ -953,19 +900,9 @@ public class PictureSelectorActivity extends BaseActivity {
             mTvTitle.setText(video ?
                     R.string.picker_picsel_record_video :
                     R.string.picker_picsel_take_picture);
-            mMask.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new PermissionUtils(PictureSelectorActivity.this)
-                            .setPermissionListener(new PermissionUtils.PermissionListener() {
-                                @Override
-                                public void onResult() {
-                                    requestCamera();
-                                }
-                            })
-                            .requestPermission(Permission.CAMERA);
-                }
-            });
+            mMask.setOnClickListener(v -> new PermissionUtils(PictureSelectorActivity.this)
+                    .setPermissionListener(PictureSelectorActivity.this::requestCamera)
+                    .requestPermission(Permission.CAMERA));
 
         }
     }

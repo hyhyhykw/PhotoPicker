@@ -39,7 +39,6 @@
             android:id="@id/picker_catalog_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DCIM"
             android:textColor="@android:color/black"
             android:textSize="16sp"/>
 
@@ -48,7 +47,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="42张"
             android:textSize="13sp"/>
 
     </LinearLayout>

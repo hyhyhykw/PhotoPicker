@@ -2,6 +2,8 @@ package com.hy.picker.core.elastic;
 
 import android.graphics.PointF;
 
+import androidx.annotation.NonNull;
+
 /**
  * Created by felix on 2017/11/27 下午6:43.
  */
@@ -77,6 +79,7 @@ public class IMGElastic {
         this.height = height;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "IMGElastic{" +

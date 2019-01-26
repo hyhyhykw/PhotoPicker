@@ -36,7 +36,11 @@
     <string name="picker_picsel_videotype">Video</string>
     <string name="picker_picsel_toolbar_preview">Preview</string>
     <string name="picker_picsel_toolbar_preview_num">Preview(%d)</string>
-    <string name="picker_picsel_selected_max">You can only choose %d picture at most.</string>
+    <plurals name="picker_picsel_selected_max">
+        <item quantity="one">You can only choose %d picture at most.</item>
+        <item quantity="other">You can only choose %d pictures at most.</item>
+    </plurals>
+
     <string name="picker_picsel_take_picture">Take picture</string>
     <string name="picker_picsel_record_video">Record video</string>
     <string name="picker_picsel_catalog_allpic">All pictures</string>

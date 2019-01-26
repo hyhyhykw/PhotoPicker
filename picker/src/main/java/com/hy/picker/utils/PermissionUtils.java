@@ -7,17 +7,16 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.AppOpsManagerCompat;
 import android.widget.Toast;
 
 import com.hy.picker.R;
-import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Rationale;
 
 import java.lang.reflect.Method;
-import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.AppOpsManagerCompat;
 
 /**
  * Created time : 2018/4/19 11:43.
@@ -47,22 +46,16 @@ public class PermissionUtils {
         AndPermission.with(mActivity)
                 .permission(permissions)
                 .rationale(mRationale)
-                .onGranted(new Action() {
-                    @Override
-                    public void onAction(List<String> permissions) {
-                        Logger.d("permission request success");
-                        if (null != mPermissionListener) mPermissionListener.onResult();
-                    }
+                .onGranted(permissions12 -> {
+                    Logger.d("permission request success");
+                    if (null != mPermissionListener) mPermissionListener.onResult();
                 })
-                .onDenied(new Action() {
-                    @Override
-                    public void onAction(List<String> permissions) {
-                        Toast.makeText(mActivity, R.string.picker_failure, Toast.LENGTH_SHORT).show();
-                        String[] strings = permissions.toArray(new String[]{});
+                .onDenied(permissions1 -> {
+                    Toast.makeText(mActivity, R.string.picker_failure, Toast.LENGTH_SHORT).show();
+                    String[] strings = permissions1.toArray(new String[]{});
 
-                        if (!checkPermissions(mActivity, strings)) {
-                            mSetting.showSetting(permissions);
-                        }
+                    if (!checkPermissions(mActivity, strings)) {
+                        mSetting.showSetting(permissions1);
                     }
                 })
                 .start();
