@@ -15,7 +15,7 @@
 第二步：添加依赖
 ```gradle
 	dependencies {
-	        implementation 'com.github.hyhyhykw:PhotoPicker:4.1'
+	        implementation 'com.github.hyhyhykw:PhotoPicker:4.2'
 	}
 ```
 
@@ -48,6 +48,8 @@ picker_send_color_enable ：选择按钮启用时的字体颜色<br>
 picker_preview_color_disable ：预览按钮禁用时的字体颜色<br>
 picker_preview_color_enable ：预览按钮启用时的字体颜色<br>
 picker_status_black ：是否设置状态栏黑色字体(如果主题颜色是明亮的颜色时设置)
+
+有修改 具体见sample
 
 第六步：把大象放进去
 ```Java
