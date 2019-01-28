@@ -50,6 +50,9 @@ public class PickerScaleViewTarget extends CustomViewTarget<PickerScaleImageView
         // 将保存的图片地址给PickerScaleImageView,这里注意设置ImageViewState设置初始显示比例
         float initImageScale = getInitImageScale(resource.getAbsolutePath());
 
+        getView().setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CUSTOM);
+        getView().setMinScale(initImageScale);
+
         getView().setMaxScale(initImageScale + 2.0f);//最大显示比例
 
         getView().setImage(ImageSource.uri(Uri.fromFile(resource)),
