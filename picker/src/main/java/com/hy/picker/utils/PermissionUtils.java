@@ -14,6 +14,7 @@ import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Rationale;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.AppOpsManagerCompat;
@@ -27,7 +28,7 @@ public class PermissionUtils {
     private final Context mActivity;
     private PermissionListener mPermissionListener;
 
-    private Rationale mRationale;
+    private Rationale<List<String>> mRationale;
     private PermissionSetting mSetting;
 
     public PermissionUtils setPermissionListener(PermissionListener permissionListener) {
@@ -44,6 +45,7 @@ public class PermissionUtils {
 
     public void requestPermission(String... permissions) {
         AndPermission.with(mActivity)
+                .runtime()
                 .permission(permissions)
                 .rationale(mRationale)
                 .onGranted(permissions12 -> {

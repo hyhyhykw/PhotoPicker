@@ -16,10 +16,8 @@
 package com.hy.picker.utils;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hy.picker.R;
 import com.yanzhenjie.permission.Permission;
@@ -31,7 +29,7 @@ import java.util.List;
 /**
  * Created by YanZhenjie on 2018/1/1.
  */
-public final class DefaultRationale implements Rationale {
+public final class DefaultRationale implements Rationale<List<String>> {
 
     @Override
     public void showRationale(Context context, List<String> permissions, final RequestExecutor executor) {

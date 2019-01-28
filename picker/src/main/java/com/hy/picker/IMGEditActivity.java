@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,7 +17,6 @@ import com.hy.picker.core.file.IMGFileDecoder;
 import com.hy.picker.core.util.IMGUtils;
 import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.Logger;
-import com.picker2.model.Photo;
 import com.picker2.utils.MediaListHolder;
 import com.picker2.utils.MediaScannerUtils;
 

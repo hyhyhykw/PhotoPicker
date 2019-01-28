@@ -22,7 +22,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.hy.picker.R;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
-import com.yanzhenjie.permission.SettingService;
+import com.yanzhenjie.permission.Setting;
 
 import java.util.List;
 
@@ -41,16 +41,16 @@ public final class PermissionSetting {
         List<String> permissionNames = Permission.transformText(mContext, permissions);
         String message = mContext.getString(R.string.picker_message_permission_always_failed, TextUtils.join("\n", permissionNames));
 
-        final SettingService settingService = AndPermission.permissionSetting(mContext);
-
+//        final SettingService settingService = AndPermission.permissionSetting(mContext);
+        Setting setting = AndPermission.with(mContext).runtime().setting();
         new MaterialDialog.Builder(mContext)
                 .cancelable(false)
                 .title(R.string.picker_title_dialog)
                 .content(message)
                 .positiveText(R.string.picker_setting)
-                .onPositive((dialog, which) -> settingService.execute())
+                .onPositive((dialog, which) -> setting.start())
                 .negativeText(R.string.picker_no)
-                .onNegative((dialog, which) -> settingService.cancel()).show();
+                .show();
 
     }
 }

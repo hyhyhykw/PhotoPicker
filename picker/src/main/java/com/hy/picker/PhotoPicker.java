@@ -12,7 +12,6 @@ import com.picker2.utils.MediaListHolder;
 import com.yanzhenjie.permission.Permission;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 
 /**

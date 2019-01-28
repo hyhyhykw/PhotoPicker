@@ -6,10 +6,9 @@ import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.MessageQueue;
+
 import androidx.core.content.ContextCompat;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;

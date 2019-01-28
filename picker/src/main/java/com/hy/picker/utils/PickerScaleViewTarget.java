@@ -1,13 +1,10 @@
 package com.hy.picker.utils;
 
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.bumptech.glide.request.target.CustomViewTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -17,6 +14,9 @@ import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.hy.picker.PhotoContext;
 
 import java.io.File;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Created time : 2018/12/24 11:18.
@@ -48,16 +48,12 @@ public class PickerScaleViewTarget extends CustomViewTarget<PickerScaleImageView
     @Override
     public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
         // 将保存的图片地址给PickerScaleImageView,这里注意设置ImageViewState设置初始显示比例
-//        ImageSource imageSource = ImageSource.uri(Uri.fromFile(resource));
-
         float initImageScale = getInitImageScale(resource.getAbsolutePath());
 
         getView().setMaxScale(initImageScale + 2.0f);//最大显示比例
 
         getView().setImage(ImageSource.uri(Uri.fromFile(resource)),
                 new ImageViewState(initImageScale, new PointF(0, 0), 0));
-//        ImageSource source = ImageSource.uri(Uri.fromFile(resource));
-//        getView().setImage(source);
     }
 
     /**
@@ -66,12 +62,24 @@ public class PickerScaleViewTarget extends CustomViewTarget<PickerScaleImageView
      * @param imagePath 图片的绝对路径
      */
     private float getInitImageScale(String imagePath) {
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+        //在不加载图片的前提下获得图片的宽高
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        /*
+         * 最关键在此，把options.inJustDecodeBounds = true;
+         * 这里再decodeFile()，返回的bitmap为空，但此时调用options.outHeight时，已经包含了图片的高了
+         */
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imagePath, options); // 此时返回的bitmap为null
+        /*
+         *options.outHeight为原始图片的高
+         */
+        int dw = options.outWidth;
+        int dh = options.outHeight;
+
         int width = PhotoContext.getScreenWidth();
         int height = PhotoContext.getScreenHeight();
         // 拿到图片的宽和高
-        int dw = bitmap.getWidth();
-        int dh = bitmap.getHeight();
+
         float scale = 1.0f;
         //图片宽度大于屏幕，但高度小于屏幕，则缩小图片至填满屏幕宽
         if (dw > width && dh <= height) {

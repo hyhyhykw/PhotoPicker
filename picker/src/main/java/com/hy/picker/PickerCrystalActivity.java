@@ -3,7 +3,7 @@ package com.hy.picker;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Looper;
-import android.os.MessageQueue;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.gson.Gson;

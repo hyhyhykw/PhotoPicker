@@ -1,20 +1,19 @@
 package com.hy.picker.adapter;
 
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.hy.picker.R;
-
 import com.hy.picker.core.CrystalResult;
 import com.hy.picker.core.ExistBean;
 import com.hy.picker.core.util.CrystalDownloadUtils;
 import com.hy.picker.core.util.FileUtils;
 import com.hy.picker.view.CompletedView;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created time : 2018/8/27 15:53.

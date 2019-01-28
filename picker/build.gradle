@@ -42,7 +42,7 @@ dependencies {
 
     api 'androidx.exifinterface:exifinterface:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
-    api 'com.yanzhenjie:permission:2.0.0-rc4'
+    api 'com.yanzhenjie:permission:2.0.0-rc12'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 }
 

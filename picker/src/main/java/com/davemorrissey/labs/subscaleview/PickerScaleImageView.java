@@ -14,15 +14,10 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import androidx.annotation.Nullable;
-import androidx.exifinterface.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Message;
 import android.provider.MediaStore;
-import androidx.annotation.AnyThread;
-import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -32,13 +27,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 
-import com.hy.picker.R.styleable;
 import com.davemorrissey.labs.subscaleview.decoder.CompatDecoderFactory;
 import com.davemorrissey.labs.subscaleview.decoder.DecoderFactory;
 import com.davemorrissey.labs.subscaleview.decoder.ImageDecoder;
 import com.davemorrissey.labs.subscaleview.decoder.ImageRegionDecoder;
 import com.davemorrissey.labs.subscaleview.decoder.SkiaImageDecoder;
 import com.davemorrissey.labs.subscaleview.decoder.SkiaImageRegionDecoder;
+import com.hy.picker.R.styleable;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -50,6 +45,11 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import androidx.annotation.AnyThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 /**
  * <p>
@@ -602,8 +602,8 @@ public class PickerScaleImageView extends View {
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 if (panEnabled && readySent && vTranslate != null && e1 != null && e2 != null && (Math.abs(e1.getX() - e2.getX()) > 50 || Math.abs(e1.getY() - e2.getY()) > 50) && (Math.abs(velocityX) > 500 || Math.abs(velocityY) > 500) && !isZooming) {
                     PointF vTranslateEnd = new PointF(vTranslate.x + (velocityX * 0.25f), vTranslate.y + (velocityY * 0.25f));
-                    float sCenterXEnd = ((getWidth() / 2) - vTranslateEnd.x) / scale;
-                    float sCenterYEnd = ((getHeight() / 2) - vTranslateEnd.y) / scale;
+                    float sCenterXEnd = ((getWidth() / 2f) - vTranslateEnd.x) / scale;
+                    float sCenterYEnd = ((getHeight() / 2f) - vTranslateEnd.y) / scale;
                     new AnimationBuilder(new PointF(sCenterXEnd, sCenterYEnd)).withEasing(EASE_OUT_QUAD).withPanLimited(false).withOrigin(ORIGIN_FLING).start();
                     return true;
                 }
@@ -827,12 +827,12 @@ public class PickerScaleImageView extends View {
                                 }
                             } else if (sRequestedCenter != null) {
                                 // With a center specified from code, zoom around that point.
-                                vTranslate.x = (getWidth() / 2) - (scale * sRequestedCenter.x);
-                                vTranslate.y = (getHeight() / 2) - (scale * sRequestedCenter.y);
+                                vTranslate.x = (getWidth() / 2f) - (scale * sRequestedCenter.x);
+                                vTranslate.y = (getHeight() / 2f) - (scale * sRequestedCenter.y);
                             } else {
                                 // With no requested center, scale around the image center.
-                                vTranslate.x = (getWidth() / 2) - (scale * (sWidth() / 2));
-                                vTranslate.y = (getHeight() / 2) - (scale * (sHeight() / 2));
+                                vTranslate.x = (getWidth() / 2f) - (scale * (sWidth() / 2f));
+                                vTranslate.y = (getHeight() / 2f) - (scale * (sHeight() / 2f));
                             }
 
                             fitToBounds(true);
@@ -878,12 +878,12 @@ public class PickerScaleImageView extends View {
                                 }
                             } else if (sRequestedCenter != null) {
                                 // With a center specified from code, zoom around that point.
-                                vTranslate.x = (getWidth() / 2) - (scale * sRequestedCenter.x);
-                                vTranslate.y = (getHeight() / 2) - (scale * sRequestedCenter.y);
+                                vTranslate.x = (getWidth() / 2f) - (scale * sRequestedCenter.x);
+                                vTranslate.y = (getHeight() / 2f) - (scale * sRequestedCenter.y);
                             } else {
                                 // With no requested center, scale around the image center.
-                                vTranslate.x = (getWidth() / 2) - (scale * (sWidth() / 2));
-                                vTranslate.y = (getHeight() / 2) - (scale * (sHeight() / 2));
+                                vTranslate.x = (getWidth() / 2f) - (scale * (sWidth() / 2f));
+                                vTranslate.y = (getHeight() / 2f) - (scale * (sHeight() / 2f));
                             }
                         }
 
@@ -1001,8 +1001,8 @@ public class PickerScaleImageView extends View {
                 sCenter.y = sRequestedCenter.y;
             } else {
                 // With no requested center, scale around the image center.
-                sCenter.x = sWidth() / 2;
-                sCenter.y = sHeight() / 2;
+                sCenter.x = sWidth() / 2f;
+                sCenter.y = sHeight() / 2f;
             }
         }
         float doubleTapZoomScale = Math.min(maxScale, PickerScaleImageView.this.doubleTapZoomScale);
@@ -1195,7 +1195,7 @@ public class PickerScaleImageView extends View {
                 //noinspection ConstantConditions
                 canvas.drawCircle(vCenterEnd.x, vCenterEnd.y, px(25), debugLinePaint);
                 debugLinePaint.setColor(Color.CYAN);
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2, px(30), debugLinePaint);
+                canvas.drawCircle(getWidth() / 2f, getHeight() / 2f, px(30), debugLinePaint);
             }
             if (vCenterStart != null) {
                 debugLinePaint.setColor(Color.RED);
@@ -1337,9 +1337,11 @@ public class PickerScaleImageView extends View {
             initialiseTileMap(maxTileDimensions);
 
             List<Tile> baseGrid = tileMap.get(fullImageSampleSize);
-            for (Tile baseTile : baseGrid) {
-                TileLoadTask task = new TileLoadTask(this, decoder, baseTile);
-                execute(task);
+            if (baseGrid != null) {
+                for (Tile baseTile : baseGrid) {
+                    TileLoadTask task = new TileLoadTask(this, decoder, baseTile);
+                    execute(task);
+                }
             }
             refreshRequiredTiles(true);
 
@@ -1418,8 +1420,8 @@ public class PickerScaleImageView extends View {
             if (vTranslate == null) {
                 vTranslate = new PointF();
             }
-            vTranslate.x = (getWidth() / 2) - (scale * sPendingCenter.x);
-            vTranslate.y = (getHeight() / 2) - (scale * sPendingCenter.y);
+            vTranslate.x = (getWidth() / 2f) - (scale * sPendingCenter.x);
+            vTranslate.y = (getHeight() / 2f) - (scale * sPendingCenter.y);
             sPendingCenter = null;
             pendingScale = null;
             fitToBounds(true);
@@ -1489,8 +1491,8 @@ public class PickerScaleImageView extends View {
         float scaleHeight = scale * sHeight();
 
         if (panLimit == PAN_LIMIT_CENTER && isReady()) {
-            vTranslate.x = Math.max(vTranslate.x, getWidth() / 2 - scaleWidth);
-            vTranslate.y = Math.max(vTranslate.y, getHeight() / 2 - scaleHeight);
+            vTranslate.x = Math.max(vTranslate.x, getWidth() / 2f - scaleWidth);
+            vTranslate.y = Math.max(vTranslate.y, getHeight() / 2f - scaleHeight);
         } else if (center) {
             vTranslate.x = Math.max(vTranslate.x, getWidth() - scaleWidth);
             vTranslate.y = Math.max(vTranslate.y, getHeight() - scaleHeight);
@@ -1543,7 +1545,7 @@ public class PickerScaleImageView extends View {
         scale = satTemp.scale;
         vTranslate.set(satTemp.vTranslate);
         if (init && minimumScaleType != SCALE_TYPE_START) {
-            vTranslate.set(vTranslateForSCenter(sWidth() / 2, sHeight() / 2, scale));
+            vTranslate.set(vTranslateForSCenter(sWidth() / 2f, sHeight() / 2f, scale));
         }
     }
 
@@ -2520,10 +2522,10 @@ public class PickerScaleImageView extends View {
         float scaleHeight = scale * sHeight();
 
         if (panLimit == PAN_LIMIT_CENTER) {
-            vTarget.top = Math.max(0, -(vTranslate.y - (getHeight() / 2)));
-            vTarget.left = Math.max(0, -(vTranslate.x - (getWidth() / 2)));
-            vTarget.bottom = Math.max(0, vTranslate.y - ((getHeight() / 2) - scaleHeight));
-            vTarget.right = Math.max(0, vTranslate.x - ((getWidth() / 2) - scaleWidth));
+            vTarget.top = Math.max(0, -(vTranslate.y - (getHeight() / 2f)));
+            vTarget.left = Math.max(0, -(vTranslate.x - (getWidth() / 2f)));
+            vTarget.bottom = Math.max(0, vTranslate.y - ((getHeight() / 2f) - scaleHeight));
+            vTarget.right = Math.max(0, vTranslate.x - ((getWidth() / 2f) - scaleWidth));
         } else if (panLimit == PAN_LIMIT_OUTSIDE) {
             vTarget.top = Math.max(0, -(vTranslate.y - getHeight()));
             vTarget.left = Math.max(0, -(vTranslate.x - getWidth()));
@@ -2696,7 +2698,7 @@ public class PickerScaleImageView extends View {
         this.anim = null;
         this.pendingScale = limitedScale(0);
         if (isReady()) {
-            this.sPendingCenter = new PointF(sWidth() / 2, sHeight() / 2);
+            this.sPendingCenter = new PointF(sWidth() / 2f, sHeight() / 2f);
         } else {
             this.sPendingCenter = new PointF(0, 0);
         }
@@ -2852,8 +2854,8 @@ public class PickerScaleImageView extends View {
     public final void setPanEnabled(boolean panEnabled) {
         this.panEnabled = panEnabled;
         if (!panEnabled && vTranslate != null) {
-            vTranslate.x = (getWidth() / 2) - (scale * (sWidth() / 2));
-            vTranslate.y = (getHeight() / 2) - (scale * (sHeight() / 2));
+            vTranslate.x = (getWidth() / 2f) - (scale * (sWidth() / 2f));
+            vTranslate.y = (getHeight() / 2f) - (scale * (sHeight() / 2f));
             if (isReady()) {
                 refreshRequiredTiles(true);
                 invalidate();
@@ -3069,6 +3071,7 @@ public class PickerScaleImageView extends View {
      * Builder class used to set additional options for a scale animation. Create an instance using {@link #animateScale(float)},
      * then set your options and call {@link #start()}.
      */
+    @SuppressWarnings("WeakerAccess")
     public final class AnimationBuilder {
 
         private final float targetScale;
