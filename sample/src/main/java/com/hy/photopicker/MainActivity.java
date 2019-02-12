@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
         mRcyPhoto.setAdapter(mFeedbackSelectPictureAdapter);
 //        mPhotoPicker = new PhotoPicker();
 
+
     }
 
     @Override
@@ -44,9 +45,6 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
                         .max(9)
 //                        .video()
                         .start(this);
-//                new PhotoPicker()
-//                        .edit(true)
-//                        .openCamera(this, this);
                 break;
             case FeedbackSelectPictureAdapter.TYPE_DELETE:
                 mFeedbackSelectPictureAdapter.deleteItem(position);
