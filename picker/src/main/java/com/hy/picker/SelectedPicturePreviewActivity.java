@@ -4,11 +4,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -17,16 +12,22 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
-import com.hy.picker.utils.PickerScaleViewTarget;
+import com.hy.picker.utils.PickerProgressScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
+import com.hy.picker.view.ProgressScaleImageView;
 import com.picker2.model.Photo;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Created time : 2018/12/28 16:38.
@@ -116,12 +117,11 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
 
             } else {
 
-                PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
+                ProgressScaleImageView imageView = new ProgressScaleImageView(container.getContext());
                 imageView.setOnClickListener(v -> finish());
 
 
                 String uri = photo.getUri();
-                imageView.setOrientation(PickerScaleImageView.ORIENTATION_USE_EXIF);
 
                 Glide.with(container.getContext())
                         .asFile()
@@ -129,7 +129,7 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
                         .apply(new RequestOptions()
                                 .error(mDefaultDrawable)
                                 .placeholder(mDefaultDrawable))
-                        .into(new PickerScaleViewTarget(imageView));
+                        .into(new PickerProgressScaleViewTarget(imageView));
 //                imageView.setImage(ImageSource.uri(Uri.fromFile(new File(uri))));
 
                 container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

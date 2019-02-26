@@ -15,12 +15,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
-import com.hy.picker.utils.PickerScaleViewTarget;
+import com.hy.picker.utils.PickerProgressScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
+import com.hy.picker.view.ProgressScaleImageView;
 import com.picker2.model.Photo;
 import com.picker2.utils.MediaListHolder;
 
@@ -248,25 +248,10 @@ public class PicturePreviewActivity extends BaseActivity {
 //                        View decorView;
 //                        byte uiOptions;
                     if (mFullScreen) {
-//                            if (VERSION.SDK_INT < 16) {
-//                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//                            } else {
-//                                decorView = getWindow().getDecorView();
-//                                uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-//                                decorView.setSystemUiVisibility(uiOptions);
-//                            }
 
                         mToolbarTop.setVisibility(View.INVISIBLE);
                         mToolbarBottom.setVisibility(View.INVISIBLE);
                     } else {
-
-//                            if (VERSION.SDK_INT < 16) {
-//                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//                            } else {
-//                                decorView = getWindow().getDecorView();
-//                                uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
-//                                decorView.setSystemUiVisibility(uiOptions);
-//                            }
 
                         mToolbarTop.setVisibility(View.VISIBLE);
                         mToolbarBottom.setVisibility(View.VISIBLE);
@@ -286,7 +271,8 @@ public class PicturePreviewActivity extends BaseActivity {
 
             } else {
 
-                PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
+                ProgressScaleImageView imageView = new ProgressScaleImageView(container.getContext());
+//                PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
                 imageView.setOnClickListener(v -> {
                     mFullScreen = !mFullScreen;
 //                        View decorView;
@@ -303,14 +289,6 @@ public class PicturePreviewActivity extends BaseActivity {
                         mToolbarTop.setVisibility(View.INVISIBLE);
                         mToolbarBottom.setVisibility(View.INVISIBLE);
                     } else {
-//                            if (VERSION.SDK_INT < 16) {
-//                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//                            } else {
-//                                decorView = getWindow().getDecorView();
-//                                uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
-//                                decorView.setSystemUiVisibility(uiOptions);
-//                            }
-//                            CommonUtils.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
                         mToolbarTop.setVisibility(View.VISIBLE);
                         mToolbarBottom.setVisibility(View.VISIBLE);
                     }
@@ -318,7 +296,6 @@ public class PicturePreviewActivity extends BaseActivity {
 
 
                 String uri = photo.getUri();
-                imageView.setOrientation(PickerScaleImageView.ORIENTATION_USE_EXIF);
 
                 Glide.with(container.getContext())
                         .asFile()
@@ -326,7 +303,7 @@ public class PicturePreviewActivity extends BaseActivity {
                         .apply(new RequestOptions()
                                 .error(mDefaultDrawable)
                                 .placeholder(mDefaultDrawable))
-                        .into(new PickerScaleViewTarget(imageView));
+                        .into(new PickerProgressScaleViewTarget(imageView));
 //                imageView.setImage(ImageSource.uri(Uri.fromFile(new File(uri))));
 
                 container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

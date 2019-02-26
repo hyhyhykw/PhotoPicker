@@ -731,6 +731,8 @@ public class PictureSelectorActivity extends BaseActivity {
 
                         mCatalogAdapter.notifyDataSetChanged();
                         mGridViewAdapter.notifyDataSetChanged();
+
+                        mGridView.smoothScrollToPosition(0);
                         hideCatalog();
                     }
                 });

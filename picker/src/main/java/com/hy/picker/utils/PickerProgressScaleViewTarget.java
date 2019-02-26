@@ -14,6 +14,7 @@ import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.hy.picker.IMGEditActivity;
 import com.hy.picker.IMGEditBaseActivity;
 import com.hy.picker.PhotoContext;
+import com.hy.picker.view.ProgressScaleImageView;
 
 import java.io.File;
 
@@ -25,13 +26,13 @@ import androidx.annotation.Nullable;
  *
  * @author HY
  */
-public class PickerScaleViewTarget extends CustomViewTarget<PickerScaleImageView, File> {
+public class PickerProgressScaleViewTarget extends CustomViewTarget<ProgressScaleImageView, File> {
     /**
      * Constructor that defaults {@code waitForLayout} to {@code false}.
      *
      * @param view View
      */
-    public PickerScaleViewTarget(@NonNull PickerScaleImageView view) {
+    public PickerProgressScaleViewTarget(@NonNull ProgressScaleImageView view) {
         super(view);
     }
 
@@ -43,8 +44,9 @@ public class PickerScaleViewTarget extends CustomViewTarget<PickerScaleImageView
     @Override
     public void onLoadFailed(@Nullable Drawable errorDrawable) {
         if (errorDrawable instanceof BitmapDrawable) {
-            getView().setImage(ImageSource.cachedBitmap(((BitmapDrawable) errorDrawable).getBitmap()));
+            getView().getScaleImageView().setImage(ImageSource.cachedBitmap(((BitmapDrawable) errorDrawable).getBitmap()));
         }
+        getView().getProgressView().cancel();
     }
 
     @Override
@@ -54,15 +56,15 @@ public class PickerScaleViewTarget extends CustomViewTarget<PickerScaleImageView
 
         _ScaleBean imageScale = getInitImageScale(path);
 
-        getView().setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CUSTOM);
-        getView().setMinScale(imageScale.scale);
+        getView().getProgressView().toNext(()-> getView().getProgressView().cancel());
+        getView().getScaleImageView().setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CUSTOM);
+        getView().getScaleImageView().setMinScale(imageScale.scale);
 
-        getView().setMaxScale(imageScale.scale + 2.0f);//最大显示比例
+        getView().getScaleImageView().setMaxScale(imageScale.scale + 2.0f);//最大显示比例
 
-        getView().setImage(ImageSource.bitmap(imageScale.mBitmap),
+        getView().getScaleImageView().setImage(ImageSource.bitmap(imageScale.mBitmap),
                 new ImageViewState(imageScale.scale, new PointF(0, 0), 0));
     }
-
 
 
 
@@ -131,8 +133,9 @@ public class PickerScaleViewTarget extends CustomViewTarget<PickerScaleImageView
 
     @Override
     protected void onResourceLoading(@Nullable Drawable placeholder) {
+        getView().getProgressView().toHalf();
         if (placeholder instanceof BitmapDrawable) {
-            getView().setImage(ImageSource.cachedBitmap(((BitmapDrawable) placeholder).getBitmap()));
+            getView().getScaleImageView().setImage(ImageSource.cachedBitmap(((BitmapDrawable) placeholder).getBitmap()));
         }
     }
 
@@ -140,7 +143,7 @@ public class PickerScaleViewTarget extends CustomViewTarget<PickerScaleImageView
         private final Bitmap mBitmap;
         private final float scale;
 
-        _ScaleBean(Bitmap bitmap, float scale) {
+         _ScaleBean(Bitmap bitmap, float scale ) {
             mBitmap = bitmap;
             this.scale = scale;
         }

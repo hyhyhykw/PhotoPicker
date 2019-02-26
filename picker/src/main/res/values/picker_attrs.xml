@@ -42,4 +42,7 @@
         <attr name="pickerQuickScaleEnabled" format="boolean"/>
         <attr name="pickerTileBackgroundColor" format="color"/>
     </declare-styleable>
+
+
+    <attr name="picker_ppv_color" format="color"/>
 </resources>

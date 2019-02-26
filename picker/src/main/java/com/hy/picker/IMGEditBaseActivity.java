@@ -3,7 +3,6 @@ package com.hy.picker;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import androidx.exifinterface.media.ExifInterface;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.ViewSwitcher;
@@ -16,11 +15,13 @@ import com.hy.picker.view.IMGView;
 
 import java.io.IOException;
 
+import androidx.exifinterface.media.ExifInterface;
+
 /**
  * Created by felix on 2017/12/5 下午3:08.
  */
 
-abstract class IMGEditBaseActivity extends BaseActivity implements View.OnClickListener,
+public abstract class IMGEditBaseActivity extends BaseActivity implements View.OnClickListener,
         IMGTextEditDialog.Callback, RadioGroup.OnCheckedChangeListener,
         DialogInterface.OnShowListener, DialogInterface.OnDismissListener {
 
