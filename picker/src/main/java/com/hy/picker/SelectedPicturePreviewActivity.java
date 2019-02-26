@@ -118,7 +118,7 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
             } else {
 
                 ProgressScaleImageView imageView = new ProgressScaleImageView(container.getContext());
-                imageView.setOnClickListener(v -> finish());
+                imageView.getScaleImageView().setOnClickListener(v -> finish());
 
 
                 String uri = photo.getUri();

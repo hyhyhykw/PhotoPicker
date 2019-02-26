@@ -272,20 +272,9 @@ public class PicturePreviewActivity extends BaseActivity {
             } else {
 
                 ProgressScaleImageView imageView = new ProgressScaleImageView(container.getContext());
-//                PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
-                imageView.setOnClickListener(v -> {
+                imageView.getScaleImageView().setOnClickListener(v -> {
                     mFullScreen = !mFullScreen;
-//                        View decorView;
-//                        byte uiOptions;
                     if (mFullScreen) {
-//                            if (VERSION.SDK_INT < 16) {
-//                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//                            } else {
-//                                decorView = getWindow().getDecorView();
-//                                uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-//                                decorView.setSystemUiVisibility(uiOptions);
-//                            }
-
                         mToolbarTop.setVisibility(View.INVISIBLE);
                         mToolbarBottom.setVisibility(View.INVISIBLE);
                     } else {
