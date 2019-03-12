@@ -6,8 +6,6 @@ import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Looper;
-
-import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -24,6 +22,8 @@ import com.picker2.model.Photo;
 import com.picker2.utils.AndroidLifecycleUtils;
 
 import java.io.File;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * Created time : 2018/8/2 8:23.

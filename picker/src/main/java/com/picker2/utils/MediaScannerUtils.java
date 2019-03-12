@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.hy.picker.R;
 import com.picker2.model.Photo;
@@ -15,9 +13,11 @@ import com.picker2.model.PhotoDirectory;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import static android.provider.MediaStore.MediaColumns.DATA;
 import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
-
 
 
 //                             _ooOoo_
@@ -422,7 +422,7 @@ public class MediaScannerUtils {
                     photoDirectory.addPhoto(photo);
                     photoDirectory.setDateAdded(cursor.getLong(cursor.getColumnIndexOrThrow(DATE_ADDED)));
 
-                    if (directories.size() == 1) {
+                    if (directories.size() == 1 || directories.size() == 0) {
                         directories.add(photoDirectory);
                     } else {
                         directories.add(1, photoDirectory);
