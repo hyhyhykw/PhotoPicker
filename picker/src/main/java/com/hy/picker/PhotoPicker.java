@@ -154,6 +154,7 @@ public class PhotoPicker implements PickerConstants {
     public static void preview(int index, ArrayList<Photo> items) {
         Intent intent = new Intent(PhotoContext.getContext(), SelectedPicturePreviewActivity.class)
                 .putExtra("index", index)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .putExtra("items", items);
         PhotoContext.getContext().startActivity(intent);
     }

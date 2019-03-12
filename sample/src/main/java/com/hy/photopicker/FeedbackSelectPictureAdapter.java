@@ -31,13 +31,14 @@ package com.hy.photopicker;
 //                    别人笑我太疯癫，我笑自己命太贱；
 //                    但见满街漂亮妹，哪个归得程序员？
 
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.picker2.model.Photo;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 
 
 /**
@@ -122,18 +123,8 @@ public class FeedbackSelectPictureAdapter extends BaseRecyclerAdapter<Photo, Bas
                     .into(mIvImage);
 
 
-            mIvImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnItemClickListener.onClick(getAdapterPosition(), TYPE_PHOTO);
-                }
-            });
-            mIvDeleteImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnItemClickListener.onClick(getAdapterPosition(), TYPE_DELETE);
-                }
-            });
+            mIvImage.setOnClickListener(v -> mOnItemClickListener.onClick(getAdapterPosition(), TYPE_PHOTO));
+            mIvDeleteImage.setOnClickListener(v -> mOnItemClickListener.onClick(getAdapterPosition(), TYPE_DELETE));
         }
     }
 
@@ -147,12 +138,7 @@ public class FeedbackSelectPictureAdapter extends BaseRecyclerAdapter<Photo, Bas
 
         @Override
         public void bind() {
-            mIvAdd.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnItemClickListener.onClick(getAdapterPosition(), TYPE_ADD);
-                }
-            });
+            mIvAdd.setOnClickListener(v -> mOnItemClickListener.onClick(getAdapterPosition(), TYPE_ADD));
         }
     }
 

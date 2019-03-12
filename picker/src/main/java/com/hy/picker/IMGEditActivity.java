@@ -119,7 +119,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
             // 将原始图片按照旋转矩阵进行旋转，并得到新的图片
             returnBm = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         } catch (OutOfMemoryError e) {
-            Log.d("Error", "图片太大，内存溢出");
+            Logger.d("图片太大，内存溢出");
         }
         if (returnBm == null) {
             returnBm = bitmap;

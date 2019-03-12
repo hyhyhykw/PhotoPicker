@@ -41,7 +41,7 @@ public class PickerProgressView extends View {
         super(context, attrs, defStyleAttr);
         outerSize = SizeUtils.dp2px(context, 54);
         int innerSize = SizeUtils.dp2px(context, 46);
-         dp2 = SizeUtils.dp2px(context, 2);
+        dp2 = SizeUtils.dp2px(context, 2);
 //         dp1 = SizeUtilsizeUtils.dp2px(context, 1);
         dp25 = SizeUtils.dp2px(context, 25);
 
@@ -51,7 +51,7 @@ public class PickerProgressView extends View {
         mOuterPaint.setAntiAlias(true);
         mOuterPaint.setStyle(Paint.Style.STROKE);
         mOuterPaint.setColor(color);
-        mOuterPaint.setStrokeWidth(SizeUtils.dp2px(context,1));
+        mOuterPaint.setStrokeWidth(SizeUtils.dp2px(context, 1));
 
         mInnerPaint = new Paint();
         mInnerPaint.setAntiAlias(true);
@@ -59,8 +59,7 @@ public class PickerProgressView extends View {
         mInnerPaint.setColor(color);
 
 
-
-        RECT_F.set(dp2+dp2, dp2+dp2, dp2+dp2 + innerSize, dp2+dp2 + innerSize);
+        RECT_F.set(dp2 + dp2, dp2 + dp2, dp2 + dp2 + innerSize, dp2 + dp2 + innerSize);
     }
 
 
@@ -73,10 +72,11 @@ public class PickerProgressView extends View {
     private float sweepAngle = 0f;
 
     private ValueAnimator halfAnimator;
-    public void toHalf(){
+
+    public void toHalf() {
         halfAnimator = ValueAnimator.ofFloat(0f, 180f);
         halfAnimator.addUpdateListener(animation -> {
-            sweepAngle= (float) animation.getAnimatedValue();
+            sweepAngle = (float) animation.getAnimatedValue();
             postInvalidate();
         });
 
@@ -97,19 +97,20 @@ public class PickerProgressView extends View {
         halfAnimator.start();
     }
 
-    public interface  OnEndListener{
+    public interface OnEndListener {
         void onEnd();
     }
+
     private ValueAnimator nextAnimator;
 
-    public void toNext(OnEndListener onEndListener){
-        if (null!=halfAnimator&&halfAnimator.isRunning()) {
+    public void toNext(OnEndListener onEndListener) {
+        if (null != halfAnimator && halfAnimator.isRunning()) {
             halfAnimator.cancel();
         }
 
-         nextAnimator = ValueAnimator.ofFloat(0f, 360f - sweepAngle);
+        nextAnimator = ValueAnimator.ofFloat(0f, 360f - sweepAngle);
         nextAnimator.addUpdateListener(animation -> {
-            sweepAngle= (float) animation.getAnimatedValue();
+            sweepAngle = (float) animation.getAnimatedValue();
             postInvalidate();
         });
         nextAnimator.addListener(new AnimatorListenerAdapter() {
@@ -118,7 +119,7 @@ public class PickerProgressView extends View {
                 onEndListener.onEnd();
                 nextAnimator.removeAllUpdateListeners();
                 nextAnimator.removeAllListeners();
-                sweepAngle=0;
+                sweepAngle = 0;
             }
 
             @Override
@@ -126,21 +127,21 @@ public class PickerProgressView extends View {
                 onEndListener.onEnd();
                 nextAnimator.removeAllUpdateListeners();
                 nextAnimator.removeAllListeners();
-                sweepAngle=0;
+                sweepAngle = 0;
             }
         });
         nextAnimator.setDuration(500);
         nextAnimator.start();
     }
 
-    public void cancel(){
-        if(nextAnimator!=null&&nextAnimator.isRunning()){
+    public void cancel() {
+        if (nextAnimator != null && nextAnimator.isRunning()) {
             nextAnimator.cancel();
         }
         setVisibility(GONE);
     }
 
-    public void progress(int progress){
+    public void progress(int progress) {
         sweepAngle = progress / 100f * 360;
         invalidate();
     }
@@ -148,7 +149,7 @@ public class PickerProgressView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawCircle(dp25+dp2, dp25+dp2, dp25, mOuterPaint);
+        canvas.drawCircle(dp25 + dp2, dp25 + dp2, dp25, mOuterPaint);
         canvas.drawArc(RECT_F, 0, sweepAngle, true, mInnerPaint);
     }
 }
