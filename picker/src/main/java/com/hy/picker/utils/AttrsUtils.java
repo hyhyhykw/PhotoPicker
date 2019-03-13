@@ -54,5 +54,19 @@ public class AttrsUtils {
         return statusFont;
     }
 
-
+    /**
+     * attrs status color or black
+     *
+     * @param mContext
+     * @param attr
+     * @return
+     */
+    public static int getTypeValueInt(Context mContext, int attr) {
+        TypedValue typedValue = new TypedValue();
+        int[] attribute = new int[]{attr};
+        TypedArray array = mContext.obtainStyledAttributes(typedValue.resourceId, attribute);
+        int i = array.getInt(0, 3);
+        array.recycle();
+        return i;
+    }
 }

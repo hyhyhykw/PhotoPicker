@@ -15,12 +15,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
-import com.hy.picker.utils.PickerScaleViewTarget;
+import com.hy.picker.utils.PickerProgressScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
+import com.hy.picker.view.ProgressScaleImageView;
 import com.picker2.model.Photo;
 import com.picker2.utils.MediaListHolder;
 
@@ -273,8 +273,8 @@ public class PicturePreviewActivity extends BaseActivity {
 
 //                ProgressScaleImageView imageView = new ProgressScaleImageView(container.getContext());
 
-                PickerScaleImageView imageView=new PickerScaleImageView(PicturePreviewActivity.this);
-                imageView.setOnClickListener(v -> {
+                ProgressScaleImageView imageView=new ProgressScaleImageView(PicturePreviewActivity.this);
+                imageView.getScaleImageView().setOnClickListener(v -> {
                     mFullScreen = !mFullScreen;
                     if (mFullScreen) {
                         mToolbarTop.setVisibility(View.INVISIBLE);
@@ -294,7 +294,7 @@ public class PicturePreviewActivity extends BaseActivity {
                         .apply(new RequestOptions()
                                 .error(mDefaultDrawable)
                                 .placeholder(mDefaultDrawable))
-                        .into(new PickerScaleViewTarget(imageView));
+                        .into(new PickerProgressScaleViewTarget(imageView));
 //                imageView.setImage(ImageSource.uri(Uri.fromFile(new File(uri))));
 
                 container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

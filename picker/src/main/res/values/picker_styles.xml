@@ -52,6 +52,8 @@
         <item name="picker_send_color_enable">@color/picker_picsel_toolbar_send_text_normal</item>
         <item name="picker_preview_color_disable">@color/picker_picsel_toolbar_send_text_disable
         </item>
+        <item name="picker_grid_span">4</item>
+
         <item name="picker_preview_color_enable">#ffffff</item>
         <item name="picker_photo_back">#000000</item>
 
@@ -72,6 +74,7 @@
         <item name="picker_preview_color_disable">@color/picker_picsel_toolbar_send_text_disable
         </item>
         <item name="picker_preview_color_enable">#333</item>
+        <item name="picker_grid_span">4</item>
         <item name="picker_photo_back">#fff</item>
 
     </style>
@@ -90,6 +93,8 @@
         <item name="picker_send_color_enable">#fff</item>
         <item name="picker_preview_color_disable">@color/picker_picsel_toolbar_send_text_disable
         </item>
+        <item name="picker_grid_span">4</item>
+
         <item name="picker_preview_color_enable">#7D7DFF</item>
         <item name="picker_photo_back">#fff</item>
 

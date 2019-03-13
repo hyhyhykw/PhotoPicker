@@ -177,9 +177,10 @@ public class PictureSelectorActivity extends BaseActivity {
         mCatalogWindow = findViewById(R.id.picker_catalog_window);
         mCatalogWindow.setVisibility(View.GONE);
 
+        int spanCount = AttrsUtils.getTypeValueInt(this, R.attr.picker_grid_span);
         mGridViewAdapter = new GridViewAdapter();
         mGridView.setAdapter(mGridViewAdapter);
-        mGridView.setLayoutManager(new GridLayoutManager(this, 3));
+        mGridView.setLayoutManager(new GridLayoutManager(this, spanCount));
         mGridView.addItemDecoration(new MyGridItemDecoration(this));
 
         mCatalogAdapter = new CatalogAdapter();

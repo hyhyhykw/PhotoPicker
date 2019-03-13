@@ -108,7 +108,7 @@ public class PickerProgressView extends View {
             halfAnimator.cancel();
         }
 
-        nextAnimator = ValueAnimator.ofFloat(0f, 360f - sweepAngle);
+        nextAnimator = ValueAnimator.ofFloat(sweepAngle, 360f - sweepAngle);
         nextAnimator.addUpdateListener(animation -> {
             sweepAngle = (float) animation.getAnimatedValue();
             postInvalidate();

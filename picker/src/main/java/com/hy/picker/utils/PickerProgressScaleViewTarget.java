@@ -71,6 +71,11 @@ public class PickerProgressScaleViewTarget extends CustomViewTarget<ProgressScal
             String path = strings[0];
             int degree = IMGEditBaseActivity.readPictureDegree(path);
 
+            if (null != mReference && mReference.get() != null) {
+                mReference.get().getView()
+                        .getProgressView()
+                        .progress(60);
+            }
             //在不加载图片的前提下获得图片的宽高
             BitmapFactory.Options options = new BitmapFactory.Options();
             /*
@@ -84,7 +89,11 @@ public class PickerProgressScaleViewTarget extends CustomViewTarget<ProgressScal
             options.inJustDecodeBounds = false;
 
             Bitmap bitmap = BitmapFactory.decodeFile(path, options);
-
+            if (null != mReference && mReference.get() != null) {
+                mReference.get().getView()
+                        .getProgressView()
+                        .progress(70);
+            }
             Bitmap rotateBmp;
             if (degree == 0) {
                 rotateBmp = bitmap;
@@ -92,7 +101,11 @@ public class PickerProgressScaleViewTarget extends CustomViewTarget<ProgressScal
                 rotateBmp = IMGEditActivity.rotatingImageView(degree, bitmap);
                 bitmap.recycle();
             }
-
+            if (null != mReference && mReference.get() != null) {
+                mReference.get().getView()
+                        .getProgressView()
+                        .progress(80);
+            }
             /*
              *options.outHeight为原始图片的高
              */
@@ -120,7 +133,11 @@ public class PickerProgressScaleViewTarget extends CustomViewTarget<ProgressScal
             if (dw > width && dh > height) {
                 scale = width * 1.0f / dw;
             }
-
+            if (null != mReference && mReference.get() != null) {
+                mReference.get().getView()
+                        .getProgressView()
+                        .progress(90);
+            }
             return new _ScaleBean(rotateBmp, scale);
         }
 
@@ -131,7 +148,9 @@ public class PickerProgressScaleViewTarget extends CustomViewTarget<ProgressScal
             PickerProgressScaleViewTarget target = mReference.get();
             if (null == target) return;
             ProgressScaleImageView view = target.getView();
-            view.getProgressView().toNext(() -> view.getProgressView().cancel());
+            view.getProgressView().progress(100);
+            view.getProgressView().cancel();
+//            view.getProgressView().toNext(() -> view.getProgressView().cancel());
             view.getScaleImageView().setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CUSTOM);
             view.getScaleImageView().setMinScale(scaleBean.scale);
 
