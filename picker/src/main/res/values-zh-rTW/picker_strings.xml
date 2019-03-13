@@ -66,6 +66,6 @@
     <string name="picker_preview">預覽</string>
     <string name="picker_sticker_not_download">貼紙沒有下載，是否下載？</string>
     <string name="picker_load_error">加載失敗，點擊重新加載</string>
-    <string name="picker_child_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json/child-category.json</string>
-    <string name="picker_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json/Category.json</string>
+    <string name="picker_child_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-zh-rTW/child-category.json</string>
+    <string name="picker_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-zh-rTW/Category.json</string>
 </resources>
