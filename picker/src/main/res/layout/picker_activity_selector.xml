@@ -135,8 +135,8 @@
                 class="com.hy.picker.PictureSelectorActivity$PicTypeBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp">
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp">
 
                 <TextView
                     android:id="@id/picker_type_text"
@@ -148,12 +148,11 @@
                     android:textSize="16sp"/>
 
                 <ImageView
+                    android:id="@id/picker_preview_type"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:paddingLeft="4dp"
-                    android:paddingTop="8dp"
-                    android:src="@drawable/picker_picsel_pictype_normal"
-                    android:tint="@color/picker_preview_color"/>
+                    android:paddingStart="4dp"
+                    android:paddingTop="8dp"/>
 
             </view>
 
@@ -162,8 +161,7 @@
                 class="com.hy.picker.PictureSelectorActivity$PreviewBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true">
+                android:layout_alignParentEnd="true">
 
                 <View
                     android:layout_width="1dp"

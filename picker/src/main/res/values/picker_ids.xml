@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="picker_preview_type" type="id"/>
     <item name="picker_tag_glide" type="id"/>
     <item name="picker_whole_layout" type="id"/>
     <item name="picker_vpg_preview" type="id"/>

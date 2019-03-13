@@ -97,6 +97,7 @@ public class PictureSelectorActivity extends BaseActivity {
     //    private UpdateReceiver mUpdateReceiver;
     private SelectReceiver mSelectReceiver;
     private Drawable mDefaultDrawable;
+    private ImageView mIvType;
 
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -113,8 +114,12 @@ public class PictureSelectorActivity extends BaseActivity {
 
 
         mDefaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
+        Drawable typeDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_preview_type);
         if (null == mDefaultDrawable) {
             mDefaultDrawable = ContextCompat.getDrawable(this, R.drawable.picker_grid_image_default);
+        }
+        if (null == typeDrawable) {
+            typeDrawable = ContextCompat.getDrawable(this, R.drawable.picker_type_selector_white);
         }
 
 
@@ -138,6 +143,7 @@ public class PictureSelectorActivity extends BaseActivity {
         mGridView = findViewById(R.id.picker_photo_grd);
         mBtnBack = findViewById(R.id.picker_back);
         mToolbarMask = findViewById(R.id.picker_toolbar_mask);
+        mIvType = findViewById(R.id.picker_preview_type);
         mBottomBarMask = findViewById(R.id.picker_bottom_mask);
         mCatalogMask = findViewById(R.id.picker_catalog_mask);
 
@@ -155,6 +161,8 @@ public class PictureSelectorActivity extends BaseActivity {
         mPreviewBtn.setEnabled(null != mSelectItems && !mSelectItems.isEmpty());
 
         mTvTitle.setText(video ? R.string.picker_picsel_videotype : R.string.picker_picsel_pictype);
+
+        mIvType.setImageDrawable(typeDrawable);
         if (video) {
             mPreviewBtn.setVisibility(View.GONE);
             mBtnSend.setVisibility(View.GONE);

@@ -19,6 +19,8 @@
     <attr name="picker_status_black" format="boolean"/>
     <attr name="picker_grid_span" format="integer"/>
 
+    <attr name="picker_preview_type" format="reference"/>
+
     <declare-styleable name="IMGColorRadio" tools:ignore="ResourceName">
 
         <attr name="image_color" format="color"/>
