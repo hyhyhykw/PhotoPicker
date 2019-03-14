@@ -26,18 +26,14 @@ public class PhotoPicker implements PickerConstants {
     static TakePhotoListener sTakePhotoListener;
     static boolean isEdit;
 
-    public static void destroy() {
-        sTakePhotoListener = null;
-        sPhotoListener = null;
-        isEdit = false;
-
-        MediaListHolder.currentPhotos.clear();
-        MediaListHolder.selectPhotos.clear();
-        MediaListHolder.allDirectories.clear();
-    }
 
     public PhotoPicker() {
         isEdit = false;
+        sTakePhotoListener = null;
+        sPhotoListener = null;
+        MediaListHolder.currentPhotos.clear();
+        MediaListHolder.selectPhotos.clear();
+        MediaListHolder.allDirectories.clear();
     }
 
     private boolean isVideo;

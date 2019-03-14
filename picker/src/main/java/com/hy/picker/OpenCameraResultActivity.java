@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import androidx.annotation.Nullable;
 import android.widget.Toast;
 
 import com.hy.picker.utils.CommonUtils;
@@ -24,6 +23,8 @@ import com.picker2.utils.MediaScannerUtils;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created time : 2018/8/23 10:56.
@@ -48,11 +49,11 @@ public class OpenCameraResultActivity extends BaseActivity {
         requestCamera();
     }
 
+
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         unregisterReceiver(mSureReceiver);
-        PhotoPicker.destroy();
+        super.onDestroy();
     }
 
     private void toEdit(Uri uri) {

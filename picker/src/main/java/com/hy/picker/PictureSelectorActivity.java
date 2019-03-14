@@ -571,7 +571,6 @@ public class PictureSelectorActivity extends BaseActivity {
 
     protected void onDestroy() {
         super.onDestroy();
-        PhotoPicker.destroy();
         unregisterReceiver(mSelectReceiver);
     }
 
