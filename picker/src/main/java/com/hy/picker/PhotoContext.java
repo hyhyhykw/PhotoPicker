@@ -3,8 +3,6 @@ package com.hy.picker;
 import android.content.Context;
 import android.util.DisplayMetrics;
 
-import com.bumptech.glide.request.target.ViewTarget;
-
 /**
  * Created time : 2018/8/13 16:37.
  *
@@ -21,7 +19,7 @@ public class PhotoContext {
         DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         screenWidth = displayMetrics.widthPixels;
         screenHeight = displayMetrics.heightPixels;
-        ViewTarget.setTagId(R.id.picker_tag_glide);
+//        ViewTarget.setTagId(R.id.picker_tag_glide);
     }
 
     public static int getScreenWidth() {
