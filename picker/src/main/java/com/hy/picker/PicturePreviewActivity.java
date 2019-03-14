@@ -67,10 +67,11 @@ public class PicturePreviewActivity extends BaseActivity {
     private Drawable mDefaultDrawable;
 
     private PreviewReceiver mPreviewReceiver;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picker_activity_preview);
-        mPreviewReceiver=new PreviewReceiver();
+        mPreviewReceiver = new PreviewReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(PICKER_ACTION_MEDIA_ADD);
         registerReceiver(mPreviewReceiver, intentFilter);
@@ -120,15 +121,20 @@ public class PicturePreviewActivity extends BaseActivity {
 
 
                     Toast.makeText(PicturePreviewActivity.this,
-                            getResources().getQuantityString(R.plurals.picker_picsel_selected_max,1,max)
+                            getResources().getQuantityString(R.plurals.picker_picsel_selected_max, 1, max)
                             , Toast.LENGTH_SHORT).show();
                 } else {
 
+                    if (mItemList.isEmpty()) return;
+                    Photo photo = mItemList.get(mCurrentIndex);
                     if (isChecked) {
-                        MediaListHolder.selectPhotos.add(mItemList.get(mCurrentIndex));
+                        MediaListHolder.selectPhotos.add(photo);
                     } else {
-                        MediaListHolder.selectPhotos.remove(mItemList.get(mCurrentIndex));
+                        MediaListHolder.selectPhotos.remove(photo);
                     }
+
+                    sendBroadcast(new Intent(PICKER_ACTION_MEDIA_SELECT)
+                            .putExtra(PICKER_EXTRA_PHOTO, photo));
                     updateToolbar();
                 }
             }
@@ -287,7 +293,7 @@ public class PicturePreviewActivity extends BaseActivity {
 
 //                ProgressScaleImageView imageView = new ProgressScaleImageView(container.getContext());
 
-                ProgressScaleImageView imageView=new ProgressScaleImageView(PicturePreviewActivity.this);
+                ProgressScaleImageView imageView = new ProgressScaleImageView(PicturePreviewActivity.this);
                 imageView.getScaleImageView().setOnClickListener(v -> {
                     mFullScreen = !mFullScreen;
                     if (mFullScreen) {

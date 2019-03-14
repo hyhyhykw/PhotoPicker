@@ -500,7 +500,8 @@ public class PictureSelectorActivity extends BaseActivity {
 
                         index = MediaListHolder.currentPhotos.indexOf(photo);
 
-                        mGridViewAdapter.notifyItemChanged(index);
+                        mGridViewAdapter.notifyItemChanged(isShowCamera ? index + 1 : index);
+
                         updateToolbar();
                     }
                 }
