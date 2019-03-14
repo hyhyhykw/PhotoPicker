@@ -1,6 +1,9 @@
 package com.hy.picker;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -63,9 +66,14 @@ public class PicturePreviewActivity extends BaseActivity {
     //    private int mStartIndex;
     private Drawable mDefaultDrawable;
 
+    private PreviewReceiver mPreviewReceiver;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.picker_activity_preview);
+        mPreviewReceiver=new PreviewReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(PICKER_ACTION_MEDIA_ADD);
+        registerReceiver(mPreviewReceiver, intentFilter);
 
         initView();
         mDefaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
@@ -190,6 +198,12 @@ public class PicturePreviewActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mPreviewReceiver);
+        super.onDestroy();
+    }
+
     private void initView() {
         mTvEdit = findViewById(R.id.picker_tv_edit);
         mToolbarTop = findViewById(R.id.picker_preview_toolbar);
@@ -306,6 +320,29 @@ public class PicturePreviewActivity extends BaseActivity {
 
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             container.removeView((View) object);
+        }
+    }
+
+
+    public class PreviewReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (null == intent) return;
+            String action = intent.getAction();
+            if (action == null) return;
+            switch (action) {
+
+                case PICKER_ACTION_MEDIA_ADD: {
+//                    Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
+//                    MediaListHolder.selectPhotos.add(photo);
+//                    int updateIndex = intent.getIntExtra(PICKER_EXTRA_UPDATE_INDEX, selectCateIndex);
+                    mViewPager.getAdapter().notifyDataSetChanged();
+                    updateToolbar();
+                }
+                break;
+            }
+
+
         }
     }
 }

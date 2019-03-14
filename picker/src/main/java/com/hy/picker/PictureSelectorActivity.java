@@ -525,7 +525,6 @@ public class PictureSelectorActivity extends BaseActivity {
                         }
                     }
 
-
                     mGridViewAdapter.notifyDataSetChanged();
                     mCatalogAdapter.notifyDataSetChanged();
                     updateToolbar();
