@@ -342,8 +342,11 @@ public class PicturePreviewActivity extends BaseActivity {
 //                    Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
 //                    MediaListHolder.selectPhotos.add(photo);
 //                    int updateIndex = intent.getIntExtra(PICKER_EXTRA_UPDATE_INDEX, selectCateIndex);
-                    mViewPager.getAdapter().notifyDataSetChanged();
-                    updateToolbar();
+                    runOnUiThread(()->{
+                        mViewPager.getAdapter().notifyDataSetChanged();
+                        updateToolbar();
+                    });
+
                 }
                 break;
             }

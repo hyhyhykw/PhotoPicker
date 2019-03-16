@@ -500,9 +500,12 @@ public class PictureSelectorActivity extends BaseActivity {
 
                         index = MediaListHolder.currentPhotos.indexOf(photo);
 
-                        mGridViewAdapter.notifyItemChanged(isShowCamera ? index + 1 : index);
+                        runOnUiThread(()->{
+                            mGridViewAdapter.notifyItemChanged(isShowCamera ? index + 1 : index);
 
-                        updateToolbar();
+                            updateToolbar();
+                        });
+
                     }
                 }
                 break;
@@ -526,15 +529,21 @@ public class PictureSelectorActivity extends BaseActivity {
                         }
                     }
 
-                    mGridViewAdapter.notifyDataSetChanged();
-                    mCatalogAdapter.notifyDataSetChanged();
-                    updateToolbar();
+                    runOnUiThread(()->{
+                        mGridViewAdapter.notifyDataSetChanged();
+                        mCatalogAdapter.notifyDataSetChanged();
+                        updateToolbar();
+                    });
+
                 }
                 break;
                 case PICKER_ACTION_MEDIA_SEND: {
-                    PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
-                    MediaListHolder.selectPhotos.clear();
-                    finish();
+                    runOnUiThread(()->{
+                        PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
+                        MediaListHolder.selectPhotos.clear();
+                        finish();
+                    });
+
                 }
                 break;
             }
