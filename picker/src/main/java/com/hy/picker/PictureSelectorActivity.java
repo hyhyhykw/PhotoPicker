@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -39,8 +40,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.hy.picker.core.util.SizeUtils;
-import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.AttrsUtils;
+import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.MyGridItemDecoration;
 import com.hy.picker.utils.PermissionUtils;
@@ -118,6 +119,23 @@ public class PictureSelectorActivity extends BaseActivity {
         if (null == mDefaultDrawable) {
             mDefaultDrawable = ContextCompat.getDrawable(this, R.drawable.picker_grid_image_default);
         }
+        int disableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_preview_color_disable);
+        int enableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_preview_color_enable);
+
+        int colors[] = new int[]{
+                disableColor, enableColor
+        };
+
+        int states[][] = new int[][]{
+                new int[]{
+                        -android.R.attr.state_enabled
+                },
+                new int[]{
+                        android.R.attr.state_enabled
+                }
+        };
+
+        ColorStateList colorStateList = new ColorStateList(states, colors);
         if (null == typeDrawable) {
             typeDrawable = ContextCompat.getDrawable(this, R.drawable.picker_type_selector_white);
         }
@@ -152,12 +170,31 @@ public class PictureSelectorActivity extends BaseActivity {
         mBtnSend = findViewById(R.id.picker_send);
         mTvTitle = findViewById(R.id.picker_title);
         mPicType = findViewById(R.id.picker_pic_type);
-        mPicType.init(this);
+        int sendEnableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_send_color_enable);
+        int sendDisableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_send_color_disable);
+
+
+        int[] sendColors = {
+                sendDisableColor,
+                sendEnableColor
+        };
+        int sendStates[][] = new int[][]{
+                new int[]{
+                        -android.R.attr.state_enabled
+                },
+                new int[]{
+                        android.R.attr.state_enabled
+                }
+        };
+
+        ColorStateList sendColorStateList = new ColorStateList(sendStates, sendColors);
+
+        mPicType.init(this,sendColorStateList);
         mPicType.setEnabled(false);
         mPicType.setText(video ? R.string.picker_all_video : R.string.picker_all_image);
 
         mPreviewBtn = findViewById(R.id.picker_preview);
-        mPreviewBtn.init(this);
+        mPreviewBtn.init(this,colorStateList);
         mPreviewBtn.setEnabled(null != mSelectItems && !mSelectItems.isEmpty());
 
         mTvTitle.setText(video ? R.string.picker_picsel_videotype : R.string.picker_picsel_pictype);
@@ -500,7 +537,7 @@ public class PictureSelectorActivity extends BaseActivity {
 
                         index = MediaListHolder.currentPhotos.indexOf(photo);
 
-                        runOnUiThread(()->{
+                        runOnUiThread(() -> {
                             mGridViewAdapter.notifyItemChanged(isShowCamera ? index + 1 : index);
 
                             updateToolbar();
@@ -529,7 +566,7 @@ public class PictureSelectorActivity extends BaseActivity {
                         }
                     }
 
-                    runOnUiThread(()->{
+                    runOnUiThread(() -> {
                         mGridViewAdapter.notifyDataSetChanged();
                         mCatalogAdapter.notifyDataSetChanged();
                         updateToolbar();
@@ -538,7 +575,7 @@ public class PictureSelectorActivity extends BaseActivity {
                 }
                 break;
                 case PICKER_ACTION_MEDIA_SEND: {
-                    runOnUiThread(()->{
+                    runOnUiThread(() -> {
                         PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
                         MediaListHolder.selectPhotos.clear();
                         finish();
@@ -591,8 +628,9 @@ public class PictureSelectorActivity extends BaseActivity {
             super(context, attrs);
         }
 
-        public void init(Activity root) {
+        public void init(Activity root,ColorStateList colorStateList) {
             mText = root.findViewById(R.id.picker_preview_text);
+            mText.setTextColor(colorStateList);
         }
 
         public void setText(int id) {
@@ -631,8 +669,11 @@ public class PictureSelectorActivity extends BaseActivity {
             super(context, attrs);
         }
 
-        public void init(Activity root) {
+        public void init(Activity root,ColorStateList colorStateList) {
+
             mText = root.findViewById(R.id.picker_type_text);
+
+            mText.setTextColor(colorStateList);
         }
 
         public void setText(String text) {

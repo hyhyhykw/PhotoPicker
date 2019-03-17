@@ -63,7 +63,6 @@
                 android:paddingRight="10dp"
                 android:text="@string/picker_picsel_toolbar_send"
                 android:textAllCaps="true"
-                android:textColor="@color/picker_send_color"
                 android:textSize="14sp"/>
         </FrameLayout>
 

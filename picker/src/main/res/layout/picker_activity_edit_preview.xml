@@ -6,8 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.davemorrissey.labs.subscaleview.PickerScaleImageView
+
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@id/picker_photo_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.davemorrissey.labs.subscaleview.PickerScaleImageView
+        android:id="@id/picker_long_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/picker_preview_toolbar"
@@ -65,7 +71,6 @@
                 android:paddingRight="10dp"
                 android:text="@string/picker_picsel_toolbar_sure"
                 android:textAllCaps="true"
-                android:textColor="@color/picker_send_color"
                 android:textSize="14sp"/>
         </FrameLayout>
 

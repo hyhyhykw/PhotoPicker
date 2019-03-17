@@ -59,7 +59,6 @@
                 android:paddingRight="10dp"
                 android:text="@string/picker_picsel_toolbar_send"
                 android:textAllCaps="true"
-                android:textColor="@color/picker_send_color"
                 android:textSize="14sp"/>
         </FrameLayout>
 
@@ -144,7 +143,6 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="@string/picker_picsel_pictype"
-                    android:textColor="@color/picker_preview_color"
                     android:textSize="16sp"/>
 
                 <ImageView
@@ -177,7 +175,6 @@
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:text="@string/picker_picsel_toolbar_preview"
-                    android:textColor="@color/picker_preview_color"
                     android:textSize="16sp"/>
             </view>
 

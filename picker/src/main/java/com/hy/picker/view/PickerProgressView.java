@@ -1,8 +1,5 @@
 package com.hy.picker.view;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -71,75 +68,6 @@ public class PickerProgressView extends View {
 
     private float sweepAngle = 0f;
 
-    private ValueAnimator halfAnimator;
-
-    public void toHalf() {
-        halfAnimator = ValueAnimator.ofFloat(0f, 180f);
-        halfAnimator.addUpdateListener(animation -> {
-            sweepAngle = (float) animation.getAnimatedValue();
-            postInvalidate();
-        });
-
-        halfAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                halfAnimator.removeAllUpdateListeners();
-                halfAnimator.removeAllListeners();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                halfAnimator.removeAllUpdateListeners();
-                halfAnimator.removeAllListeners();
-            }
-        });
-        halfAnimator.setDuration(500);
-        halfAnimator.start();
-    }
-
-    public interface OnEndListener {
-        void onEnd();
-    }
-
-    private ValueAnimator nextAnimator;
-
-    public void toNext(OnEndListener onEndListener) {
-        if (null != halfAnimator && halfAnimator.isRunning()) {
-            halfAnimator.cancel();
-        }
-
-        nextAnimator = ValueAnimator.ofFloat(sweepAngle, 360f - sweepAngle);
-        nextAnimator.addUpdateListener(animation -> {
-            sweepAngle = (float) animation.getAnimatedValue();
-            postInvalidate();
-        });
-        nextAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                onEndListener.onEnd();
-                nextAnimator.removeAllUpdateListeners();
-                nextAnimator.removeAllListeners();
-                sweepAngle = 0;
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                onEndListener.onEnd();
-                nextAnimator.removeAllUpdateListeners();
-                nextAnimator.removeAllListeners();
-                sweepAngle = 0;
-            }
-        });
-        nextAnimator.setDuration(500);
-        nextAnimator.start();
-    }
-
-    public void cancel() {
-        if (nextAnimator != null && nextAnimator.isRunning()) {
-            nextAnimator.cancel();
-        }
-        setVisibility(GONE);
-    }
 
     public void progress(int progress) {
         sweepAngle = progress / 100f * 360;

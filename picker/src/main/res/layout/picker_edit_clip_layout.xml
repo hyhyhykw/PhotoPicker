@@ -53,7 +53,6 @@
                 android:focusable="true"
                 android:onClick="onClick"
                 android:text="@string/picker_reset"
-                android:textColor="@color/picker_color_text"
                 android:textSize="16sp" />
 
             <ImageButton

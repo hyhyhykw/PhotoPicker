@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -17,13 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
-import com.hy.picker.utils.PickerProgressScaleViewTarget;
+import com.hy.picker.utils.PickerScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
-import com.hy.picker.view.ProgressScaleImageView;
 import com.picker2.model.Photo;
 import com.picker2.utils.MediaListHolder;
 
@@ -221,6 +225,25 @@ public class PicturePreviewActivity extends BaseActivity {
         mToolbarBottom = findViewById(R.id.picker_bottom_bar);
 //        mUseOrigin = findViewById(R.id.origin_check);
         mSelectBox = findViewById(R.id.picker_select_check);
+        int enableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_send_color_enable);
+        int disableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_send_color_disable);
+
+
+        int[] colors = {
+                disableColor,
+                enableColor
+        };
+        int states[][] = new int[][]{
+                new int[]{
+                        -android.R.attr.state_enabled
+                },
+                new int[]{
+                        android.R.attr.state_enabled
+                }
+        };
+
+        ColorStateList colorStateList = new ColorStateList(states, colors);
+        mBtnSend.setTextColor(colorStateList);
     }
 
     protected void onResume() {
@@ -261,9 +284,10 @@ public class PicturePreviewActivity extends BaseActivity {
         @NonNull
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
             Photo photo = mItemList.get(position);
+
             if (photo.isGif()) {
-                final ImageView imageView = new ImageView(container.getContext());
-                imageView.setOnClickListener(v -> {
+                PhotoView imageView = new PhotoView(container.getContext());
+                imageView.setOnPhotoTapListener((v,x,y) -> {
                     mFullScreen = !mFullScreen;
 //                        View decorView;
 //                        byte uiOptions;
@@ -275,14 +299,17 @@ public class PicturePreviewActivity extends BaseActivity {
 
                         mToolbarTop.setVisibility(View.VISIBLE);
                         mToolbarBottom.setVisibility(View.VISIBLE);
-//                            CommonUtils.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
+//                            AppTool.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
                     }
                 });
 
                 String uri = photo.getUri();
                 Glide.with(container.getContext())
-                        .load(new File(uri))
+                        .load(uri)
                         .apply(new RequestOptions()
+                                .override(480, 800)
+                                .priority(Priority.HIGH)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .error(mDefaultDrawable)
                                 .placeholder(mDefaultDrawable))
                         .into(imageView);
@@ -291,34 +318,59 @@ public class PicturePreviewActivity extends BaseActivity {
 
             } else {
 
-//                ProgressScaleImageView imageView = new ProgressScaleImageView(container.getContext());
+                if (photo.isLong()) {
+                    PickerScaleImageView scaleImageView = new PickerScaleImageView(container.getContext());
+                    String uri = photo.getUri();
+                    Glide.with(PicturePreviewActivity.this)
+                            .asBitmap()
+                            .load(uri)
+                            .apply(new RequestOptions()
+                                    .error(mDefaultDrawable)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .placeholder(mDefaultDrawable))
+                            .into(new PickerScaleViewTarget(scaleImageView));
 
-                ProgressScaleImageView imageView = new ProgressScaleImageView(PicturePreviewActivity.this);
-                imageView.getScaleImageView().setOnClickListener(v -> {
-                    mFullScreen = !mFullScreen;
-                    if (mFullScreen) {
-                        mToolbarTop.setVisibility(View.INVISIBLE);
-                        mToolbarBottom.setVisibility(View.INVISIBLE);
-                    } else {
-                        mToolbarTop.setVisibility(View.VISIBLE);
-                        mToolbarBottom.setVisibility(View.VISIBLE);
-                    }
-                });
+                    scaleImageView.setOnClickListener(v -> {
+                        mFullScreen = !mFullScreen;
+                        if (mFullScreen) {
+                            mToolbarTop.setVisibility(View.INVISIBLE);
+                            mToolbarBottom.setVisibility(View.INVISIBLE);
+                        } else {
+                            mToolbarTop.setVisibility(View.VISIBLE);
+                            mToolbarBottom.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    container.addView(scaleImageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+                    return scaleImageView;
+                } else {
+                    PhotoView imageView = new PhotoView(container.getContext());
+                    imageView.setOnPhotoTapListener((v,x,y) -> {
+                        mFullScreen = !mFullScreen;
+                        if (mFullScreen) {
 
-                String uri = photo.getUri();
+                            mToolbarTop.setVisibility(View.INVISIBLE);
+                            mToolbarBottom.setVisibility(View.INVISIBLE);
+                        } else {
 
-                Glide.with(container.getContext())
-                        .asFile()
-                        .load(new File(uri))
-                        .apply(new RequestOptions()
-                                .error(mDefaultDrawable)
-                                .placeholder(mDefaultDrawable))
-                        .into(new PickerProgressScaleViewTarget(imageView));
-//                imageView.setImage(ImageSource.uri(Uri.fromFile(new File(uri))));
+                            mToolbarTop.setVisibility(View.VISIBLE);
+                            mToolbarBottom.setVisibility(View.VISIBLE);
+                        }
+                    });
 
-                container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                return imageView;
+                    String uri = photo.getUri();
+                    Glide.with(container.getContext())
+                            .asBitmap()
+                            .load(uri)
+                            .apply(new RequestOptions()
+                                    .error(mDefaultDrawable)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .placeholder(mDefaultDrawable))
+                            .into(imageView);
+                    container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    return imageView;
+                }
+
             }
 
 
@@ -339,10 +391,7 @@ public class PicturePreviewActivity extends BaseActivity {
             switch (action) {
 
                 case PICKER_ACTION_MEDIA_ADD: {
-//                    Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
-//                    MediaListHolder.selectPhotos.add(photo);
-//                    int updateIndex = intent.getIntExtra(PICKER_EXTRA_UPDATE_INDEX, selectCateIndex);
-                    runOnUiThread(()->{
+                    runOnUiThread(() -> {
                         mViewPager.getAdapter().notifyDataSetChanged();
                         updateToolbar();
                     });

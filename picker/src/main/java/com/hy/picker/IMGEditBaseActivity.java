@@ -1,10 +1,12 @@
 package com.hy.picker;
 
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.hy.picker.core.IMGMode;
@@ -15,6 +17,7 @@ import com.hy.picker.view.IMGView;
 
 import java.io.IOException;
 
+import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 
 /**
@@ -53,10 +56,29 @@ public abstract class IMGEditBaseActivity extends BaseActivity implements View.O
         Bitmap bitmap = getBitmap();
         if (bitmap != null) {
             setContentView(R.layout.picker_edit_activity);
+            TextView mTv = findViewById(R.id.picker_tv_clip_reset);
             initViews();
+            int[] colors = {
+                    0xff333333,
+                    ContextCompat.getColor(this, R.color.picker_color_accent),
+                    ContextCompat.getColor(this, R.color.picker_color_white)
+            };
+            int[][] states = {
+                    new int[]{
+                            -android.R.attr.state_enabled
+                    },
+                    new int[]{
+                            android.R.attr.state_pressed
+                    },
+                    new int[]{
+                    }
+            };
+            ColorStateList colorStateList = new ColorStateList(states, colors);
+            mTv.setTextColor(colorStateList);
             mImgView.setImageBitmap(bitmap);
 
             onCreated();
+
         } else finish();
     }
 
@@ -83,7 +105,7 @@ public abstract class IMGEditBaseActivity extends BaseActivity implements View.O
                     break;
             }
         } catch (IOException e) {
-            Logger.v("readPictureDegree() error:"+e.getMessage(), e);
+            Logger.v("readPictureDegree() error:" + e.getMessage(), e);
         }
         return degree;
     }

@@ -11,12 +11,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
-import com.hy.picker.utils.PickerProgressScaleViewTarget;
+import com.hy.picker.utils.PickerScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
-import com.hy.picker.view.ProgressScaleImageView;
 import com.picker2.model.Photo;
 
 import java.io.File;
@@ -102,7 +105,7 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
             Photo photo = mItemList.get(position);
             if (photo.isGif()) {
-                final ImageView imageView = new ImageView(container.getContext());
+                final PhotoView imageView = new PhotoView(container.getContext());
                 imageView.setOnClickListener(v -> finish());
 
                 String uri = photo.getUri();
@@ -110,6 +113,9 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
                         .load(new File(uri))
                         .apply(new RequestOptions()
                                 .error(mDefaultDrawable)
+                                .override(480, 800)
+                                .priority(Priority.HIGH)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .placeholder(mDefaultDrawable))
                         .into(imageView);
                 container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -117,26 +123,38 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
 
             } else {
 
-                ProgressScaleImageView imageView = new ProgressScaleImageView(container.getContext());
-                imageView.getScaleImageView().setOnClickListener(v -> finish());
-
-
                 String uri = photo.getUri();
 
-                Glide.with(container.getContext())
-                        .asFile()
-                        .load(new File(uri))
-                        .apply(new RequestOptions()
-                                .error(mDefaultDrawable)
-                                .placeholder(mDefaultDrawable))
-                        .into(new PickerProgressScaleViewTarget(imageView));
-//                imageView.setImage(ImageSource.uri(Uri.fromFile(new File(uri))));
+                if (photo.isLong()) {
+                    PickerScaleImageView scaleImageView = new PickerScaleImageView(container.getContext());
+                    Glide.with(container)
+                            .asBitmap()
+                            .load(uri)
+                            .apply(new RequestOptions()
+                                    .error(mDefaultDrawable)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .placeholder(mDefaultDrawable))
+                            .into(new PickerScaleViewTarget(scaleImageView));
 
-                container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                return imageView;
+                    container.addView(scaleImageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+                    return scaleImageView;
+                } else {
+                    PhotoView scaleImageView = new PhotoView(container.getContext());
+                    Glide.with(container)
+                            .asBitmap()
+                            .load(uri)
+                            .apply(new RequestOptions()
+                                    .error(mDefaultDrawable)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .placeholder(mDefaultDrawable))
+                            .into(scaleImageView);
+
+                    container.addView(scaleImageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+                    return scaleImageView;
+                }
             }
-
-
         }
 
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {

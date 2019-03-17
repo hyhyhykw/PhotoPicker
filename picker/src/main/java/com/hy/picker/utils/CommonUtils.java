@@ -3,12 +3,11 @@ package com.hy.picker.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,6 +16,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created time : 2018/4/3 11:42.
@@ -33,19 +34,100 @@ public class CommonUtils {
                 Environment.MEDIA_MOUNTED);
     }
 
+    public static void setStatusTransparent(Activity activity) {
+        Window window = activity.getWindow();
+        window.getAttributes().flags = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.setStatusBarColor(Color.TRANSPARENT);
+//            window.setNavigationBarColor(Color.TRANSPARENT);
+//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+
+        String brand = getDeviceBrand();
+        if ("Xiaomi".equalsIgnoreCase(brand)) {
+            //针对小米
+            Class clazz = window.getClass();
+            try {
+                int darkModeFlag;
+
+                @SuppressLint("PrivateApi")
+                Class layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
+
+                Field field = layoutParams.getField("EXTRA_FLAG_STATUS_BAR_DARK_MODE");
+
+                darkModeFlag = field.getInt(layoutParams);
+
+                Method extraFlagField = clazz.getMethod("setExtraFlags", int.class, int.class);
+
+                extraFlagField.invoke(window,  darkModeFlag , darkModeFlag);
+
+            } catch (Exception e) {
+                Logger.v(e.getMessage(), e);
+            }
+        } else if ("Meizu".equalsIgnoreCase(brand)) {
+            //针对魅族
+            try {
+                WindowManager.LayoutParams lp = window.getAttributes();
+                Field darkFlag = WindowManager.LayoutParams.class.getDeclaredField("MEIZU_FLAG_DARK_STATUS_BAR_ICON");
+                Field meizuFlags = WindowManager.LayoutParams.class.getDeclaredField("meizuFlags");
+                darkFlag.setAccessible(true);
+                meizuFlags.setAccessible(true);
+                int bit = darkFlag.getInt(null);
+                int value = meizuFlags.getInt(lp);
+                value = value | bit ;
+                meizuFlags.setInt(lp, value);
+                window.setAttributes(lp);
+            } catch (Exception e) {
+                Logger.v(e.getMessage(), e);
+            }
+
+        }
+        if ("Xiaomi".equalsIgnoreCase(getDeviceBrand())) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            try {
+                @SuppressLint("PrivateApi")
+                Class decorViewClazz = Class.forName("com.android.internal.policy.DecorView");
+                Field field = decorViewClazz.getDeclaredField("mSemiTransparentStatusBarColor");
+                field.setAccessible(true);
+                field.setInt(window.getDecorView(), Color.TRANSPARENT);  //改为透明
+                field.setAccessible(false);
+            } catch (Exception ignore) {
+            }
+        }
+    }
+
+    /**
+     * 改变状态栏字体颜色为黑色, 要求MIUI6以上
+     *
+     * @param lightStatusBar 为真时表示黑色字体
+     */
+
+    public static void processMIUI(Activity activity, boolean lightStatusBar) {
+        processMIUI(activity, lightStatusBar, Color.WHITE);
+    }
+
     /**
      * 改变状态栏字体颜色为黑色, 要求MIUI6以上
      *
      * @param lightStatusBar 为真时表示黑色字体
      */
     @SuppressWarnings("JavaReflectionMemberAccess")
-    public static void processMIUI(Activity activity, boolean lightStatusBar) {
+    public static void processMIUI(Activity activity, boolean lightStatusBar, int color) {
 
         Window window = activity.getWindow();
         //针对安卓6.0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && lightStatusBar) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(activity, android.R.color.white));
+            window.setStatusBarColor(color);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
 
@@ -68,7 +150,7 @@ public class CommonUtils {
                 extraFlagField.invoke(window, lightStatusBar ? darkModeFlag : 0, darkModeFlag);
 
             } catch (Exception e) {
-                Logger.d(e.getMessage(), e);
+                Logger.v(e.getMessage(), e);
             }
         } else if ("Meizu".equalsIgnoreCase(brand)) {
             //针对魅族
@@ -84,7 +166,7 @@ public class CommonUtils {
                 meizuFlags.setInt(lp, value);
                 window.setAttributes(lp);
             } catch (Exception e) {
-                Logger.d(e.getMessage(), e);
+                Logger.v(e.getMessage(), e);
             }
 
         }
@@ -152,6 +234,8 @@ public class CommonUtils {
         }
         return "" + num;
     }
+
+
 
     /**
      * 获取手机厂商

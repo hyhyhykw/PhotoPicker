@@ -145,6 +145,10 @@ public class Photo implements Parcelable, Comparable<Photo> {
         return TextUtils.equals(getMimeType(), "image/gif");
     }
 
+    public boolean isLong() {
+        int h = width * 3;
+        return height > h;
+    }
 
     @NonNull
     @Override

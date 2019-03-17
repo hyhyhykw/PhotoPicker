@@ -1,6 +1,7 @@
 package com.hy.picker;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Build.VERSION;
@@ -13,15 +14,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.PickerScaleViewTarget;
 import com.picker2.model.Photo;
 import com.picker2.utils.AndroidLifecycleUtils;
-
-import java.io.File;
 
 import androidx.core.content.ContextCompat;
 
@@ -37,7 +39,8 @@ public class PictureEditPreviewActivity extends BaseActivity {
     private ImageView mBtnBack;
     private TextView mBtnSend;
     //    private AppCompatRadioButton mUseOrigin;
-    private PickerScaleImageView mPhotoView;
+    private PhotoView mPhotoView;
+    private PickerScaleImageView mLongIv;
     private boolean mFullScreen;
 
     private Photo mPicItem;
@@ -55,7 +58,6 @@ public class PictureEditPreviewActivity extends BaseActivity {
         initView();
 
         if (VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             mToolbarTop.setPadding(0, CommonUtils.getStatusBarHeight(this), 0, 0);
         }
@@ -73,13 +75,45 @@ public class PictureEditPreviewActivity extends BaseActivity {
         Looper.myQueue().addIdleHandler(() -> {
             if (AndroidLifecycleUtils.canLoadImage(PictureEditPreviewActivity.this)) {
                 String uri = mPicItem.getUri();
-                Glide.with(PictureEditPreviewActivity.this)
-                        .asFile()
-                        .load(new File(uri))
-                        .apply(new RequestOptions()
-                                .error(mDefaultDrawable)
-                                .placeholder(mDefaultDrawable))
-                        .into(new PickerScaleViewTarget(mPhotoView));
+                if (mPicItem.isGif()) {
+                    mPhotoView.setVisibility(View.VISIBLE);
+                    mLongIv.setVisibility(View.GONE);
+                    Glide.with(PictureEditPreviewActivity.this)
+                            .asGif()
+                            .load(uri)
+                            .apply(new RequestOptions()
+                                    .override(480, 800)
+                                    .priority(Priority.HIGH)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .error(mDefaultDrawable)
+                                    .placeholder(mDefaultDrawable))
+                            .into(mPhotoView);
+                } else {
+                    if (mPicItem.isLong()) {
+                        mPhotoView.setVisibility(View.GONE);
+                        mLongIv.setVisibility(View.VISIBLE);
+                        Glide.with(PictureEditPreviewActivity.this)
+                                .asBitmap()
+                                .load(uri)
+                                .apply(new RequestOptions()
+                                        .error(mDefaultDrawable)
+                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                        .placeholder(mDefaultDrawable))
+                                .into(new PickerScaleViewTarget(mLongIv));
+                    } else {
+                        mPhotoView.setVisibility(View.VISIBLE);
+                        mLongIv.setVisibility(View.GONE);
+                        Glide.with(PictureEditPreviewActivity.this)
+                                .asBitmap()
+                                .load(uri)
+                                .apply(new RequestOptions()
+                                        .error(mDefaultDrawable)
+                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                        .placeholder(mDefaultDrawable))
+                                .into(mPhotoView);
+                    }
+                }
+
 
             }
             return false;
@@ -96,7 +130,7 @@ public class PictureEditPreviewActivity extends BaseActivity {
 //                    decorView.setSystemUiVisibility(uiOptions);
                 mToolbarTop.setVisibility(View.INVISIBLE);
             } else {
-//                    CommonUtils.processMIUI(PictureEditPreviewActivity.this, mIsStatusBlack);
+//                    AppTool.processMIUI(PictureEditPreviewActivity.this, mIsStatusBlack);
 //                    decorView = getWindow().getDecorView();
 //                    uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
 //                    decorView.setSystemUiVisibility(uiOptions);
@@ -127,6 +161,27 @@ public class PictureEditPreviewActivity extends BaseActivity {
         mBtnSend = findViewById(R.id.picker_sure);
         mWholeView = findViewById(R.id.picker_whole_layout);
         mPhotoView = findViewById(R.id.picker_photo_preview);
+        mLongIv = findViewById(R.id.picker_long_photo);
+        int enableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_send_color_enable);
+        int disableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_send_color_disable);
+
+
+        int[] colors = {
+                disableColor,
+                enableColor
+        };
+        int states[][] = new int[][]{
+                new int[]{
+                        -android.R.attr.state_enabled
+                },
+                new int[]{
+                        android.R.attr.state_enabled
+                }
+        };
+
+        ColorStateList colorStateList = new ColorStateList(states, colors);
+
+        mBtnSend.setTextColor(colorStateList);
     }
 
     @Override

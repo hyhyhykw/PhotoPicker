@@ -68,4 +68,5 @@
     <item name="picker_video_time" type="id"/>
     <item name="picker_item_photo" type="id"/>
     <item name="picker_item_gif" type="id"/>
+    <item name="picker_long_photo" type="id"/>
 </resources>
