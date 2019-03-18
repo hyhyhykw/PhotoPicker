@@ -1,12 +1,12 @@
 package com.hy.picker;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.MyFileProvider;
+import com.hy.picker.utils.SingleMediaScanner;
+import com.picker2.PickerConstants;
 import com.picker2.model.Photo;
 import com.picker2.utils.MediaScannerUtils;
 
@@ -31,7 +33,7 @@ import androidx.annotation.Nullable;
  *
  * @author HY
  */
-public class OpenCameraResultActivity extends BaseActivity {
+public class OpenCameraResultActivity extends Activity implements PickerConstants {
     public static final int REQUEST_CAMERA = 0x357;
     public static final int REQUEST_EDIT = 0x753;
     private boolean video;
@@ -67,8 +69,8 @@ public class OpenCameraResultActivity extends BaseActivity {
         File editFile = new File(path, name);
 
         startActivityForResult(new Intent(this, IMGEditActivity.class)
-                .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
-                .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, editFile.getAbsolutePath()), REQUEST_EDIT);
+                .putExtra(EXTRA_IMAGE_URI, uri)
+                .putExtra(EXTRA_IMAGE_SAVE_PATH, editFile.getAbsolutePath()), REQUEST_EDIT);
     }
 
     @Override
@@ -93,7 +95,7 @@ public class OpenCameraResultActivity extends BaseActivity {
                     final File file = new File(path);
 
                     if (file.exists()) {
-                        MediaScannerConnection.scanFile(this, new String[]{path}, null, (path1, uri) -> getPhoto(path1, file));
+                        new SingleMediaScanner(this, path, path1 -> getPhoto(path1, file));
                     } else {
                         Toast.makeText(this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                         finish();
@@ -115,9 +117,14 @@ public class OpenCameraResultActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             if (null == intent) return;
             if (!PICKER_ACTION_MEDIA_SURE.equals(intent.getAction())) return;
-            Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
-            PhotoPicker.sTakePhotoListener.onTake(photo);
-            finish();
+            runOnUiThread(()->{
+                Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
+                OpenCameraResultActivity.this.
+                        setResult(RESULT_OK,new Intent()
+                        .putExtra(EXTRA_ITEM,photo));
+                finish();
+            });
+
         }
     }
 
@@ -132,14 +139,23 @@ public class OpenCameraResultActivity extends BaseActivity {
                         Toast.makeText(OpenCameraResultActivity.this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                         return;
                     }
-
+                    Logger.e("photo1======"+photo);
                     if (video) {
-                        PhotoPicker.sTakePhotoListener.onTake(photo);
+//                        if (null!=PhotoPicker.sTakePhotoListener)
+//                        PhotoPicker.sTakePhotoListener.onTake(photo);
+                        setResult(RESULT_OK,new Intent()
+                                .putExtra(EXTRA_ITEM,photo));
+                        finish();
                     } else {
                         if (PhotoPicker.isEdit) {
                             toEdit(Uri.fromFile(file));
                         } else {
-                            PhotoPicker.sTakePhotoListener.onTake(photo);
+//                            if (null!=PhotoPicker.sTakePhotoListener)
+//                            PhotoPicker.sTakePhotoListener.onTake(photo);
+                            setResult(RESULT_OK,new Intent()
+                                    .putExtra(EXTRA_ITEM,photo));
+
+                            finish();
                         }
                     }
                 });

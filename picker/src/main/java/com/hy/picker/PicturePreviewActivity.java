@@ -93,12 +93,12 @@ public class PicturePreviewActivity extends BaseActivity {
         }
 
         Intent intent = getIntent();
-        max = intent.getIntExtra("max", 9);
-        boolean isGif = intent.getBooleanExtra("isGif", false);
+        max = intent.getIntExtra(EXTRA_MAX, 9);
+        boolean isGif = intent.getBooleanExtra(EXTRA_IS_GIF, false);
         mTvEdit.setVisibility(isGif ? View.GONE : View.VISIBLE);
-        boolean isPreview = intent.getBooleanExtra("isPreview", false);
+        boolean isPreview = intent.getBooleanExtra(EXTRA_IS_PREVIEW, false);
 //        mUseOrigin.setChecked(intent.getBooleanExtra("sendOrigin", false));
-        mCurrentIndex = intent.getIntExtra("index", 0);
+        mCurrentIndex = intent.getIntExtra(EXTRA_INDEX, 0);
 
         mItemList = isPreview ? MediaListHolder.selectPhotos : MediaListHolder.currentPhotos;
 

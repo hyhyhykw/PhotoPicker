@@ -4,15 +4,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Looper;
 
-import androidx.recyclerview.widget.GridLayoutManager;
-
 import com.google.gson.Gson;
 import com.hy.picker.adapter.CrystalAdapter;
+import com.hy.picker.core.CrystalResult;
+import com.hy.picker.core.ExistBean;
 import com.hy.picker.utils.DefaultItemDecoration;
 import com.hy.picker.utils.NetworkUtils;
 
-import com.hy.picker.core.CrystalResult;
-import com.hy.picker.core.ExistBean;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 /**
  * Created time : 2018/8/27 16:42.
@@ -22,14 +21,13 @@ import com.hy.picker.core.ExistBean;
 public class PickerCrystalActivity extends BaseListActivity implements CrystalAdapter.OnItemClickListener {
 
 
-
     private CrystalAdapter mCrystalAdapter;
     private String cate;
 
     @Override
     protected void initView() {
         rvCrystal.addItemDecoration(new DefaultItemDecoration(Color.parseColor("#f5f5f5")));
-        int id = getIntent().getIntExtra("id", 1);
+        int id = getIntent().getIntExtra(EXTRA_ID, 1);
         cate = getCateFromId(id);
         mCrystalAdapter = new CrystalAdapter(cate);
         mCrystalAdapter.setOnItemClickListener(this);
@@ -103,7 +101,7 @@ public class PickerCrystalActivity extends BaseListActivity implements CrystalAd
     @Override
     public void onClick(ExistBean exist) {
         Intent intent = new Intent();
-        intent.putExtra("path", exist.getFile().getAbsolutePath());
+        intent.putExtra(EXTRA_PATH, exist.getFile().getAbsolutePath());
         setResult(RESULT_OK, intent);
         finish();
     }

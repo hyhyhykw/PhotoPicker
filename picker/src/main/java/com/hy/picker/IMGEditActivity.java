@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,6 +16,7 @@ import com.hy.picker.core.file.IMGFileDecoder;
 import com.hy.picker.core.util.IMGUtils;
 import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.Logger;
+import com.hy.picker.utils.SingleMediaScanner;
 import com.picker2.utils.MediaListHolder;
 import com.picker2.utils.MediaScannerUtils;
 
@@ -35,9 +35,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
 
     private static final int MAX_HEIGHT = 1024;
 
-    public static final String EXTRA_IMAGE_URI = "IMAGE_URI";
 
-    public static final String EXTRA_IMAGE_SAVE_PATH = "IMAGE_SAVE_PATH";
 
     @Override
     public void onCreated() {
@@ -261,9 +259,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                 }
 
 
-                MediaScannerConnection.scanFile(this, new String[]{path}, null, (path1, uri) -> getPhoto(path1));
-
-
+                new SingleMediaScanner(this, path, this::getPhoto);
                 return;
             } else {
                 setResult(RESULT_CANCELED);
@@ -294,7 +290,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                     sendBroadcast(intent);
 
                     startActivity(new Intent(IMGEditActivity.this, PictureEditPreviewActivity.class)
-                            .putExtra("picItem", photo));
+                            .putExtra(EXTRA_ITEM, photo));
 
                     finish();
                 });

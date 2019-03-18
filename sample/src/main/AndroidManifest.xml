@@ -39,7 +39,7 @@
             android:name="com.hy.picker.PickerCrystalActivity"
             android:theme="@style/PickerWhiteTheme"/>
 
-        <activity android:name="com.hy.picker.OpenCameraResultActivity"/>
+
 
         <activity
             android:name="com.hy.picker.IMGEditActivity"
@@ -56,6 +56,10 @@
                 android:resource="@xml/file_paths"/>
         </provider>
 
+        <activity
+            android:name="com.hy.picker.SelectedPicturePreviewActivity"
+            android:theme="@style/PickerWhiteTheme"
+            />
         <activity
             android:name="com.hy.crash.CrashErrorActivity"
             android:theme="@style/CrashWhiteTheme"/>

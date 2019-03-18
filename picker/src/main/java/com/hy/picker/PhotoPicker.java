@@ -1,6 +1,6 @@
 package com.hy.picker;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Environment;
 
@@ -14,6 +14,8 @@ import com.yanzhenjie.permission.Permission;
 import java.io.File;
 import java.util.ArrayList;
 
+import androidx.annotation.Nullable;
+
 /**
  * Created time : 2018/8/20 8:17.
  *
@@ -22,25 +24,35 @@ import java.util.ArrayList;
 public class PhotoPicker implements PickerConstants {
 
 
-    static PhotoListener sPhotoListener;
-    static TakePhotoListener sTakePhotoListener;
+    //    static PhotoListener sPhotoListener;
+    //    static TakePhotoListener sTakePhotoListener;
     static boolean isEdit;
 
 
     public PhotoPicker() {
         isEdit = false;
-        sTakePhotoListener = null;
-        sPhotoListener = null;
+//        sTakePhotoListener = null;
+//        sPhotoListener = null;
         MediaListHolder.currentPhotos.clear();
         MediaListHolder.selectPhotos.clear();
         MediaListHolder.allDirectories.clear();
     }
+
 
     private boolean isVideo;
 
     public PhotoPicker video() {
         isVideo = true;
         return this;
+    }
+
+    public static void destroy() {
+        isEdit = false;
+//        sTakePhotoListener = null;
+//        sPhotoListener = null;
+        MediaListHolder.currentPhotos.clear();
+        MediaListHolder.selectPhotos.clear();
+        MediaListHolder.allDirectories.clear();
     }
 
     public static void init(PhotoModule photoModule) {
@@ -95,31 +107,55 @@ public class PhotoPicker implements PickerConstants {
         return this;
     }
 
-    public void start(PhotoListener photoListener) {
-        sPhotoListener = photoListener;
-        Intent intent = new Intent(PhotoContext.getContext(), PictureSelectorActivity.class);
-        intent.putExtra("max", max);
-        intent.putExtra("gif", gif);
-        intent.putExtra("gifOnly", gifOnly);
-        intent.putExtra("video", isVideo);
-        intent.putExtra("showCamera", isShowCamera);
-        intent.putExtra("preview", preview);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    public void start(Activity activity) {
+        Intent intent = new Intent(activity, PictureSelectorActivity.class);
+        intent.putExtra(EXTRA_MAX, max);
+        intent.putExtra(EXTRA_SHOW_GIF, gif);
+        intent.putExtra(EXTRA_ONLY_GIF, gifOnly);
+        intent.putExtra(EXTRA_PICK_VIDEO, isVideo);
+        intent.putExtra(EXTRA_SHOW_CAMERA, isShowCamera);
+        intent.putExtra(EXTRA_PREVIEW, preview);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (null != mPicItems) {
-            intent.putParcelableArrayListExtra("items", mPicItems);
+            intent.putParcelableArrayListExtra(EXTRA_ITEMS, mPicItems);
         }
-        PhotoContext.getContext().startActivity(intent);
+        activity.startActivityForResult(intent, PICKER_REQUEST_MULTI_PICK);
     }
 
-    public void openCamera(final Context context, TakePhotoListener takePhotoListener) {
-        sTakePhotoListener = takePhotoListener;
+    public static boolean isSingle(int requestCode) {
+        return PICKER_REQUEST_TAKE_PHOTO == requestCode;
+    }
+
+    public void openCamera(final Activity context) {
+//        sTakePhotoListener = takePhotoListener;
         new PermissionUtils(context)
-                .setPermissionListener(() -> context.startActivity(new Intent(context, OpenCameraResultActivity.class)
-                        .putExtra("edit", isEdit)
-                        .putExtra("video", isVideo)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)))
+                .setPermissionListener(() -> context.startActivityForResult(new Intent(context, OpenCameraResultActivity.class)
+                        .putExtra(EXTRA_EDIT, isEdit)
+                        .putExtra(EXTRA_PICK_VIDEO, isVideo)/*
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)*/, PICKER_REQUEST_TAKE_PHOTO))
                 .requestPermission(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE);
     }
+
+    @Nullable
+    public static Photo obtainTakeResult(int requestCode, int resultCode, Intent intent) {
+        if (resultCode != Activity.RESULT_OK || requestCode != PICKER_REQUEST_TAKE_PHOTO || intent == null) {
+            return null;
+        }
+        return intent.getParcelableExtra(EXTRA_ITEM);
+    }
+
+    public static ArrayList<Photo> obtainMultiResult(int requestCode, int resultCode, Intent intent) {
+        if (resultCode != Activity.RESULT_OK || requestCode != PICKER_REQUEST_MULTI_PICK || intent == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<Photo> extra = intent.getParcelableArrayListExtra(EXTRA_ITEMS);
+
+        if (null == extra) {
+            return new ArrayList<>();
+        }
+        return extra;
+    }
+
 
     /**
      * 删除编辑缓存
@@ -149,9 +185,9 @@ public class PhotoPicker implements PickerConstants {
 
     public static void preview(int index, ArrayList<Photo> items) {
         Intent intent = new Intent(PhotoContext.getContext(), SelectedPicturePreviewActivity.class)
-                .putExtra("index", index)
+                .putExtra(EXTRA_INDEX, index)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                .putExtra("items", items);
+                .putExtra(EXTRA_ITEMS, items);
         PhotoContext.getContext().startActivity(intent);
     }
 }

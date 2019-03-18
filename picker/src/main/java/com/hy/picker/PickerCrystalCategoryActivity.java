@@ -4,20 +4,21 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Looper;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.google.gson.Gson;
 import com.hy.picker.adapter.CrystalCategoryAdapter;
 import com.hy.picker.core.CrystalCategory;
 import com.hy.picker.utils.DefaultItemDecoration;
 import com.hy.picker.utils.NetworkUtils;
+import com.picker2.PickerConstants;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
  * Created time : 2018/8/27 16:42.
  *
  * @author HY
  */
-public class PickerCrystalCategoryActivity extends BaseListActivity implements CrystalCategoryAdapter.OnItemClickListener, Constants {
+public class PickerCrystalCategoryActivity extends BaseListActivity implements CrystalCategoryAdapter.OnItemClickListener, Constants, PickerConstants {
 
     private CrystalCategoryAdapter mCrystalCategoryAdapter = new CrystalCategoryAdapter();
 
@@ -30,7 +31,7 @@ public class PickerCrystalCategoryActivity extends BaseListActivity implements C
         rvCrystal.setAdapter(mCrystalCategoryAdapter);
         rvCrystal.setLayoutManager(new LinearLayoutManager(this));
 
-        isOther = getIntent().getBooleanExtra("other", false);
+        isOther = getIntent().getBooleanExtra(EXTRA_OTHER, false);
         Looper.myQueue().addIdleHandler(() -> {
             initData();
             return false;
@@ -75,10 +76,10 @@ public class PickerCrystalCategoryActivity extends BaseListActivity implements C
     public void onClick(CrystalCategory.Category item) {
         if (item.getId() == 11) {
             startActivityForResult(new Intent(this, PickerCrystalCategoryActivity.class)
-                    .putExtra("other", true), 666);
+                    .putExtra(EXTRA_OTHER, true), 666);
         } else {
             startActivityForResult(new Intent(this, PickerCrystalActivity.class)
-                    .putExtra("id", item.getId()), 666);
+                    .putExtra(EXTRA_ID, item.getId()), 666);
         }
     }
 }

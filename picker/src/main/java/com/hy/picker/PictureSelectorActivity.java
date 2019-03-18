@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +44,7 @@ import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.MyGridItemDecoration;
 import com.hy.picker.utils.PermissionUtils;
+import com.hy.picker.utils.SingleMediaScanner;
 import com.picker2.model.Photo;
 import com.picker2.model.PhotoDirectory;
 import com.picker2.utils.MediaListHolder;
@@ -148,14 +148,14 @@ public class PictureSelectorActivity extends BaseActivity {
         catalogHeight = PhotoContext.getScreenHeight() - SizeUtils.dp2px(this, 145) - CommonUtils.getStatusBarHeight(this);
 
         Intent intent = getIntent();
-        max = intent.getIntExtra("max", 9);
-        gif = intent.getBooleanExtra("gif", true);
-        preview = intent.getBooleanExtra("preview", true);
-        gifOnly = intent.getBooleanExtra("gifOnly", false);
-        video = intent.getBooleanExtra("video", false);
-        isShowCamera = intent.getBooleanExtra("showCamera", false);
+        max = intent.getIntExtra(EXTRA_MAX, 9);
+        gif = intent.getBooleanExtra(EXTRA_SHOW_GIF, true);
+        preview = intent.getBooleanExtra(EXTRA_PREVIEW, true);
+        gifOnly = intent.getBooleanExtra(EXTRA_ONLY_GIF, false);
+        video = intent.getBooleanExtra(EXTRA_PICK_VIDEO, false);
+        isShowCamera = intent.getBooleanExtra(EXTRA_SHOW_CAMERA, false);
 
-        mSelectItems = intent.getParcelableArrayListExtra("items");
+        mSelectItems = intent.getParcelableArrayListExtra(EXTRA_ITEMS);
 
         mLytLoad = findViewById(R.id.picker_photo_load);
         mGridView = findViewById(R.id.picker_photo_grd);
@@ -189,12 +189,12 @@ public class PictureSelectorActivity extends BaseActivity {
 
         ColorStateList sendColorStateList = new ColorStateList(sendStates, sendColors);
 
-        mPicType.init(this,sendColorStateList);
+        mPicType.init(this, sendColorStateList);
         mPicType.setEnabled(false);
         mPicType.setText(video ? R.string.picker_all_video : R.string.picker_all_image);
 
         mPreviewBtn = findViewById(R.id.picker_preview);
-        mPreviewBtn.init(this,colorStateList);
+        mPreviewBtn.init(this, colorStateList);
         mPreviewBtn.setEnabled(null != mSelectItems && !mSelectItems.isEmpty());
 
         mTvTitle.setText(video ? R.string.picker_picsel_videotype : R.string.picker_picsel_pictype);
@@ -274,8 +274,8 @@ public class PictureSelectorActivity extends BaseActivity {
 
         mBtnSend.setOnClickListener(v -> {
 
-            PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
-            MediaListHolder.selectPhotos.clear();
+            setResult(RESULT_OK, new Intent()
+                    .putParcelableArrayListExtra(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos)));
             finish();
         });
 
@@ -295,9 +295,9 @@ public class PictureSelectorActivity extends BaseActivity {
             Photo item = MediaListHolder.selectPhotos.get(0);
             Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
 //                intent.putExtra("sendOrigin", mSendOrigin);
-            intent.putExtra("isGif", item.isGif());
-            intent.putExtra("max", max);
-            intent.putExtra("isPreview", true);
+            intent.putExtra(EXTRA_IS_GIF, item.isGif());
+            intent.putExtra(EXTRA_MAX, max);
+            intent.putExtra(EXTRA_IS_PREVIEW, true);
 
             startActivity(intent);
         });
@@ -431,8 +431,8 @@ public class PictureSelectorActivity extends BaseActivity {
                     final File file = new File(path);
 
                     if (file.exists()) {
-                        MediaScannerConnection.scanFile(this, new String[]{path}, null, (path1, uri) -> getPhoto(path1));
-
+//                        MediaScannerConnection.scanFile(this, new String[]{path}, null, (path1, uri) -> getPhoto(path1));
+                        new SingleMediaScanner(this, path, this::getPhoto);
                     } else {
                         Toast.makeText(this, video ?
                                         R.string.picker_video_failure :
@@ -487,6 +487,8 @@ public class PictureSelectorActivity extends BaseActivity {
             hideCatalog();
             return;
         }
+        setResult(RESULT_OK, new Intent()
+                .putParcelableArrayListExtra(EXTRA_ITEMS, MediaListHolder.selectPhotos));
         super.onBackPressed();
     }
 
@@ -576,8 +578,8 @@ public class PictureSelectorActivity extends BaseActivity {
                 break;
                 case PICKER_ACTION_MEDIA_SEND: {
                     runOnUiThread(() -> {
-                        PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
-                        MediaListHolder.selectPhotos.clear();
+                        PictureSelectorActivity.this.setResult(RESULT_OK, new Intent()
+                                .putParcelableArrayListExtra(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos)));
                         finish();
                     });
 
@@ -628,7 +630,7 @@ public class PictureSelectorActivity extends BaseActivity {
             super(context, attrs);
         }
 
-        public void init(Activity root,ColorStateList colorStateList) {
+        public void init(Activity root, ColorStateList colorStateList) {
             mText = root.findViewById(R.id.picker_preview_text);
             mText.setTextColor(colorStateList);
         }
@@ -669,7 +671,7 @@ public class PictureSelectorActivity extends BaseActivity {
             super(context, attrs);
         }
 
-        public void init(Activity root,ColorStateList colorStateList) {
+        public void init(Activity root, ColorStateList colorStateList) {
 
             mText = root.findViewById(R.id.picker_type_text);
 
@@ -890,16 +892,17 @@ public class PictureSelectorActivity extends BaseActivity {
 
                 if (preview) {
                     Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
-                    intent.putExtra("index", position);
-                    intent.putExtra("isGif", item.isGif());
-                    intent.putExtra("max", max);
+                    intent.putExtra(EXTRA_INDEX, position);
+                    intent.putExtra(EXTRA_IS_GIF, item.isGif());
+                    intent.putExtra(EXTRA_MAX, max);
 
                     startActivity(intent);
                 } else {
                     if (max == 1) {
                         ArrayList<Photo> list = new ArrayList<>();
                         list.add(item);
-                        PhotoPicker.sPhotoListener.onPicked(list);
+                        setResult(RESULT_OK, new Intent()
+                                .putParcelableArrayListExtra(EXTRA_ITEMS, list));
                         finish();
                     } else {
                         checkBox.toggle();
@@ -935,8 +938,13 @@ public class PictureSelectorActivity extends BaseActivity {
                 tvTime.setText(CommonUtils.format(item.getDuration()));
                 mask.setOnClickListener(v -> {
                     MediaListHolder.selectPhotos.add(item);
-                    PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
-                    MediaListHolder.selectPhotos.clear();
+//                    if (null != PhotoPicker.sPhotoListener)
+//                        PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
+
+//                    Bundle bundle = new Bundle();
+//                    bundle.putParcelableArrayList(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos));
+                    setResult(RESULT_OK, new Intent()
+                            .putParcelableArrayListExtra(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos)));
                     finish();
                 });
             }

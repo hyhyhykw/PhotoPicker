@@ -7,4 +7,18 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+    <application>
+
+        <activity
+            android:name=".PickerVideoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensor"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity
+            android:name="com.hy.picker.OpenCameraResultActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+    </application>
 </manifest>

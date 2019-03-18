@@ -63,8 +63,8 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
             mToolbarTop.setPadding(0, CommonUtils.getStatusBarHeight(this), 0, 0);
         }
         Intent intent = getIntent();
-        mCurrentIndex = intent.getIntExtra("index", 0);
-        mItemList = intent.getParcelableArrayListExtra("items");
+        mCurrentIndex = intent.getIntExtra(EXTRA_INDEX, 0);
+        mItemList = intent.getParcelableArrayListExtra(EXTRA_ITEMS);
 
         mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size()));
 

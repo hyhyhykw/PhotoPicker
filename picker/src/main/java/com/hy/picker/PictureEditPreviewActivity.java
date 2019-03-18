@@ -63,7 +63,7 @@ public class PictureEditPreviewActivity extends BaseActivity {
         }
 
         Intent intent = getIntent();
-        mPicItem = intent.getParcelableExtra("picItem");
+        mPicItem = intent.getParcelableExtra(EXTRA_ITEM);
 
         if (mPicItem == null) {
             Toast.makeText(this, R.string.picker_file_error, Toast.LENGTH_SHORT).show();
@@ -122,18 +122,9 @@ public class PictureEditPreviewActivity extends BaseActivity {
 
         mPhotoView.setOnClickListener(v -> {
             mFullScreen = !mFullScreen;
-//                View decorView;
-//                byte uiOptions;
             if (mFullScreen) {
-//                    decorView = getWindow().getDecorView();
-//                    uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-//                    decorView.setSystemUiVisibility(uiOptions);
                 mToolbarTop.setVisibility(View.INVISIBLE);
             } else {
-//                    AppTool.processMIUI(PictureEditPreviewActivity.this, mIsStatusBlack);
-//                    decorView = getWindow().getDecorView();
-//                    uiOptions = View.SYSTEM_UI_FLAG_VISIBLE;
-//                    decorView.setSystemUiVisibility(uiOptions);
 
                 mToolbarTop.setVisibility(View.VISIBLE);
             }
