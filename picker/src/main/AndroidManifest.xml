@@ -17,6 +17,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
+            android:screenOrientation="portrait"
             android:name="com.hy.picker.OpenCameraResultActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 

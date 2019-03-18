@@ -119,11 +119,15 @@ public class PhotoPicker implements PickerConstants {
         if (null != mPicItems) {
             intent.putParcelableArrayListExtra(EXTRA_ITEMS, mPicItems);
         }
-        activity.startActivityForResult(intent, PICKER_REQUEST_MULTI_PICK);
+        activity.startActivityForResult(intent, isVideo ? PICKER_REQUEST_MULTI_VIDEO : PICKER_REQUEST_MULTI_PICK);
     }
 
     public static boolean isSingle(int requestCode) {
-        return PICKER_REQUEST_TAKE_PHOTO == requestCode;
+        return PICKER_REQUEST_TAKE_PHOTO == requestCode || requestCode == PICKER_REQUEST_MULTI_PICK;
+    }
+
+    public static boolean isVideo(int requestCode) {
+        return requestCode == PICKER_REQUEST_MULTI_VIDEO || requestCode == PICKER_REQUEST_TAKE_VIDEO;
     }
 
     public void openCamera(final Activity context) {
@@ -132,7 +136,7 @@ public class PhotoPicker implements PickerConstants {
                 .setPermissionListener(() -> context.startActivityForResult(new Intent(context, OpenCameraResultActivity.class)
                         .putExtra(EXTRA_EDIT, isEdit)
                         .putExtra(EXTRA_PICK_VIDEO, isVideo)/*
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)*/, PICKER_REQUEST_TAKE_PHOTO))
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)*/, isVideo ? PICKER_REQUEST_TAKE_VIDEO : PICKER_REQUEST_TAKE_PHOTO))
                 .requestPermission(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE);
     }
 

@@ -36,7 +36,8 @@ public interface PickerConstants {
     String EXTRA_IMAGE_URI = "com.hy.picker.extra.IMAGE_URL";
     String EXTRA_IMAGE_SAVE_PATH = "com.hy.picker.extra.IMAGE_SAVE_PATH";
 
-
+    int PICKER_REQUEST_TAKE_VIDEO = 0x20;
     int PICKER_REQUEST_TAKE_PHOTO = 0x1f;
     int PICKER_REQUEST_MULTI_PICK = 0x1e;
+    int PICKER_REQUEST_MULTI_VIDEO = 0x1d;
 }
