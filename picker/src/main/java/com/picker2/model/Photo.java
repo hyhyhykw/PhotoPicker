@@ -22,6 +22,7 @@ public class Photo implements Parcelable, Comparable<Photo> {
     private int height;
     private String mimeType;
     private long time;
+    private String resolution;
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
         public Photo createFromParcel(Parcel source) {
@@ -33,7 +34,7 @@ public class Photo implements Parcelable, Comparable<Photo> {
         }
     };
 
-    public Photo(String uri, String title, long size, long duration, int width, int height, String mimeType, long time) {
+    public Photo(String uri, String title, long size, long duration, int width, int height, String mimeType, long time, String resolution) {
         this.uri = uri;
         this.title = title;
         this.size = size;
@@ -42,6 +43,26 @@ public class Photo implements Parcelable, Comparable<Photo> {
         this.height = height;
         this.mimeType = mimeType;
         this.time = time;
+        this.resolution = resolution;
+        resolve();
+
+    }
+
+    private void resolve() {
+        if (width == 0 || height == 0)
+            if (!resolution.isEmpty()) {
+                String[] split = resolution.split("x", 2);
+                try {
+                    this.width = Integer.parseInt(split[0]);
+                } catch (Exception ignore) {
+
+                }
+                try {
+                    this.height = Integer.parseInt(split[1]);
+                } catch (Exception ignore) {
+
+                }
+            }
     }
 
     public Photo() {
@@ -56,6 +77,7 @@ public class Photo implements Parcelable, Comparable<Photo> {
         height = in.readInt();
         mimeType = in.readString();
         time = in.readLong();
+        resolution = in.readString();
     }
 
     @Override
@@ -136,6 +158,14 @@ public class Photo implements Parcelable, Comparable<Photo> {
         this.time = time;
     }
 
+    public String getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -162,9 +192,9 @@ public class Photo implements Parcelable, Comparable<Photo> {
                 ", height=" + height +
                 ", mimeType='" + mimeType + '\'' +
                 ", time=" + time +
+                ", resolution='" + resolution + '\'' +
                 '}';
     }
-
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -176,6 +206,7 @@ public class Photo implements Parcelable, Comparable<Photo> {
         dest.writeInt(height);
         dest.writeString(mimeType);
         dest.writeLong(time);
+        dest.writeString(resolution);
     }
 
     @Override

@@ -28,10 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginStart="12dp"
-            android:layout_marginLeft="12dp"
             android:layout_marginBottom="1dp"
             android:layout_toEndOf="@id/picker_back"
-            android:layout_toRightOf="@id/picker_back"
             android:gravity="center_vertical"
             android:textColor="?attr/picker_title_color"
             android:textSize="18sp"/>

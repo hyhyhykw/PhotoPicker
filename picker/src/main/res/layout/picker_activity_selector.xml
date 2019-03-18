@@ -28,10 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_marginStart="12dp"
-            android:layout_marginLeft="12dp"
             android:layout_marginBottom="1dp"
             android:layout_toEndOf="@id/picker_back"
-            android:layout_toRightOf="@id/picker_back"
             android:gravity="center_vertical"
             android:text="@string/picker_picsel_toolbar"
             android:textColor="?attr/picker_title_color"
@@ -41,9 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             tools:ignore="RelativeOverlap">
 
             <TextView
@@ -134,8 +130,7 @@
                 class="com.hy.picker.PictureSelectorActivity$PicTypeBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp">
+                android:layout_marginStart="16dp">
 
                 <TextView
                     android:id="@id/picker_type_text"
@@ -159,7 +154,8 @@
                 class="com.hy.picker.PictureSelectorActivity$PreviewBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentEnd="true">
+                android:layout_alignParentEnd="true"
+                tools:ignore="RelativeOverlap">
 
                 <View
                     android:layout_width="1dp"

@@ -99,6 +99,7 @@ public class MediaScannerUtils {
             MediaStore.Video.Media.WIDTH,
             MediaStore.Video.Media.HEIGHT,
             MediaStore.Video.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Video.Media.RESOLUTION
     };
 
     public static class Builder {
@@ -257,11 +258,14 @@ public class MediaScannerUtils {
                 int height = cursor.getInt(cursor.getColumnIndexOrThrow(HEIGHT));
                 long duration;
 
+                String resolution;
                 if (mBuilder.video) {
                     duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                    resolution = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RESOLUTION));
                     if (duration < 1000) continue;
                 } else {
                     duration = 0;
+                    resolution = width + "x" + height;
                 }
 
 
@@ -269,7 +273,7 @@ public class MediaScannerUtils {
                 photoDirectory.setId(bucketId);
                 photoDirectory.setName(name);
 
-                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
+                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken,resolution);
 
                 if (!directories.contains(photoDirectory)) {
                     photoDirectory.setCoverPath(path);
@@ -402,11 +406,15 @@ public class MediaScannerUtils {
                 int width = cursor.getInt(cursor.getColumnIndexOrThrow(WIDTH));
                 int height = cursor.getInt(cursor.getColumnIndexOrThrow(HEIGHT));
                 long duration;
+
+                String resolution;
                 if (mBuilder.video) {
                     duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
+                    resolution = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RESOLUTION));
                     if (duration < 1000) return null;
                 } else {
                     duration = 0;
+                    resolution = width + "x" + height;
                 }
 
                 PhotoDirectory photoDirectory = new PhotoDirectory();
@@ -414,7 +422,7 @@ public class MediaScannerUtils {
                 photoDirectory.setName(name);
 
 
-                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken);
+                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken,resolution);
 
                 int updateIndex;
                 if (!directories.contains(photoDirectory)) {

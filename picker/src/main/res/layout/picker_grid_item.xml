@@ -19,7 +19,6 @@
         android:layout_height="15dp"
         android:layout_gravity="bottom"
         android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/picker_app_name"
         android:src="@drawable/picker_gif"
@@ -37,7 +36,6 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:checked="false"
             android:theme="@style/picker_check_box"/>
 
@@ -69,9 +67,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:textColor="@color/picker_color_white"
             android:textSize="14sp"
-            tools:text="20:00"/>
+            tools:text="20:00"
+            tools:ignore="RelativeOverlap"/>
     </RelativeLayout>
 </com.hy.picker.view.SquareLayout>

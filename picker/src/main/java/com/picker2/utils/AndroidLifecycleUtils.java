@@ -2,7 +2,7 @@ package com.picker2.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -35,8 +35,7 @@ public class AndroidLifecycleUtils {
             return true;
         }
 
-        boolean destroyed = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 &&
-                activity.isDestroyed();
+        boolean destroyed = activity.isDestroyed();
 
         return !destroyed && !activity.isFinishing();
     }
