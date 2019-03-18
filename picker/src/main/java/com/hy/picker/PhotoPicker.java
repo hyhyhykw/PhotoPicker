@@ -123,7 +123,7 @@ public class PhotoPicker implements PickerConstants {
     }
 
     public static boolean isSingle(int requestCode) {
-        return PICKER_REQUEST_TAKE_PHOTO == requestCode || requestCode == PICKER_REQUEST_MULTI_PICK;
+        return PICKER_REQUEST_TAKE_PHOTO == requestCode || requestCode == PICKER_REQUEST_TAKE_VIDEO;
     }
 
     public static boolean isVideo(int requestCode) {
@@ -142,14 +142,14 @@ public class PhotoPicker implements PickerConstants {
 
     @Nullable
     public static Photo obtainTakeResult(int requestCode, int resultCode, Intent intent) {
-        if (resultCode != Activity.RESULT_OK || requestCode != PICKER_REQUEST_TAKE_PHOTO || intent == null) {
+        if (resultCode != Activity.RESULT_OK || (requestCode != PICKER_REQUEST_TAKE_PHOTO && requestCode != PICKER_REQUEST_TAKE_VIDEO) || intent == null) {
             return null;
         }
         return intent.getParcelableExtra(EXTRA_ITEM);
     }
 
     public static ArrayList<Photo> obtainMultiResult(int requestCode, int resultCode, Intent intent) {
-        if (resultCode != Activity.RESULT_OK || requestCode != PICKER_REQUEST_MULTI_PICK || intent == null) {
+        if (resultCode != Activity.RESULT_OK || (requestCode != PICKER_REQUEST_MULTI_PICK && requestCode != PICKER_REQUEST_MULTI_VIDEO) || intent == null) {
             return new ArrayList<>();
         }
         ArrayList<Photo> extra = intent.getParcelableArrayListExtra(EXTRA_ITEMS);
