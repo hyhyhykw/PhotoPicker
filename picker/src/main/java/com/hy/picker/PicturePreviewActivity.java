@@ -172,7 +172,7 @@ public class PicturePreviewActivity extends BaseActivity {
         updateToolbar();
     }
 
-    public static final int REQUEST_EDIT = 0x987;
+
     private File mEditFile;
 
     private void toEdit(Uri uri) {
@@ -186,8 +186,8 @@ public class PicturePreviewActivity extends BaseActivity {
         mEditFile = new File(path, name);
 
         startActivityForResult(new Intent(this, IMGEditActivity.class)
-                .putExtra(IMGEditActivity.EXTRA_IMAGE_URI, uri)
-                .putExtra(IMGEditActivity.EXTRA_IMAGE_SAVE_PATH, mEditFile.getAbsolutePath()), REQUEST_EDIT);
+                .putExtra(EXTRA_IMAGE_URI, uri)
+                .putExtra(EXTRA_IMAGE_SAVE_PATH, mEditFile.getAbsolutePath()), REQUEST_EDIT);
     }
 
     @Override

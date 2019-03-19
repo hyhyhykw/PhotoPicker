@@ -487,8 +487,13 @@ public class PictureSelectorActivity extends BaseActivity {
             hideCatalog();
             return;
         }
-        setResult(RESULT_OK, new Intent()
-                .putParcelableArrayListExtra(EXTRA_ITEMS, MediaListHolder.selectPhotos));
+        if (!mSelectItems.isEmpty()) {
+            setResult(RESULT_OK, new Intent()
+                    .putParcelableArrayListExtra(EXTRA_ITEMS, mSelectItems));
+        } else {
+            setResult(RESULT_CANCELED);
+        }
+
         super.onBackPressed();
     }
 
@@ -892,7 +897,7 @@ public class PictureSelectorActivity extends BaseActivity {
 
                 if (preview) {
                     Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
-                    intent.putExtra(EXTRA_INDEX, position);
+                    intent.putExtra(EXTRA_INDEX, /*video ? position - 1 : */position);
                     intent.putExtra(EXTRA_IS_GIF, item.isGif());
                     intent.putExtra(EXTRA_MAX, max);
 
@@ -938,11 +943,6 @@ public class PictureSelectorActivity extends BaseActivity {
                 tvTime.setText(CommonUtils.format(item.getDuration()));
                 mask.setOnClickListener(v -> {
                     MediaListHolder.selectPhotos.add(item);
-//                    if (null != PhotoPicker.sPhotoListener)
-//                        PhotoPicker.sPhotoListener.onPicked(new ArrayList<>(MediaListHolder.selectPhotos));
-
-//                    Bundle bundle = new Bundle();
-//                    bundle.putParcelableArrayList(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos));
                     setResult(RESULT_OK, new Intent()
                             .putParcelableArrayListExtra(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos)));
                     finish();

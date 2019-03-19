@@ -40,4 +40,5 @@ public interface PickerConstants {
     int PICKER_REQUEST_TAKE_PHOTO = 0x1f;
     int PICKER_REQUEST_MULTI_PICK = 0x1e;
     int PICKER_REQUEST_MULTI_VIDEO = 0x1d;
+    int REQUEST_EDIT = 0x987;
 }
