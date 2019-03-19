@@ -49,7 +49,6 @@ public class PermissionUtils {
                 .permission(permissions)
                 .rationale(mRationale)
                 .onGranted(permissions12 -> {
-                    Logger.d("permission request success");
                     if (null != mPermissionListener) mPermissionListener.onResult();
                 })
                 .onDenied(permissions1 -> {

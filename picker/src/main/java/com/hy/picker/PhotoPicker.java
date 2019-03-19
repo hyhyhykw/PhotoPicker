@@ -3,8 +3,8 @@ package com.hy.picker;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Environment;
+import android.util.Log;
 
-import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.PermissionUtils;
 import com.picker2.PickerConstants;
 import com.picker2.model.Photo;
@@ -167,8 +167,7 @@ public class PhotoPicker implements PickerConstants {
     public static void deleteEditCache() {
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (!path.exists()) {
-            boolean mkdirs = path.mkdirs();
-            Logger.d("文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+            return;
         }
         delete(path);
     }
@@ -182,7 +181,9 @@ public class PhotoPicker implements PickerConstants {
             }
         } else {
             boolean delete = cache.delete();
-            Logger.d("缓存文件：" + cache + "删除" + (delete ? "成功" : "失败"));
+            if (BuildConfig.DEBUG){
+                Log.d("TAG","缓存文件：" + cache + "删除" + (delete ? "成功" : "失败"));
+            }
         }
     }
 

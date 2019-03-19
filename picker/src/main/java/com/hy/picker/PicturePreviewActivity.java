@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -25,7 +26,6 @@ import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
-import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.PickerScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
 import com.picker2.model.Photo;
@@ -179,7 +179,10 @@ public class PicturePreviewActivity extends BaseActivity {
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (!path.exists()) {
             boolean mkdirs = path.mkdirs();
-            Logger.d("文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+            if (BuildConfig.DEBUG){
+                Log.d("TAG","文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+            }
+
         }
 
         String name = "IMG-EDIT-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";

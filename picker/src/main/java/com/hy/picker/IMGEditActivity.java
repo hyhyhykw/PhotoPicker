@@ -15,7 +15,6 @@ import com.hy.picker.core.file.IMGDecoder;
 import com.hy.picker.core.file.IMGFileDecoder;
 import com.hy.picker.core.util.IMGUtils;
 import com.hy.picker.core.util.SizeUtils;
-import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.SingleMediaScanner;
 import com.picker2.utils.MediaListHolder;
 import com.picker2.utils.MediaScannerUtils;
@@ -116,8 +115,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
         try {
             // 将原始图片按照旋转矩阵进行旋转，并得到新的图片
             returnBm = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        } catch (OutOfMemoryError e) {
-            Logger.d("图片太大，内存溢出");
+        } catch (OutOfMemoryError ignore) {
         }
         if (returnBm == null) {
             returnBm = bitmap;
@@ -183,8 +181,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
         Bitmap newBitmap = null;
         try {
             newBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-        } catch (OutOfMemoryError e) {
-            Logger.d("图片太大，内存溢出");
+        } catch (OutOfMemoryError ignore) {
         }
         if (newBitmap == null) {
             newBitmap = bitmap;

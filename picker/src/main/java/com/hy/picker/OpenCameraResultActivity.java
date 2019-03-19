@@ -12,10 +12,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.hy.picker.utils.CommonUtils;
-import com.hy.picker.utils.Logger;
 import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.SingleMediaScanner;
 import com.picker2.PickerConstants;
@@ -62,7 +62,10 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (!path.exists()) {
             boolean mkdirs = path.mkdirs();
-            Logger.d("文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+            if (BuildConfig.DEBUG){
+                Log.d("TAG","文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+            }
+
         }
 
         String name = "IMG-EDIT-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";
@@ -139,7 +142,6 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
                         Toast.makeText(OpenCameraResultActivity.this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    Logger.e("photo1======"+photo);
                     if (video) {
 //                        if (null!=PhotoPicker.sTakePhotoListener)
 //                        PhotoPicker.sTakePhotoListener.onTake(photo);
@@ -174,7 +176,10 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (!path.exists()) {
             boolean mkdirs = path.mkdirs();
-            Logger.d("文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+            if (BuildConfig.DEBUG){
+                Log.d("TAG","文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+            }
+
         }
 
 

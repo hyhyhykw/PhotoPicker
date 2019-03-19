@@ -11,7 +11,6 @@ import android.widget.ViewSwitcher;
 
 import com.hy.picker.core.IMGMode;
 import com.hy.picker.core.IMGText;
-import com.hy.picker.utils.Logger;
 import com.hy.picker.view.IMGColorGroup;
 import com.hy.picker.view.IMGView;
 
@@ -104,8 +103,7 @@ public abstract class IMGEditBaseActivity extends BaseActivity implements View.O
                     degree = 270;
                     break;
             }
-        } catch (IOException e) {
-            Logger.v("readPictureDegree() error:" + e.getMessage(), e);
+        } catch (IOException ignore) {
         }
         return degree;
     }

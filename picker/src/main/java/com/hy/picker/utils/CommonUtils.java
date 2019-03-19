@@ -68,8 +68,7 @@ public class CommonUtils {
 
                 extraFlagField.invoke(window,  darkModeFlag , darkModeFlag);
 
-            } catch (Exception e) {
-                Logger.v(e.getMessage(), e);
+            } catch (Exception ignore) {
             }
         } else if ("Meizu".equalsIgnoreCase(brand)) {
             //针对魅族
@@ -84,8 +83,8 @@ public class CommonUtils {
                 value = value | bit ;
                 meizuFlags.setInt(lp, value);
                 window.setAttributes(lp);
-            } catch (Exception e) {
-                Logger.v(e.getMessage(), e);
+            } catch (Exception ignore) {
+
             }
 
         }
@@ -149,8 +148,7 @@ public class CommonUtils {
 
                 extraFlagField.invoke(window, lightStatusBar ? darkModeFlag : 0, darkModeFlag);
 
-            } catch (Exception e) {
-                Logger.v(e.getMessage(), e);
+            } catch (Exception ignore) {
             }
         } else if ("Meizu".equalsIgnoreCase(brand)) {
             //针对魅族
@@ -165,8 +163,8 @@ public class CommonUtils {
                 value = lightStatusBar ? value | bit : value & bit;
                 meizuFlags.setInt(lp, value);
                 window.setAttributes(lp);
-            } catch (Exception e) {
-                Logger.v(e.getMessage(), e);
+            } catch (Exception ignore) {
+
             }
 
         }
@@ -187,8 +185,7 @@ public class CommonUtils {
             Field field = clazz.getField("status_bar_height");
             int temp = Integer.parseInt(field.get(obj).toString());
             statusBarHeight = context.getResources().getDimensionPixelSize(temp);
-        } catch (Exception e) {
-            Logger.e("Exception", e);
+        } catch (Exception ignore) {
         }
 
         return statusBarHeight;

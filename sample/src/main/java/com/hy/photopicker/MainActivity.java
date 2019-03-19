@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.hy.picker.PhotoPicker;
-import com.hy.picker.utils.Logger;
 import com.picker2.model.Photo;
 
 import java.util.ArrayList;
@@ -63,16 +62,12 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
 
         if (PhotoPicker.isSingle(requestCode)) {
             Photo photo = PhotoPicker.obtainTakeResult(requestCode, resultCode, data);
-            Logger.e(photo);
             if (null != photo) {
                 mFeedbackSelectPictureAdapter.addItem(photo);
             }
         } else {
             ArrayList<Photo> photos = PhotoPicker.obtainMultiResult(requestCode, resultCode, data);
             mFeedbackSelectPictureAdapter.reset(photos);
-            for (Photo picItem : photos) {
-                Logger.e(picItem);
-            }
         }
         super.onActivityResult(requestCode, resultCode, data);
 
