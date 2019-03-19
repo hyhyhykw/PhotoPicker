@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -21,7 +22,9 @@
             android:layout_height="48dp"
             android:foreground="@drawable/picker_foreground"
             android:src="@drawable/picker_picsel_back_normal"
-            android:tint="?attr/picker_back_color"/>
+            android:tint="?attr/picker_back_color"
+            tools:ignore="ContentDescription"
+            tools:targetApi="m"/>
 
         <TextView
             android:id="@id/picker_index_total"

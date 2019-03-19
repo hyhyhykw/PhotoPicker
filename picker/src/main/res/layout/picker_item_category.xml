@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:background="@color/picker_color_white"
@@ -8,7 +9,8 @@
               android:paddingBottom="5dp"
               android:paddingEnd="16dp"
               android:paddingStart="16dp"
-              android:paddingTop="5dp">
+              android:paddingTop="5dp"
+              tools:targetApi="m">
 
     <ImageView
         android:id="@id/picker_iv_crystal"

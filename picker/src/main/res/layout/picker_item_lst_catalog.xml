@@ -8,7 +8,8 @@
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:paddingLeft="12dp"
-    android:paddingRight="12dp">
+    android:paddingRight="12dp"
+    tools:targetApi="m">
 
     <FrameLayout
         android:id="@id/picker_image_layout"
@@ -22,7 +23,8 @@
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"/>
 
     </FrameLayout>
 
@@ -59,6 +61,7 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="30dp"
         android:src="@drawable/picker_picsel_catalog_selected"
-        android:tint="?attr/picker_send_color"/>
+        android:tint="?attr/picker_send_color"
+        tools:ignore="ContentDescription"/>
 
 </RelativeLayout>

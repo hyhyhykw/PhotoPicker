@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.hy.picker.view.SquareLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="127dp">
 
@@ -27,5 +28,6 @@
         android:id="@id/picker_camera_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/picker_selector_grid_camera_mask"/>
+        android:background="@drawable/picker_selector_grid_camera_mask"
+        tools:ignore="ContentDescription"/>
 </com.hy.picker.view.SquareLayout>

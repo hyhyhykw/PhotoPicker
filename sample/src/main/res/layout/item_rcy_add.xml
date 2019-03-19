@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.hy.picker.view.SquareLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@color/picker_color_white"
     android:layout_height="wrap_content">
@@ -13,5 +14,6 @@
         android:layout_marginTop="9dp"
         android:focusable="false"
         android:src="@drawable/ic_add_pic"
-        android:scaleType="centerInside"/>
+        android:scaleType="centerInside"
+        tools:ignore="ContentDescription"/>
 </com.hy.picker.view.SquareLayout>

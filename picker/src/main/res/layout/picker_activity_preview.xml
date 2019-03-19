@@ -26,7 +26,9 @@
             android:layout_height="48dp"
             android:src="@drawable/picker_picsel_back_normal"
             android:foreground="@drawable/picker_foreground"
-            android:tint="?attr/picker_back_color"/>
+            android:tint="?attr/picker_back_color"
+            tools:ignore="ContentDescription"
+            tools:targetApi="m"/>
 
         <TextView
             android:id="@id/picker_index_total"
@@ -59,7 +61,8 @@
                 android:paddingRight="10dp"
                 android:text="@string/picker_picsel_toolbar_send"
                 android:textAllCaps="true"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                tools:targetApi="m"/>
         </FrameLayout>
 
     </RelativeLayout>

@@ -67,7 +67,9 @@
                 android:paddingRight="10dp"
                 android:text="@string/picker_picsel_toolbar_sure"
                 android:textAllCaps="true"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                tools:targetApi="m"
+                tools:ignore="UnusedAttribute"/>
         </FrameLayout>
 
     </RelativeLayout>

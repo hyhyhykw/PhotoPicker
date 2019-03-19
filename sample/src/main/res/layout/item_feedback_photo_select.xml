@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.hy.picker.view.SquareLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/picker_color_white">
@@ -12,7 +13,8 @@
         android:layout_marginEnd="9dp"
         android:scaleType="centerCrop"
         android:layout_marginTop="9dp"
-        android:src="@drawable/icon_no_pic"/>
+        android:src="@drawable/icon_no_pic"
+        tools:ignore="ContentDescription"/>
 
     <ImageView
         android:id="@+id/iv_delete_image"
@@ -20,5 +22,6 @@
         android:layout_height="18dp"
         android:layout_gravity="end"
         android:src="@drawable/btn_del_photo_select"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        tools:ignore="ContentDescription"/>
 </com.hy.picker.view.SquareLayout>

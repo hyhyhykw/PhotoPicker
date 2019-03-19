@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
  *
  * @author HY
  */
+@SuppressWarnings("unused")
 public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseViewHolder> extends RecyclerView.Adapter<V> {
 
     protected final ArrayList<T> mData = new ArrayList<>();
@@ -201,6 +202,7 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
         notifyDataSetChanged();
     }
 
+    @SuppressWarnings("unused")
     public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
         private int viewType;
         protected final View itemView;
