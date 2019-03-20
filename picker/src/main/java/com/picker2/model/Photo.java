@@ -50,7 +50,7 @@ public class Photo implements Parcelable, Comparable<Photo> {
 
     private void resolve() {
         if (width == 0 || height == 0)
-            if (!resolution.isEmpty()) {
+            if (resolution!=null&&!resolution.isEmpty()) {
                 String[] split = resolution.split("x", 2);
                 try {
                     this.width = Integer.parseInt(split[0]);
