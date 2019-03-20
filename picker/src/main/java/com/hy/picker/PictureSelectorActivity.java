@@ -487,7 +487,7 @@ public class PictureSelectorActivity extends BaseActivity {
             hideCatalog();
             return;
         }
-        if (!mSelectItems.isEmpty()) {
+        if (mSelectItems != null && !mSelectItems.isEmpty()) {
             setResult(RESULT_OK, new Intent()
                     .putParcelableArrayListExtra(EXTRA_ITEMS, mSelectItems));
         } else {
