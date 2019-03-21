@@ -227,7 +227,24 @@ public class PictureSelectorActivity extends BaseActivity {
         mGridView.setAdapter(mGridViewAdapter);
         mGridView.setLayoutManager(new GridLayoutManager(this, spanCount));
         mGridView.addItemDecoration(new MyGridItemDecoration(this));
-
+        mGridView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                switch (newState) {
+                    case RecyclerView.SCROLL_STATE_IDLE: // The RecyclerView is not currently scrolling.
+                        //对于滚动不加载图片的尝试
+                        Glide.with(recyclerView.getContext()).resumeRequests();
+                        break;
+                    case RecyclerView.SCROLL_STATE_DRAGGING: // The RecyclerView is currently being dragged by outside input such as user touch input.
+                        Glide.with(recyclerView.getContext()).resumeRequests();
+                        break;
+                    case RecyclerView.SCROLL_STATE_SETTLING: // The RecyclerView is currently animating to a final position while not under
+                        Glide.with(recyclerView.getContext()).pauseRequests();
+                        break;
+                }
+            }
+        });
         mCatalogAdapter = new CatalogAdapter();
         mCatalogListView.setAdapter(mCatalogAdapter);
         mCatalogListView.setTranslationY(catalogHeight);
