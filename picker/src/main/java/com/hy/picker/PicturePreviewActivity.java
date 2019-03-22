@@ -179,8 +179,8 @@ public class PicturePreviewActivity extends BaseActivity {
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (!path.exists()) {
             boolean mkdirs = path.mkdirs();
-            if (BuildConfig.DEBUG){
-                Log.d("TAG","文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+            if (BuildConfig.DEBUG) {
+                Log.d("TAG", "文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
             }
 
         }
@@ -188,28 +188,12 @@ public class PicturePreviewActivity extends BaseActivity {
         String name = "IMG-EDIT-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";
         mEditFile = new File(path, name);
 
-        startActivityForResult(new Intent(this, IMGEditActivity.class)
+        startActivity(new Intent(this, IMGEditActivity.class)
                 .putExtra(EXTRA_IMAGE_URI, uri)
-                .putExtra(EXTRA_IMAGE_SAVE_PATH, mEditFile.getAbsolutePath()), REQUEST_EDIT);
+                .putExtra(EXTRA_IMAGE_SAVE_PATH, mEditFile.getAbsolutePath())
+                .putExtra(EXTRA_MAX, max));
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_EDIT) {
-                if (mEditFile != null) {
-                    mViewPager.getAdapter().notifyDataSetChanged();
-                    setResult(RESULT_OK);
-                    finish();
-                } else {
-                    Toast.makeText(this, R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            }
-
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -276,6 +260,12 @@ public class PicturePreviewActivity extends BaseActivity {
         private PreviewAdapter() {
         }
 
+
+        @Override
+        public int getItemPosition(@NonNull Object object) {
+            return POSITION_NONE;
+        }
+
         public int getCount() {
             return mItemList.size();
         }
@@ -290,7 +280,7 @@ public class PicturePreviewActivity extends BaseActivity {
 
             if (photo.isGif()) {
                 PhotoView imageView = new PhotoView(container.getContext());
-                imageView.setOnPhotoTapListener((v,x,y) -> {
+                imageView.setOnPhotoTapListener((v, x, y) -> {
                     mFullScreen = !mFullScreen;
 //                        View decorView;
 //                        byte uiOptions;
@@ -348,7 +338,7 @@ public class PicturePreviewActivity extends BaseActivity {
                     return scaleImageView;
                 } else {
                     PhotoView imageView = new PhotoView(container.getContext());
-                    imageView.setOnPhotoTapListener((v,x,y) -> {
+                    imageView.setOnPhotoTapListener((v, x, y) -> {
                         mFullScreen = !mFullScreen;
                         if (mFullScreen) {
 

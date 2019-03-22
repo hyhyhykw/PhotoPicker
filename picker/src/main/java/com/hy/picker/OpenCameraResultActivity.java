@@ -71,9 +71,9 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
         String name = "IMG-EDIT-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";
         File editFile = new File(path, name);
 
-        startActivityForResult(new Intent(this, IMGEditActivity.class)
+        startActivity(new Intent(this, IMGEditActivity.class)
                 .putExtra(EXTRA_IMAGE_URI, uri)
-                .putExtra(EXTRA_IMAGE_SAVE_PATH, editFile.getAbsolutePath()), REQUEST_EDIT);
+                .putExtra(EXTRA_IMAGE_SAVE_PATH, editFile.getAbsolutePath()));
     }
 
     @Override

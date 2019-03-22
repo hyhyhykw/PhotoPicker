@@ -1,70 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="picker_doodle">Doodle</string>
-    <string name="picker_text">Text</string>
-    <string name="picker_mosaic">Mosaic</string>
-    <string name="picker_clip">Clip</string>
-    <string name="picker_reset">Reset</string>
-    <string name="picker_done">Down</string>
-    <string name="picker_cancel">Cancel</string>
-    <string name="picker_rotate">Rotate</string>
+    <string name="picker_voip_cpu_error">很抱歉，该功能暂时不支持您的机型</string>
 
-    <string name="picker_mosaic_tip">Please smear directly on the picture</string>
-    <string name="picker_undo">Undo</string>
-    <string name="picker_all_photo">All Picture</string>
-    <string name="picker_original">Original</string>
-    <string name="picker_preview">Preview</string>
-    <string name="picker_app_name">FireBaseAllDemo</string>
-
-    <string name="picker_voip_cpu_error">Sorry  Function temporarily does not support your models</string>
-
-    <string name="picker_setting">Settings</string>
-
-    <string name="picker_resume">Resume</string>
-    <string name="picker_no">No</string>
-
-    <string name="picker_failure">Failure</string>
-    <string name="picker_title_dialog">Reminder</string>
-    <string name="picker_message_permission_rationale">Allow the following permissions for the program to continue execution：\n\n%1$s</string>
-    <string name="picker_message_permission_always_failed">We need the following permissions, please open for us in the settings：\n\n%1$s</string>
     <!-- PictureSelectorActivity -->
-    <string name="picker_picsel_toolbar">Picture</string>
-    <string name="picker_picsel_toolbar_send">Choose</string>
-    <string name="picker_picsel_toolbar_sure">Sure</string>
-    <string name="picker_picsel_toolbar_send_num">Choose(%d/%d)</string>
-    <string name="picker_picsel_pictype">Picture</string>
-    <string name="picker_picsel_videotype">Video</string>
-    <string name="picker_picsel_toolbar_preview">Preview</string>
-    <string name="picker_picsel_toolbar_preview_num">Preview(%d)</string>
+    <string name="picker_picsel_toolbar">图片</string>
+    <string name="picker_picsel_toolbar_send">选择</string>
+    <string name="picker_picsel_toolbar_sure">确定</string>
+    <string name="picker_picsel_toolbar_send_num">选择(%d/%d)</string>
+    <string name="picker_picsel_pictype">图片</string>
+    <string name="picker_picsel_videotype">视频</string>
+    <string name="picker_picsel_toolbar_preview">预览</string>
+    <string name="picker_picsel_toolbar_preview_num">预览(%d)</string>
+
     <plurals name="picker_picsel_selected_max">
-        <item quantity="one">You can only choose %d picture at most.</item>
-        <item quantity="other">You can only choose %d pictures at most.</item>
+        <item quantity="other">您最多只能选择%d张图片</item>
     </plurals>
 
-    <string name="picker_picsel_take_picture">Take picture</string>
-    <string name="picker_picsel_record_video">Record video</string>
-    <string name="picker_picsel_catalog_allpic">All pictures</string>
-    <string name="picker_picsel_catalog_all_video">All Videos</string>
-    <string name="picker_all_video">All Videos</string>
-    <string name="picker_picsel_catalog_number">%d</string>
+    <string name="picker_picsel_take_picture">拍摄照片</string>
+    <string name="picker_picsel_record_video">录制视频</string>
+    <string name="picker_picsel_catalog_allpic">所有图片</string>
+    <string name="picker_picsel_catalog_all_video">所有视频</string>
+    <string name="picker_all_video">所有视频</string>
+    <string name="picker_picsel_catalog_number">%d张</string>
 
-    <string name="picker_all_image">All pictures</string>
+    <string name="picker_app_name">FireBaseAllDemo</string>
     <!-- PicturePreviewActivity -->
-    <!--<string name="picker_picprev_origin">Full Image</string>-->
-    <!--<string name="picker_picprev_origin_size">Full Image(%s)</string>-->
-    <string name="picker_picprev_select">Select</string>
+    <!--<string name="picker_picprev_origin">原图</string>-->
+    <!--<string name="picker_picprev_origin_size">原图(%s)</string>-->
+    <string name="picker_picprev_select">选择</string>
 
-    <!--<string name="picker_permission_grant_needed">You have to grant permissions in setting</string>-->
-    <string name="picker_empty_sdcard">No SD card</string>
-    <string name="picker_photo_failure">Photo failure</string>
-    <string name="picker_video_failure">Record failure</string>
-    <string name="picker_photo_edit">Edit</string>
-    <string name="picker_file_error">File Error</string>
-    <string name="picker_crystal">Crystal</string>
-    <string name="picker_waiting">Waiting&#8230;</string>
-    <string name="picker_sticker_not_download">The sticker is not downloaded, is it downloaded?</string>
-    <string name="picker_load_error">Load failed, click reload</string>
-    <string name="picker_child_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-en/child-category.json</string>
-    <string name="picker_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-en/Category.json</string>
-    <string name="picker_video_play_error">Video Play error</string>
+    <!--<string name="picker_permission_grant_needed">您需要在设置中打开权限</string>-->
+    <string name="picker_empty_sdcard">没有SD卡</string>
+
+    <string name="picker_cancel">取消</string>
+    <string name="picker_setting">设置</string>
+
+    <string name="picker_resume">继续</string>
+    <string name="picker_no">不</string>
+
+    <string name="picker_failure">失败</string>
+
+    <string name="picker_title_dialog">提示</string>
+    <string name="picker_message_permission_rationale">允许以下权限以便程序继续执行：\n\n%1$s</string>
+    <string name="picker_message_permission_always_failed">我们需要以下权限，请在设置中为我们开启：\n\n%1$s</string>
+    <string name="picker_photo_failure">拍照失败</string>
+    <string name="picker_video_failure">录制失败</string>
+    <string name="picker_photo_edit">编辑</string>
+    <string name="picker_file_error">文件出错</string>
+    <string name="picker_crystal">饰品</string>
+    <string name="picker_waiting">等待中&#8230;</string>
+
+    <string name="picker_doodle">涂鸦</string>
+    <string name="picker_text">文字</string>
+    <string name="picker_mosaic">马赛克</string>
+    <string name="picker_clip">裁剪</string>
+    <string name="picker_reset">还原</string>
+    <string name="picker_done">完成</string>
+    <string name="picker_rotate">旋转</string>
+
+    <string name="picker_all_image">所有图片</string>
+    <string name="picker_mosaic_tip">请直接在图片上涂抹虚化</string>
+    <string name="picker_undo">撤销</string>
+    <string name="picker_all_photo">所有照片</string>
+    <string name="picker_original">原图</string>
+    <string name="picker_preview">预览</string>
+    <string name="picker_sticker_not_download">贴纸没有下载，是否下载？</string>
+    <string name="picker_load_error">加载失败，点击重新加载</string>
+    <string name="picker_child_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json/child-category.json</string>
+    <string name="picker_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json/Category.json</string>
+    <string name="picker_video_play_error">文件播放错误</string>
+    <string name="picker_str_picture_save_failed">图片保存失败</string>
 </resources>

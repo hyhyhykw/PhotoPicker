@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.hy.picker.core.IMGMode;
 import com.hy.picker.core.IMGText;
@@ -35,10 +36,12 @@ public class IMGEditActivity extends IMGEditBaseActivity {
     private static final int MAX_HEIGHT = 1024;
 
 
+    private int max;
 
     @Override
     public void onCreated() {
         dp100 = SizeUtils.dp2px(this, 100);
+        max = getIntent().getIntExtra(EXTRA_MAX, 1);
     }
 
 
@@ -259,12 +262,14 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                 new SingleMediaScanner(this, path, this::getPhoto);
                 return;
             } else {
-                setResult(RESULT_CANCELED);
+//                setResult(RESULT_CANCELED);
+                Toast.makeText(this, R.string.picker_str_picture_save_failed, Toast.LENGTH_SHORT).show();
                 finish();
                 return;
             }
         }
-        setResult(RESULT_CANCELED);
+        Toast.makeText(this, R.string.picker_str_picture_save_failed, Toast.LENGTH_SHORT).show();
+//        setResult(RESULT_CANCELED);
         finish();
     }
 
@@ -275,16 +280,20 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                 .build()
                 .scanner((photo, updateIndex) -> {
                     if (photo == null) {
-                        setResult(RESULT_CANCELED);
+//                        setResult(RESULT_CANCELED);
+                        Toast.makeText(this, R.string.picker_str_picture_save_failed, Toast.LENGTH_SHORT).show();
+
                         finish();
                         return;
                     }
 
-                    MediaListHolder.selectPhotos.add(photo);
-                    Intent intent = new Intent(PICKER_ACTION_MEDIA_ADD);
-                    intent.putExtra(PICKER_EXTRA_PHOTO, photo);
-                    intent.putExtra(PICKER_EXTRA_UPDATE_INDEX, updateIndex);
-                    sendBroadcast(intent);
+                    if (MediaListHolder.selectPhotos.size() == max) {
+                        MediaListHolder.selectPhotos.add(photo);
+                        Intent intent = new Intent(PICKER_ACTION_MEDIA_ADD);
+                        intent.putExtra(PICKER_EXTRA_PHOTO, photo);
+                        intent.putExtra(PICKER_EXTRA_UPDATE_INDEX, updateIndex);
+                        sendBroadcast(intent);
+                    }
 
                     startActivity(new Intent(IMGEditActivity.this, PictureEditPreviewActivity.class)
                             .putExtra(EXTRA_ITEM, photo));

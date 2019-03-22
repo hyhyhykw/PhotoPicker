@@ -69,4 +69,5 @@
     <string name="picker_child_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-zh-rTW/child-category.json</string>
     <string name="picker_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-zh-rTW/Category.json</string>
     <string name="picker_video_play_error">文件播放錯誤</string>
+    <string name="picker_str_picture_save_failed">圖片保存失敗</string>
 </resources>

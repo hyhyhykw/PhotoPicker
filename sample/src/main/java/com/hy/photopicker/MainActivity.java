@@ -39,16 +39,16 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
                 PhotoPicker.preview(position, mFeedbackSelectPictureAdapter.mData);
                 break;
             case FeedbackSelectPictureAdapter.TYPE_ADD:
-                new PhotoPicker()
-                        .showCamera(true)
-                        .gif(true)
-                        .max(9)
-                        .select(mFeedbackSelectPictureAdapter.mData)
-//                        .video()
-                        .start(this);
 //                new PhotoPicker()
-//                        .edit(true)
-//                        .openCamera(this);
+//                        .showCamera(true)
+//                        .gif(true)
+//                        .max(9)
+//                        .select(mFeedbackSelectPictureAdapter.mData)
+////                        .video()
+//                        .start(this);
+                new PhotoPicker()
+                        .edit(true)
+                        .openCamera(this);
                 break;
             case FeedbackSelectPictureAdapter.TYPE_DELETE:
                 mFeedbackSelectPictureAdapter.deleteItem(position);
