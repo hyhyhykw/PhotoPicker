@@ -66,7 +66,7 @@ public class PickerCrystalCategoryActivity extends BaseListActivity implements C
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK&&data!=null) {
             setResult(RESULT_OK, data);
             finish();
         }

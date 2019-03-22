@@ -144,10 +144,12 @@ public class IMGEditActivity extends IMGEditBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && null != data) {
-            String path = data.getStringExtra("path");
+            String path = data.getStringExtra(EXTRA_PATH);
+            Log.e("TAG",path);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 1;
             options.inJustDecodeBounds = true;
+
 
             if (options.outWidth > MAX_WIDTH) {
                 options.inSampleSize = IMGUtils.inSampleSize(Math.round(1f * options.outWidth / MAX_WIDTH));
@@ -160,6 +162,11 @@ public class IMGEditActivity extends IMGEditBaseActivity {
 
             options.inJustDecodeBounds = false;
             Bitmap localBitmap = BitmapFactory.decodeFile(path, options);
+
+            if (localBitmap == null) {
+                Log.e("TAG", "" + new File(path).exists());
+                return;
+            }
 
             Bitmap bitmap = scaleBitmap(localBitmap);
             mImgView.addStickerImage(bitmap);
@@ -287,7 +294,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                         return;
                     }
 
-                    if (MediaListHolder.selectPhotos.size() == max) {
+                    if (MediaListHolder.selectPhotos.size() < max) {
                         MediaListHolder.selectPhotos.add(photo);
                         Intent intent = new Intent(PICKER_ACTION_MEDIA_ADD);
                         intent.putExtra(PICKER_EXTRA_PHOTO, photo);

@@ -280,13 +280,16 @@ public class PictureSelectorActivity extends BaseActivity {
                 .video(video)
                 .build()
                 .scanner(success -> {
+                    if (success)
+                    runOnUiThread(()->{
+                        mGridViewAdapter.notifyDataSetChanged();
+                        mCatalogAdapter.notifyDataSetChanged();
+                        updateToolbar();
+                        if (mLytLoad.getVisibility() == View.VISIBLE) {
+                            mLytLoad.setVisibility(View.GONE);
+                        }
+                    });
 
-                    mGridViewAdapter.notifyDataSetChanged();
-                    mCatalogAdapter.notifyDataSetChanged();
-                    updateToolbar();
-                    if (mLytLoad.getVisibility() == View.VISIBLE) {
-                        mLytLoad.setVisibility(View.GONE);
-                    }
                 });
 
 
