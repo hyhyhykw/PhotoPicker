@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,6 +50,32 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
 
     protected final void toActivity(@NonNull Class<? extends Activity> clazz, @Nullable Bundle bundle) {
         toActivity(clazz, bundle, null);
+    }
+    protected class MyScrollListener extends RecyclerView.OnScrollListener {
+
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            switch (newState) {
+                case RecyclerView.SCROLL_STATE_IDLE: // The RecyclerView is not currently scrolling.
+                    //对于滚动不加载图片的尝试
+                    Glide.with(recyclerView.getContext()).resumeRequests();
+                    break;
+                case RecyclerView.SCROLL_STATE_DRAGGING: // The RecyclerView is currently being dragged by outside input such as user touch input.
+                    Glide.with(recyclerView.getContext()).resumeRequests();
+                    break;
+                case RecyclerView.SCROLL_STATE_SETTLING: // The RecyclerView is currently animating to a final position while not under
+                    Glide.with(recyclerView.getContext()).pauseRequests();
+                    break;
+            }
+        }
+
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        recyclerView.addOnScrollListener(new MyScrollListener());
     }
 
     protected final void toActivity(@NonNull Class<? extends Activity> clazz, @Nullable Bundle bundle, @Nullable Uri data) {

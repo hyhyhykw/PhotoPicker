@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +32,6 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
 
     protected Context mContext;
 
-    protected static final Interpolator mInterpolator = new LinearInterpolator();
-    private int mLastPosition = -1;
-    protected long mDuration = 300L;
 
     public ArrayList<T> getData() {
         return mData;
@@ -66,14 +61,12 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
 
 
     public void reset(@NonNull List<T> data) {
-        mLastPosition = -1;
         mData.clear();
         mData.addAll(data);
         notifyDataSetChanged();
     }
 
     public void reset(@NonNull Collection<T> data) {
-        mLastPosition = -1;
         mData.clear();
         mData.addAll(data);
         notifyDataSetChanged();
@@ -160,38 +153,7 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
     public int getItemCount() {
         return mData.size();
     }
-//
-//    protected BaseAnimation mSelectAnimation = new AlphaInAnimation();
-//
-//    /**
-//     * 添加动画
-//     *
-//     * @param holder ViewHolder
-//     */
-//    public void addAnimation(V holder) {
-//        if (isOpenAnimation()) {
-//            if (holder.getLayoutPosition() > mLastPosition) {
-//                for (Animator animator : mSelectAnimation.getAnimators(holder.itemView)) {
-//                    startAnim(animator);
-//                }
-//                mLastPosition = holder.getLayoutPosition();
-//            }
-//        }
-//    }
 
-//    protected boolean isOpenAnimation() {
-//        return false;
-//    }
-
-//    /**
-//     * 开启动画
-//     *
-//     * @param animator 动画
-//     */
-//    private void startAnim(Animator animator) {
-//        animator.setDuration(mDuration).start();
-//        animator.setInterpolator(mInterpolator);
-//    }
 
     public boolean isEmpty() {
         return mData.isEmpty();
@@ -224,9 +186,4 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
         public abstract void bind();
     }
 
-//    public final void unbind() {
-//        for (Unbinder unbinder : mUnbinders) {
-//            unbinder.unbind();
-//        }
-//    }
 }

@@ -280,6 +280,7 @@ public class PictureSelectorActivity extends BaseActivity {
                 .video(video)
                 .build()
                 .scanner(success -> {
+
                     mGridViewAdapter.notifyDataSetChanged();
                     mCatalogAdapter.notifyDataSetChanged();
                     updateToolbar();
