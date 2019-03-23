@@ -4,6 +4,8 @@ import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created time : 2019/3/18 10:56 AM.
  *
@@ -17,10 +19,10 @@ public class SingleMediaScanner implements MediaScannerConnection.MediaScannerCo
 
     private MediaScannerConnection mMs;
     private String mPath;
-    private ScanListener listener;
+    private WeakReference<ScanListener> mReference;
 
     public SingleMediaScanner(Context context, String path, ScanListener l) {
-        listener = l;
+        mReference = new WeakReference<>(l);
         mPath = path;
         mMs = new MediaScannerConnection(context, this);
         mMs.connect();
@@ -34,6 +36,9 @@ public class SingleMediaScanner implements MediaScannerConnection.MediaScannerCo
     @Override
     public void onScanCompleted(String path, Uri uri) {
         mMs.disconnect();
+        if (null == mReference) return;
+        ScanListener listener = mReference.get();
+        if (null == listener) return;
         listener.onScanFinish(path);
     }
 }

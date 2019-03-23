@@ -16,6 +16,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.hy.picker.utils.CommonUtils;
+import com.hy.picker.utils.ImgScanListener;
 import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.SingleMediaScanner;
 import com.picker2.PickerConstants;
@@ -26,6 +27,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
@@ -62,8 +64,8 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (!path.exists()) {
             boolean mkdirs = path.mkdirs();
-            if (BuildConfig.DEBUG){
-                Log.d("TAG","文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+            if (BuildConfig.DEBUG) {
+                Log.d("TAG", "文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
             }
 
         }
@@ -98,7 +100,12 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
                     final File file = new File(path);
 
                     if (file.exists()) {
-                        new SingleMediaScanner(this, path, path1 -> getPhoto(path1, file));
+                        new SingleMediaScanner(PhotoContext.getContext(), path, new ImgScanListener<OpenCameraResultActivity>(this) {
+                            @Override
+                            protected void onScanFinish(@NonNull OpenCameraResultActivity openCameraResultActivity, String path) {
+                                openCameraResultActivity.getPhoto(path, file);
+                            }
+                        });
                     } else {
                         Toast.makeText(this, video ? R.string.picker_video_failure : R.string.picker_photo_failure, Toast.LENGTH_SHORT).show();
                         finish();
@@ -120,11 +127,11 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
         public void onReceive(Context context, Intent intent) {
             if (null == intent) return;
             if (!PICKER_ACTION_MEDIA_SURE.equals(intent.getAction())) return;
-            runOnUiThread(()->{
+            runOnUiThread(() -> {
                 Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
                 OpenCameraResultActivity.this.
-                        setResult(RESULT_OK,new Intent()
-                        .putExtra(EXTRA_ITEM,photo));
+                        setResult(RESULT_OK, new Intent()
+                                .putExtra(EXTRA_ITEM, photo));
                 finish();
             });
 
@@ -145,8 +152,8 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
                     if (video) {
 //                        if (null!=PhotoPicker.sTakePhotoListener)
 //                        PhotoPicker.sTakePhotoListener.onTake(photo);
-                        setResult(RESULT_OK,new Intent()
-                                .putExtra(EXTRA_ITEM,photo));
+                        setResult(RESULT_OK, new Intent()
+                                .putExtra(EXTRA_ITEM, photo));
                         finish();
                     } else {
                         if (PhotoPicker.isEdit) {
@@ -154,8 +161,8 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
                         } else {
 //                            if (null!=PhotoPicker.sTakePhotoListener)
 //                            PhotoPicker.sTakePhotoListener.onTake(photo);
-                            setResult(RESULT_OK,new Intent()
-                                    .putExtra(EXTRA_ITEM,photo));
+                            setResult(RESULT_OK, new Intent()
+                                    .putExtra(EXTRA_ITEM, photo));
 
                             finish();
                         }
@@ -176,8 +183,8 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (!path.exists()) {
             boolean mkdirs = path.mkdirs();
-            if (BuildConfig.DEBUG){
-                Log.d("TAG","文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
+            if (BuildConfig.DEBUG) {
+                Log.d("TAG", "文件夹：" + path + "创建" + (mkdirs ? "成功" : "失败"));
             }
 
         }

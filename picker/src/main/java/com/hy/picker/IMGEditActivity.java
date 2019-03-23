@@ -16,6 +16,7 @@ import com.hy.picker.core.file.IMGDecoder;
 import com.hy.picker.core.file.IMGFileDecoder;
 import com.hy.picker.core.util.IMGUtils;
 import com.hy.picker.core.util.SizeUtils;
+import com.hy.picker.utils.ImgScanListener;
 import com.hy.picker.utils.SingleMediaScanner;
 import com.picker2.utils.MediaListHolder;
 import com.picker2.utils.MediaScannerUtils;
@@ -24,6 +25,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by felix on 2017/11/14 下午2:26.
@@ -266,7 +269,12 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                 }
 
 
-                new SingleMediaScanner(this, path, this::getPhoto);
+                new SingleMediaScanner(PhotoContext.getContext(), path, new ImgScanListener<IMGEditActivity>(this) {
+                    @Override
+                    protected void onScanFinish(@NonNull IMGEditActivity imgEditActivity, String path) {
+                        imgEditActivity.getPhoto(path);
+                    }
+                });
                 return;
             } else {
 //                setResult(RESULT_CANCELED);
@@ -279,6 +287,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
 //        setResult(RESULT_CANCELED);
         finish();
     }
+
 
     private void getPhoto(final String path) {
         new MediaScannerUtils.Builder(IMGEditActivity.this)

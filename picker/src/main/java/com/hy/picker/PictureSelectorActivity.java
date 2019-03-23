@@ -41,6 +41,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
+import com.hy.picker.utils.ImgScanListener;
 import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.MyGridItemDecoration;
 import com.hy.picker.utils.PermissionUtils;
@@ -453,7 +454,12 @@ public class PictureSelectorActivity extends BaseActivity {
 
                     if (file.exists()) {
 //                        MediaScannerConnection.scanFile(this, new String[]{path}, null, (path1, uri) -> getPhoto(path1));
-                        new SingleMediaScanner(this, path, this::getPhoto);
+                        new SingleMediaScanner(PhotoContext.getContext(), path, new ImgScanListener<PictureSelectorActivity>(this) {
+                            @Override
+                            protected void onScanFinish(@NonNull PictureSelectorActivity activity, String path) {
+                                activity.getPhoto(path);
+                            }
+                        });
                     } else {
                         Toast.makeText(this, video ?
                                         R.string.picker_video_failure :

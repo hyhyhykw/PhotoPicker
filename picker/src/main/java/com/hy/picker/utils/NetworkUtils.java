@@ -42,18 +42,18 @@ public class NetworkUtils {
         void onFailed();
     }
 
-    private static TaskListener mTaskListener;
 
     public void start(TaskListener taskListener) {
-        mTaskListener = taskListener;
-        new RequestTask(this).execute();
+        new RequestTask(this, taskListener).execute();
     }
 
     public static class RequestTask extends AsyncTask<String, Void, String> {
         private WeakReference<NetworkUtils> mWeakReference;
+        private WeakReference<TaskListener> mReference;
 
-        RequestTask(NetworkUtils utils) {
+        RequestTask(NetworkUtils utils, TaskListener listener) {
             mWeakReference = new WeakReference<>(utils);
+            mReference = new WeakReference<>(listener);
         }
 
         @Override
@@ -109,13 +109,13 @@ public class NetworkUtils {
         @Override
         protected void onPostExecute(String json) {
             super.onPostExecute(json);
-            if (null == mWeakReference) return;
-            NetworkUtils utils = mWeakReference.get();
-            if (utils == null) return;
+            if (null == mReference) return;
+            TaskListener listener = mReference.get();
+            if (listener == null) return;
             if (null == json) {
-                mTaskListener.onFailed();
+                listener.onFailed();
             } else {
-                mTaskListener.onSuccess(json);
+                listener.onSuccess(json);
             }
         }
     }
