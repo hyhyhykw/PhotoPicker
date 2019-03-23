@@ -42,7 +42,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     private IMGMode mPreMode = IMGMode.NONE;
 
-    private IMGImage mImage = new IMGImage();
+    private final IMGImage mImage = new IMGImage();
 
     private GestureDetector mGDetector;
 
@@ -50,13 +50,13 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     private IMGHomingAnimator mHomingAnimator;
 
-    private Pen mPen = new Pen();
+    private final Pen mPen = new Pen();
 
     private int mPointerCount = 0;
 
-    private Paint mDoodlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mDoodlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private Paint mMosaicPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mMosaicPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private static final boolean DEBUG = true;
 
@@ -566,9 +566,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public <V extends View & IMGSticker> boolean onRemove(V stickerView) {
-        if (mImage != null) {
-            mImage.onRemoveSticker(stickerView);
-        }
+        mImage.onRemoveSticker(stickerView);
         stickerView.unregisterCallback(this);
         ViewParent parent = stickerView.getParent();
         if (parent != null) {

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity implements FeedbackSelectPictureAdapter.OnItemClickListener {
     RecyclerView mRcyPhoto;
-    private FeedbackSelectPictureAdapter mFeedbackSelectPictureAdapter = new FeedbackSelectPictureAdapter();
+    private final FeedbackSelectPictureAdapter mFeedbackSelectPictureAdapter = new FeedbackSelectPictureAdapter();
 //    private PhotoPicker mPhotoPicker;
 
     @Override

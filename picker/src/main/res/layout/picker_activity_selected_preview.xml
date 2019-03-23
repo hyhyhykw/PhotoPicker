@@ -14,7 +14,8 @@
         android:background="?attr/picker_title_bg"
         android:clickable="true"
         android:fitsSystemWindows="true"
-        android:minHeight="48dp">
+        android:minHeight="48dp"
+        tools:ignore="KeyboardInaccessibleWidget">
 
         <ImageView
             android:id="@id/picker_back"
@@ -23,7 +24,7 @@
             android:foreground="@drawable/picker_foreground"
             android:src="@drawable/picker_picsel_back_normal"
             android:tint="?attr/picker_back_color"
-            tools:ignore="ContentDescription"
+            tools:ignore="ContentDescription,UnusedAttribute"
             tools:targetApi="m"/>
 
         <TextView

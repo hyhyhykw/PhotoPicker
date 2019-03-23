@@ -17,8 +17,8 @@ public class SingleMediaScanner implements MediaScannerConnection.MediaScannerCo
         void onScanFinish(String path);
     }
 
-    private MediaScannerConnection mMs;
-    private String mPath;
+    private final MediaScannerConnection mMs;
+    private final String mPath;
     private WeakReference<ScanListener> mReference;
 
     public SingleMediaScanner(Context context, String path, ScanListener l) {

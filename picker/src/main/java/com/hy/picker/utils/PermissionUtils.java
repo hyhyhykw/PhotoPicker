@@ -28,8 +28,8 @@ public class PermissionUtils {
     private final Context mActivity;
     private PermissionListener mPermissionListener;
 
-    private Rationale<List<String>> mRationale;
-    private PermissionSetting mSetting;
+    private final Rationale<List<String>> mRationale;
+    private final PermissionSetting mSetting;
 
     public PermissionUtils setPermissionListener(PermissionListener permissionListener) {
         mPermissionListener = permissionListener;
@@ -43,20 +43,20 @@ public class PermissionUtils {
     }
 
 
-    public void requestPermission(String... permissions) {
+    public void requestPermission(int requestCode,String... permissions) {
         AndPermission.with(mActivity)
                 .runtime()
                 .permission(permissions)
                 .rationale(mRationale)
-                .onGranted(permissions12 -> {
+                .onGranted(permission -> {
                     if (null != mPermissionListener) mPermissionListener.onResult();
                 })
-                .onDenied(permissions1 -> {
+                .onDenied(permission -> {
                     Toast.makeText(mActivity, R.string.picker_failure, Toast.LENGTH_SHORT).show();
-                    String[] strings = permissions1.toArray(new String[]{});
+                    String[] strings = permission.toArray(new String[]{});
 
                     if (!checkPermissions(mActivity, strings)) {
-                        mSetting.showSetting(permissions1);
+                        mSetting.showSetting(permission,requestCode);
                     }
                 })
                 .start();

@@ -53,7 +53,7 @@ import static android.provider.MediaStore.MediaColumns.MIME_TYPE;
 public class MediaScannerUtils {
 
     @NonNull
-    private Builder mBuilder;
+    private final Builder mBuilder;
 
     private MediaScannerUtils(@NonNull Builder builder) {
         mBuilder = builder;
@@ -106,7 +106,7 @@ public class MediaScannerUtils {
         private boolean gif;
         private boolean gifOnly;
         private boolean video;
-        private Context mContext;
+        private final Context mContext;
 
         public Builder(Context context) {
             mContext = context;
@@ -155,8 +155,8 @@ public class MediaScannerUtils {
 
     private static final class MultiScannerTask extends AsyncTask<String, Void, List<PhotoDirectory>> {
 
-        private Builder mBuilder;
-        private OnResultListener mListener;
+        private final Builder mBuilder;
+        private final OnResultListener mListener;
 
         MultiScannerTask(Builder builder, OnResultListener listener) {
             mBuilder = builder;
@@ -309,8 +309,8 @@ public class MediaScannerUtils {
     }
 
     private static class ResultParams {
-        Photo mPhoto;
-        int position;
+        final Photo mPhoto;
+        final int position;
 
         public ResultParams(Photo photo, int position) {
             mPhoto = photo;
@@ -319,8 +319,8 @@ public class MediaScannerUtils {
     }
 
     private static final class SingleScannerTask extends AsyncTask<String, Void, ResultParams> {
-        private Builder mBuilder;
-        private OnSingleResultListener mListener;
+        private final Builder mBuilder;
+        private final OnSingleResultListener mListener;
 
         SingleScannerTask(Builder builder, OnSingleResultListener listener) {
             mBuilder = builder;

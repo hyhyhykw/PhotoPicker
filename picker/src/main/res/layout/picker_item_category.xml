@@ -10,7 +10,8 @@
               android:paddingEnd="16dp"
               android:paddingStart="16dp"
               android:paddingTop="5dp"
-              tools:targetApi="m">
+              tools:targetApi="m"
+              tools:ignore="UnusedAttribute">
 
     <ImageView
         android:id="@id/picker_iv_crystal"

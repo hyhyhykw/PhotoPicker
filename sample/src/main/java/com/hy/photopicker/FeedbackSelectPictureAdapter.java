@@ -96,8 +96,8 @@ public class FeedbackSelectPictureAdapter extends BaseRecyclerAdapter<Photo, Bas
 
     class PicHolder extends BaseRecyclerAdapter.BaseViewHolder {
 
-        ImageView mIvImage;
-        ImageView mIvDeleteImage;
+        final ImageView mIvImage;
+        final ImageView mIvDeleteImage;
 
         PicHolder(View itemView) {
             super(itemView);
@@ -129,7 +129,7 @@ public class FeedbackSelectPictureAdapter extends BaseRecyclerAdapter<Photo, Bas
     }
 
     class AddHolder extends BaseRecyclerAdapter.BaseViewHolder {
-        ImageView mIvAdd;
+        final ImageView mIvAdd;
 
         AddHolder(View itemView) {
             super(itemView);

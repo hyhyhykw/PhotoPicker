@@ -21,7 +21,7 @@ public class IMGStickerXText extends IMGStickerX {
 
     private StaticLayout mTextLayout;
 
-    private TextPaint mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private final TextPaint mTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
     public IMGStickerXText(IMGText text) {
         // 字体大小 22sp

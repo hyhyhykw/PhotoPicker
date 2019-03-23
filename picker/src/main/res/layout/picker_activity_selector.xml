@@ -22,6 +22,7 @@
             android:foreground="@drawable/picker_foreground"
             android:src="@drawable/picker_picsel_back_normal"
             android:tint="?attr/picker_back_color"
+            tools:ignore="UnusedAttribute"
             tools:targetApi="m"/>
 
         <TextView
@@ -57,6 +58,7 @@
                 android:text="@string/picker_picsel_toolbar_send"
                 android:textAllCaps="true"
                 android:textSize="14sp"
+                tools:ignore="UnusedAttribute"
                 tools:targetApi="m"/>
         </FrameLayout>
 
@@ -124,7 +126,8 @@
             android:layout_height="48dp"
             android:layout_gravity="bottom"
             android:background="?attr/picker_bottom_color"
-            android:clickable="true">
+            android:clickable="true"
+            tools:ignore="KeyboardInaccessibleWidget">
 
 
             <view

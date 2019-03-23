@@ -44,13 +44,13 @@ public abstract class IMGStickerView extends ViewGroup implements IMGSticker, Vi
 
     private float mMaxScaleValue = MAX_SCALE_VALUE;
 
-    private Paint PAINT;
+    private final Paint PAINT;
 
-    private Matrix mMatrix = new Matrix();
+    private final Matrix mMatrix = new Matrix();
 
-    private RectF mFrame = new RectF();
+    private final RectF mFrame = new RectF();
 
-    private Rect mTempFrame = new Rect();
+    private final Rect mTempFrame = new Rect();
 
     private static final float MAX_SCALE_VALUE = 4f;
 

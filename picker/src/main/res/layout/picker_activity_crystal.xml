@@ -20,7 +20,8 @@
             android:foreground="@drawable/picker_foreground"
             android:src="@drawable/picker_picsel_back_normal"
             android:tint="?attr/picker_back_color"
-            tools:targetApi="m"/>
+            tools:targetApi="m"
+            tools:ignore="UnusedAttribute"/>
 
         <TextView
             android:layout_width="wrap_content"

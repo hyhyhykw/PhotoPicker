@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class MyGridItemDecoration extends RecyclerView.ItemDecoration {
 
-    private int dp1;
+    private final int dp1;
 
     public MyGridItemDecoration(Context context) {
         dp1 = context.getResources().getDimensionPixelOffset(R.dimen.picker_item_divider);

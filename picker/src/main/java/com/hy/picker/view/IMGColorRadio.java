@@ -6,11 +6,12 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import androidx.appcompat.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.hy.picker.R;
+
+import androidx.appcompat.widget.AppCompatRadioButton;
 
 /**
  * Created by felix on 2017/12/1 下午2:50.
@@ -28,7 +29,7 @@ public class IMGColorRadio extends AppCompatRadioButton implements ValueAnimator
 
     private ValueAnimator mAnimator;
 
-    private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private static final float RADIUS_BASE = 0.6f;
 

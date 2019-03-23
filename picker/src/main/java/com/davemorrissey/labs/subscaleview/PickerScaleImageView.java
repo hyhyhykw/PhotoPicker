@@ -1,5 +1,6 @@
 package com.davemorrissey.labs.subscaleview;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -702,6 +703,7 @@ public class PickerScaleImageView extends View {
     /**
      * Handle touch events. One finger pans, and two finger pinch and zoom plus panning.
      */
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         // During non-interruptible anims, ignore all touch events
@@ -1930,16 +1932,22 @@ public class PickerScaleImageView extends View {
             try {
                 ExifInterface exifInterface = new ExifInterface(sourceUri.substring(ImageSource.FILE_SCHEME.length() - 1));
                 int orientationAttr = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-                if (orientationAttr == ExifInterface.ORIENTATION_NORMAL || orientationAttr == ExifInterface.ORIENTATION_UNDEFINED) {
-                    exifOrientation = ORIENTATION_0;
-                } else if (orientationAttr == ExifInterface.ORIENTATION_ROTATE_90) {
-                    exifOrientation = ORIENTATION_90;
-                } else if (orientationAttr == ExifInterface.ORIENTATION_ROTATE_180) {
-                    exifOrientation = ORIENTATION_180;
-                } else if (orientationAttr == ExifInterface.ORIENTATION_ROTATE_270) {
-                    exifOrientation = ORIENTATION_270;
-                } else {
-                    Log.w(TAG, "Unsupported EXIF orientation: " + orientationAttr);
+                switch (orientationAttr) {
+                    case ExifInterface.ORIENTATION_NORMAL:
+                    case ExifInterface.ORIENTATION_UNDEFINED:
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        exifOrientation = ORIENTATION_90;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        exifOrientation = ORIENTATION_180;
+                        break;
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        exifOrientation = ORIENTATION_270;
+                        break;
+                    default:
+                        Log.w(TAG, "Unsupported EXIF orientation: " + orientationAttr);
+                        break;
                 }
             } catch (Exception e) {
                 Log.w(TAG, "Could not get EXIF orientation of image");

@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
  */
 public class PickerCrystalCategoryActivity extends BaseListActivity implements CrystalCategoryAdapter.OnItemClickListener, Constants, PickerConstants {
 
-    private CrystalCategoryAdapter mCrystalCategoryAdapter = new CrystalCategoryAdapter();
+    private final CrystalCategoryAdapter mCrystalCategoryAdapter = new CrystalCategoryAdapter();
 
     private boolean isOther;
 

@@ -7,7 +7,8 @@
               android:foreground="@drawable/picker_foreground"
               android:gravity="center"
               android:orientation="vertical"
-              tools:targetApi="m">
+              tools:targetApi="m"
+              tools:ignore="UnusedAttribute">
 
     <com.hy.picker.view.SquareLayout
         android:layout_width="match_parent"

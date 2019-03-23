@@ -41,11 +41,11 @@ public class CrystalAdapter extends BaseRecyclerAdapter<CrystalResult.Crystal, C
 
 
     public class ViewHolder extends BaseRecyclerAdapter.BaseViewHolder {
-        private ImageView mIvCrystal;
-        private ImageView mIvDownload;
-        private TextView mTvSize;
-        private TextView mTvWait;
-        private CompletedView mProgress;
+        private final ImageView mIvCrystal;
+        private final ImageView mIvDownload;
+        private final TextView mTvSize;
+        private final TextView mTvWait;
+        private final CompletedView mProgress;
 
         ViewHolder(View itemView) {
             super(itemView);

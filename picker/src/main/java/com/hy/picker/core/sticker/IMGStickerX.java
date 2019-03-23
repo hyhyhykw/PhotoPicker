@@ -19,7 +19,7 @@ public class IMGStickerX {
 
     private float mX = 0f, mY = 0f;
 
-    protected float[] mPivotXY = {0, 0};
+    protected final float[] mPivotXY = {0, 0};
 
     private StickerEvent mTouchEvent;
 
@@ -29,17 +29,17 @@ public class IMGStickerX {
      * isActivated 为true时，其坐标相对于屏幕左上角
      * isActivated 为false时，其坐标相对Image，切为单位坐标
      */
-    protected RectF mFrame = new RectF();
+    protected final RectF mFrame = new RectF();
 
-    private RectF mRemoveFrame = new RectF();
+    private final RectF mRemoveFrame = new RectF();
 
-    private RectF mAdjustFrame = new RectF();
+    private final RectF mAdjustFrame = new RectF();
 
     private final static float SIZE_ANCHOR = 60;
 
     private final static float STROKE_FRAME = 6f;
 
-    private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     {
         mPaint.setColor(Color.RED);

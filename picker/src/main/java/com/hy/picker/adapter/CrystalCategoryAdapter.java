@@ -1,14 +1,14 @@
 package com.hy.picker.adapter;
 
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.hy.picker.R;
-
 import com.hy.picker.core.CrystalCategory;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created time : 2018/8/27 15:42.
@@ -30,8 +30,8 @@ public class CrystalCategoryAdapter extends BaseRecyclerAdapter<CrystalCategory.
     }
 
     public class ViewHolder extends BaseRecyclerAdapter.BaseViewHolder {
-        private ImageView mIvCrystal;
-        private TextView mTvName;
+        private final ImageView mIvCrystal;
+        private final TextView mTvName;
 
         ViewHolder(View itemView) {
             super(itemView);

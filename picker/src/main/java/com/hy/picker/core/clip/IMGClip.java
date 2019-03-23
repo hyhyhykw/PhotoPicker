@@ -72,7 +72,7 @@ public interface IMGClip {
         LEFT_BOTTOM(9),
         RIGHT_BOTTOM(10);
 
-        int v;
+        final int v;
 
         /**
          * LEFT: 0

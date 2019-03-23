@@ -74,7 +74,9 @@ public class CommonUtils {
             //针对魅族
             try {
                 WindowManager.LayoutParams lp = window.getAttributes();
+                @SuppressWarnings("JavaReflectionMemberAccess")
                 Field darkFlag = WindowManager.LayoutParams.class.getDeclaredField("MEIZU_FLAG_DARK_STATUS_BAR_ICON");
+                @SuppressWarnings("JavaReflectionMemberAccess")
                 Field meizuFlags = WindowManager.LayoutParams.class.getDeclaredField("meizuFlags");
                 darkFlag.setAccessible(true);
                 meizuFlags.setAccessible(true);

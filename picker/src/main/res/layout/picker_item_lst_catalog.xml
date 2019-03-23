@@ -9,7 +9,8 @@
     android:foreground="?android:attr/selectableItemBackground"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
-    tools:targetApi="m">
+    tools:targetApi="m"
+    tools:ignore="KeyboardInaccessibleWidget,UnusedAttribute">
 
     <FrameLayout
         android:id="@id/picker_image_layout"

@@ -50,7 +50,7 @@ import com.picker2.model.Photo;
 import com.picker2.model.PhotoDirectory;
 import com.picker2.utils.MediaListHolder;
 import com.picker2.utils.MediaScannerUtils;
-import com.yanzhenjie.permission.Permission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -257,7 +257,7 @@ public class PictureSelectorActivity extends BaseActivity {
         Looper.myQueue().addIdleHandler(() -> {
             new PermissionUtils(PictureSelectorActivity.this)
                     .setPermissionListener(this::initView)
-                    .requestPermission(Permission.WRITE_EXTERNAL_STORAGE);
+                    .requestPermission(PERMISSION_REQUEST_EXTERNAL_STORAGE,Permission.WRITE_EXTERNAL_STORAGE);
             return false;
         });
 
@@ -282,14 +282,14 @@ public class PictureSelectorActivity extends BaseActivity {
                 .build()
                 .scanner(success -> {
                     if (success)
-                    runOnUiThread(()->{
-                        mGridViewAdapter.notifyDataSetChanged();
-                        mCatalogAdapter.notifyDataSetChanged();
-                        updateToolbar();
-                        if (mLytLoad.getVisibility() == View.VISIBLE) {
-                            mLytLoad.setVisibility(View.GONE);
-                        }
-                    });
+                        runOnUiThread(() -> {
+                            mGridViewAdapter.notifyDataSetChanged();
+                            mCatalogAdapter.notifyDataSetChanged();
+                            updateToolbar();
+                            if (mLytLoad.getVisibility() == View.VISIBLE) {
+                                mLytLoad.setVisibility(View.GONE);
+                            }
+                        });
 
                 });
 
@@ -997,7 +997,7 @@ public class PictureSelectorActivity extends BaseActivity {
                     R.string.picker_picsel_take_picture);
             mMask.setOnClickListener(v -> new PermissionUtils(PictureSelectorActivity.this)
                     .setPermissionListener(PictureSelectorActivity.this::requestCamera)
-                    .requestPermission(Permission.CAMERA));
+                    .requestPermission(PERMISSION_REQUEST_EXTERNAL_CAMERA,Permission.CAMERA));
 
         }
     }

@@ -20,9 +20,9 @@ import android.text.TextUtils;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hy.picker.R;
-import com.yanzhenjie.permission.Permission;
 import com.yanzhenjie.permission.Rationale;
 import com.yanzhenjie.permission.RequestExecutor;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.util.List;
 

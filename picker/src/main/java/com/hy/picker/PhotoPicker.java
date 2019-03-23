@@ -9,7 +9,7 @@ import com.hy.picker.utils.PermissionUtils;
 import com.picker2.PickerConstants;
 import com.picker2.model.Photo;
 import com.picker2.utils.MediaListHolder;
-import com.yanzhenjie.permission.Permission;
+import com.yanzhenjie.permission.runtime.Permission;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -137,7 +137,7 @@ public class PhotoPicker implements PickerConstants {
                         .putExtra(EXTRA_EDIT, isEdit)
                         .putExtra(EXTRA_PICK_VIDEO, isVideo)/*
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)*/, isVideo ? PICKER_REQUEST_TAKE_VIDEO : PICKER_REQUEST_TAKE_PHOTO))
-                .requestPermission(Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE);
+                .requestPermission(PERMISSION_REQUEST_EXTERNAL_CAMERA, Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE);
     }
 
     @Nullable

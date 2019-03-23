@@ -21,10 +21,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  * @author HY
  */
 public class DefaultItemDecoration extends RecyclerView.ItemDecoration {
-    private Drawable mDivider;
-    private int mDividerWidth;
-    private int mDividerHeight;
-    private List<Integer> mViewTypeList = new ArrayList<>();
+    private final Drawable mDivider;
+    private final int mDividerWidth;
+    private final int mDividerHeight;
+    private final List<Integer> mViewTypeList = new ArrayList<>();
 
     /**
      * @param color decoration line color.
@@ -53,13 +53,15 @@ public class DefaultItemDecoration extends RecyclerView.ItemDecoration {
         int position = parent.getChildAdapterPosition(view);
         if (position < 0) return;
 
-        if (mViewTypeList.contains(parent.getAdapter().getItemViewType(position))) {
+        RecyclerView.Adapter adapter = parent.getAdapter();
+        if (null == adapter) return;
+        if (mViewTypeList.contains(adapter.getItemViewType(position))) {
             outRect.set(0, 0, 0, 0);
             return;
         }
 
         int columnCount = getSpanCount(parent);
-        int childCount = parent.getAdapter().getItemCount();
+        int childCount = adapter.getItemCount();
 
         boolean firstRaw = isFirstRaw(position, columnCount);
         boolean lastRaw = isLastRaw(position, columnCount, childCount);
@@ -149,12 +151,15 @@ public class DefaultItemDecoration extends RecyclerView.ItemDecoration {
 
     public void drawHorizontal(Canvas c, RecyclerView parent) {
         c.save();
+        RecyclerView.Adapter adapter = parent.getAdapter();
+        if (null == adapter) return;
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             int childPosition = parent.getChildAdapterPosition(child);
             if (childPosition < 0) continue;
-            if (mViewTypeList.contains(parent.getAdapter().getItemViewType(childPosition)))
+
+            if (mViewTypeList.contains(adapter.getItemViewType(childPosition)))
                 continue;
             final int left = child.getLeft();
             final int top = child.getBottom();
@@ -168,12 +173,15 @@ public class DefaultItemDecoration extends RecyclerView.ItemDecoration {
 
     public void drawVertical(Canvas c, RecyclerView parent) {
         c.save();
+        RecyclerView.Adapter adapter = parent.getAdapter();
+        if (null == adapter) return;
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             int childPosition = parent.getChildAdapterPosition(child);
             if (childPosition < 0) continue;
-            if (mViewTypeList.contains(parent.getAdapter().getItemViewType(childPosition)))
+
+            if (mViewTypeList.contains(adapter.getItemViewType(childPosition)))
                 continue;
             final int left = child.getRight();
             final int top = child.getTop();
