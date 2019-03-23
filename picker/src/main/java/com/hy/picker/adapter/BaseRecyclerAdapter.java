@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
-import android.view.animation.LinearInterpolator;
 
 import com.bumptech.glide.Glide;
 import com.picker2.utils.AndroidLifecycleUtils;
@@ -37,9 +35,6 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
 
     protected Context mContext;
 
-    protected static final Interpolator mInterpolator = new LinearInterpolator();
-    private int mLastPosition = -1;
-    protected long mDuration = 300L;
 
     public List<T> getData() {
         return mData;
@@ -61,16 +56,19 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
             switch (newState) {
                 case RecyclerView.SCROLL_STATE_IDLE: // The RecyclerView is not currently scrolling.
                     //对于滚动不加载图片的尝试
-                    if (AndroidLifecycleUtils.canLoadImage(recyclerView.getContext()))
+                    if (AndroidLifecycleUtils.canLoadImage(recyclerView.getContext())) {
                         Glide.with(recyclerView.getContext()).resumeRequests();
+                    }
                     break;
                 case RecyclerView.SCROLL_STATE_DRAGGING: // The RecyclerView is currently being dragged by outside input such as user touch input.
-                    if (AndroidLifecycleUtils.canLoadImage(recyclerView.getContext()))
+                    if (AndroidLifecycleUtils.canLoadImage(recyclerView.getContext())) {
                         Glide.with(recyclerView.getContext()).resumeRequests();
+                    }
                     break;
                 case RecyclerView.SCROLL_STATE_SETTLING: // The RecyclerView is currently animating to a final position while not under
-                    if (AndroidLifecycleUtils.canLoadImage(recyclerView.getContext()))
+                    if (AndroidLifecycleUtils.canLoadImage(recyclerView.getContext())) {
                         Glide.with(recyclerView.getContext()).pauseRequests();
+                    }
                     break;
             }
         }
@@ -98,14 +96,12 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
 
 
     public void reset(@NonNull List<T> data) {
-        mLastPosition = -1;
         mData.clear();
         mData.addAll(data);
         notifyDataSetChanged();
     }
 
     public void reset(@NonNull Collection<T> data) {
-        mLastPosition = -1;
         mData.clear();
         mData.addAll(data);
         notifyDataSetChanged();

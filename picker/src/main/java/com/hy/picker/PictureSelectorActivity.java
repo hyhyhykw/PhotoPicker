@@ -48,6 +48,7 @@ import com.hy.picker.utils.PermissionUtils;
 import com.hy.picker.utils.SingleMediaScanner;
 import com.picker2.model.Photo;
 import com.picker2.model.PhotoDirectory;
+import com.picker2.utils.AndroidLifecycleUtils;
 import com.picker2.utils.MediaListHolder;
 import com.picker2.utils.MediaScannerUtils;
 import com.yanzhenjie.permission.runtime.Permission;
@@ -232,6 +233,7 @@ public class PictureSelectorActivity extends BaseActivity {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                if (!AndroidLifecycleUtils.canLoadImage(PictureSelectorActivity.this)) return;
                 switch (newState) {
                     case RecyclerView.SCROLL_STATE_IDLE: // The RecyclerView is not currently scrolling.
                         //对于滚动不加载图片的尝试
@@ -257,7 +259,7 @@ public class PictureSelectorActivity extends BaseActivity {
         Looper.myQueue().addIdleHandler(() -> {
             new PermissionUtils(PictureSelectorActivity.this)
                     .setPermissionListener(this::initView)
-                    .requestPermission(PERMISSION_REQUEST_EXTERNAL_STORAGE,Permission.WRITE_EXTERNAL_STORAGE);
+                    .requestPermission(PERMISSION_REQUEST_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE);
             return false;
         });
 
@@ -997,7 +999,7 @@ public class PictureSelectorActivity extends BaseActivity {
                     R.string.picker_picsel_take_picture);
             mMask.setOnClickListener(v -> new PermissionUtils(PictureSelectorActivity.this)
                     .setPermissionListener(PictureSelectorActivity.this::requestCamera)
-                    .requestPermission(PERMISSION_REQUEST_EXTERNAL_CAMERA,Permission.CAMERA));
+                    .requestPermission(PERMISSION_REQUEST_EXTERNAL_CAMERA, Permission.CAMERA));
 
         }
     }
