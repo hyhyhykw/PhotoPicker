@@ -5,7 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.hy.picker.utils.ObjectsUtils;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
@@ -85,12 +85,12 @@ public class Photo implements Parcelable, Comparable<Photo> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Photo photo = (Photo) o;
-        return ObjectsUtils.equals(getUri(), photo.getUri());
+        return Objects.equals(getUri(), photo.getUri());
     }
 
     @Override
     public int hashCode() {
-        return ObjectsUtils.hash(getUri());
+        return Objects.hash(getUri());
     }
 
 
