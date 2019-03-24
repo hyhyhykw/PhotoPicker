@@ -71,6 +71,7 @@ public class PicturePreviewActivity extends BaseActivity {
     private Drawable mDefaultDrawable;
 
     private PreviewReceiver mPreviewReceiver;
+    private boolean mIsPreview;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,11 +97,11 @@ public class PicturePreviewActivity extends BaseActivity {
         max = intent.getIntExtra(EXTRA_MAX, 9);
         boolean isGif = intent.getBooleanExtra(EXTRA_IS_GIF, false);
         mTvEdit.setVisibility(isGif ? View.GONE : View.VISIBLE);
-        boolean isPreview = intent.getBooleanExtra(EXTRA_IS_PREVIEW, false);
+        mIsPreview = intent.getBooleanExtra(EXTRA_IS_PREVIEW, false);
 //        mUseOrigin.setChecked(intent.getBooleanExtra("sendOrigin", false));
         mCurrentIndex = intent.getIntExtra(EXTRA_INDEX, 0);
 
-        mItemList = isPreview ? MediaListHolder.selectPhotos : MediaListHolder.currentPhotos;
+        mItemList = mIsPreview ? MediaListHolder.selectPhotos : MediaListHolder.currentPhotos;
 
         mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size()));
 
@@ -130,15 +131,23 @@ public class PicturePreviewActivity extends BaseActivity {
                 } else {
 
                     if (mItemList.isEmpty()) return;
+
                     Photo photo = mItemList.get(mCurrentIndex);
+                    sendBroadcast(new Intent(PICKER_ACTION_MEDIA_SELECT)
+                            .putExtra(PICKER_EXTRA_PHOTO, photo));
+
                     if (isChecked) {
                         MediaListHolder.selectPhotos.add(photo);
                     } else {
                         MediaListHolder.selectPhotos.remove(photo);
+                        if (mIsPreview) {
+                            mViewPager.getAdapter().notifyDataSetChanged();
+                            if (MediaListHolder.selectPhotos.size() == 0) {
+                                finish();
+                                return;
+                            }
+                        }
                     }
-
-                    sendBroadcast(new Intent(PICKER_ACTION_MEDIA_SELECT)
-                            .putExtra(PICKER_EXTRA_PHOTO, photo));
                     updateToolbar();
                 }
             }
@@ -240,6 +249,9 @@ public class PicturePreviewActivity extends BaseActivity {
     private void updateToolbar() {
         int selNum = MediaListHolder.selectPhotos.size();
 
+        mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size()));
+
+        mSelectBox.setChecked(MediaListHolder.selectPhotos.contains(mItemList.get(mCurrentIndex)));
         if (mItemList.size() == 1 && selNum == 0) {
             mBtnSend.setText(R.string.picker_picsel_toolbar_send);
 //            mUseOrigin.setText(R.string.rc_picprev_origin);
@@ -248,11 +260,10 @@ public class PicturePreviewActivity extends BaseActivity {
             if (selNum == 0) {
                 mBtnSend.setText(R.string.picker_picsel_toolbar_send);
                 mBtnSend.setEnabled(false);
-            } else if (selNum <= 9) {
+            } else if (selNum <= max) {
                 mBtnSend.setEnabled(true);
                 mBtnSend.setText(getResources().getString(R.string.picker_picsel_toolbar_send_num, selNum, max));
             }
-
         }
     }
 

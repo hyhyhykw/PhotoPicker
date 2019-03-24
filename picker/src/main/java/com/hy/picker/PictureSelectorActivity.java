@@ -926,7 +926,7 @@ public class PictureSelectorActivity extends BaseActivity {
 
                 if (preview) {
                     Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
-                    intent.putExtra(EXTRA_INDEX, /*video ? position - 1 : */position);
+                    intent.putExtra(EXTRA_INDEX, position);
                     intent.putExtra(EXTRA_IS_GIF, item.isGif());
                     intent.putExtra(EXTRA_MAX, max);
 
