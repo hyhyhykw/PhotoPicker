@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.hy.picker.PhotoContext;
+
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -50,7 +52,7 @@ public class Photo implements Parcelable, Comparable<Photo> {
 
     private void resolve() {
         if (width == 0 || height == 0)
-            if (resolution!=null&&!resolution.isEmpty()) {
+            if (!TextUtils.isEmpty(resolution)) {
                 String[] split = resolution.split("x", 2);
                 try {
                     this.width = Integer.parseInt(split[0]);
@@ -62,6 +64,9 @@ public class Photo implements Parcelable, Comparable<Photo> {
                 } catch (Exception ignore) {
 
                 }
+            }else{
+                width= PhotoContext.getScreenWidth();
+                height=PhotoContext.getScreenHeight();
             }
     }
 
