@@ -101,6 +101,7 @@ public class PictureSelectorActivity extends BaseActivity {
     private SelectReceiver mSelectReceiver;
     private Drawable mDefaultDrawable;
     private ImageView mIvType;
+    private int size;
 
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -114,7 +115,8 @@ public class PictureSelectorActivity extends BaseActivity {
         intentFilter.addAction(PICKER_ACTION_MEDIA_SELECT);
         intentFilter.addAction(PICKER_ACTION_MEDIA_SEND);
         registerReceiver(mSelectReceiver, intentFilter);
-
+        int dp4 = SizeUtils.dp2px(this, 4);
+        size = (PhotoContext.getScreenWidth() - dp4 * 3) / 4;
 
         mDefaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
         Drawable typeDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_preview_type);
@@ -877,12 +879,14 @@ public class PictureSelectorActivity extends BaseActivity {
 
             String uri = item.getUri();
 
+
             Glide.with(getContext())
                     .asBitmap()
                     .load(new File(uri))
                     .thumbnail(0.5f)
                     .apply(new RequestOptions()
                             .error(mDefaultDrawable)
+                            .override(size)
                             .placeholder(mDefaultDrawable))
                     .into(image);
 
