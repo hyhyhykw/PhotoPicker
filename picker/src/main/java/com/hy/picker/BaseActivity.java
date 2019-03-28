@@ -1,5 +1,6 @@
 package com.hy.picker;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import com.hy.picker.utils.AttrsUtils;
@@ -20,6 +21,7 @@ public class BaseActivity extends AppCompatActivity implements PickerConstants {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//竖屏
         super.onCreate(savedInstanceState);
         mIsStatusBlack = AttrsUtils.getTypeValueBoolean(this, R.attr.picker_status_black);
         CommonUtils.processMIUI(this, mIsStatusBlack);
