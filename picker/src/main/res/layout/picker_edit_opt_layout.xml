@@ -163,10 +163,12 @@
             android:contentDescription="@string/picker_text"
             android:gravity="center"
             android:onClick="onClick"
+            android:visibility="gone"
             android:src="@drawable/picker_btn_image"
             android:textColor="#FFF"/>
 
         <Space
+            android:visibility="gone"
             android:layout_width="@dimen/picker_image_mode_space"
             android:layout_height="wrap_content"/>
 
