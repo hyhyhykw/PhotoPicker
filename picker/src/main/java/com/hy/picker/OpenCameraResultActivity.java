@@ -41,6 +41,7 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
     private boolean video;
 
     private SureReceiver mSureReceiver;
+    private boolean isEdit;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +50,8 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(PICKER_ACTION_MEDIA_SURE);
         registerReceiver(mSureReceiver, intentFilter);
-        video = getIntent().getBooleanExtra("video", false);
+        video = getIntent().getBooleanExtra(EXTRA_PICK_VIDEO, false);
+        isEdit = getIntent().getBooleanExtra(EXTRA_EDIT, false);
         requestCamera();
     }
 
@@ -156,7 +158,7 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
                                 .putExtra(EXTRA_ITEM, photo));
                         finish();
                     } else {
-                        if (PhotoPicker.isEdit) {
+                        if (isEdit) {
                             toEdit(Uri.fromFile(file));
                         } else {
 //                            if (null!=PhotoPicker.sTakePhotoListener)

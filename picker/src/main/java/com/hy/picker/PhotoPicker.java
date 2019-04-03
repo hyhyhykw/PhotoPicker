@@ -26,7 +26,7 @@ public class PhotoPicker implements PickerConstants {
 
     //    static PhotoListener sPhotoListener;
     //    static TakePhotoListener sTakePhotoListener;
-    static boolean isEdit;
+    private boolean isEdit;
 
 
     public PhotoPicker() {
@@ -46,14 +46,14 @@ public class PhotoPicker implements PickerConstants {
         return this;
     }
 
-    public static void destroy() {
-        isEdit = false;
-//        sTakePhotoListener = null;
-//        sPhotoListener = null;
-        MediaListHolder.currentPhotos.clear();
-        MediaListHolder.selectPhotos.clear();
-        MediaListHolder.allDirectories.clear();
-    }
+//    public static void destroy() {
+//        isEdit = false;
+////        sTakePhotoListener = null;
+////        sPhotoListener = null;
+//        MediaListHolder.currentPhotos.clear();
+//        MediaListHolder.selectPhotos.clear();
+//        MediaListHolder.allDirectories.clear();
+//    }
 
     public static void init(PhotoModule photoModule) {
         PhotoContext.setPhotoModule(photoModule);
