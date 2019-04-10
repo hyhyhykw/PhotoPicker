@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -81,6 +83,7 @@ public class PictureEditPreviewActivity extends BaseActivity {
                     Glide.with(PictureEditPreviewActivity.this)
                             .asGif()
                             .load(uri)
+                            .transition(DrawableTransitionOptions.withCrossFade())
                             .apply(new RequestOptions()
                                     .override(480, 800)
                                     .priority(Priority.HIGH)
@@ -95,6 +98,7 @@ public class PictureEditPreviewActivity extends BaseActivity {
                         Glide.with(PictureEditPreviewActivity.this)
                                 .asBitmap()
                                 .load(uri)
+                                .transition(BitmapTransitionOptions.withCrossFade())
                                 .apply(new RequestOptions()
                                         .error(mDefaultDrawable)
                                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -105,6 +109,7 @@ public class PictureEditPreviewActivity extends BaseActivity {
                         mLongIv.setVisibility(View.GONE);
                         Glide.with(PictureEditPreviewActivity.this)
                                 .asBitmap()
+                                .transition(BitmapTransitionOptions.withCrossFade())
                                 .load(uri)
                                 .apply(new RequestOptions()
                                         .error(mDefaultDrawable)

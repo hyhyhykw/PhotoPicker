@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.AttrsUtils;
@@ -885,6 +886,7 @@ public class PictureSelectorActivity extends BaseActivity {
                     .asBitmap()
                     .load(new File(uri))
                     .thumbnail(0.5f)
+                    .transition(BitmapTransitionOptions.withCrossFade())
                     .apply(new RequestOptions()
                             .error(mDefaultDrawable)
                             .override(size)

@@ -20,6 +20,7 @@ import android.text.TextUtils;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.hy.picker.R;
+import com.picker2.utils.AndroidLifecycleUtils;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
 import com.yanzhenjie.permission.runtime.setting.SettingRequest;
@@ -44,14 +45,16 @@ public final class PermissionSetting {
 //        final SettingService settingService = AndPermission.permissionSetting(mContext);
         SettingRequest setting = AndPermission.with(mContext).runtime().setting();
 
-        new MaterialDialog.Builder(mContext)
-                .cancelable(false)
-                .title(R.string.picker_title_dialog)
-                .content(message)
-                .positiveText(R.string.picker_setting)
-                .onPositive((dialog, which) -> setting.start(requestCode))
-                .negativeText(R.string.picker_no)
-                .show();
+        if (AndroidLifecycleUtils.canLoadImage(mContext)){
+            new MaterialDialog.Builder(mContext)
+                    .cancelable(false)
+                    .title(R.string.picker_title_dialog)
+                    .content(message)
+                    .positiveText(R.string.picker_setting)
+                    .onPositive((dialog, which) -> setting.start(requestCode))
+                    .negativeText(R.string.picker_no)
+                    .show();
+        }
 
     }
 }

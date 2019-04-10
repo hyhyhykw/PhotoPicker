@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -310,6 +312,7 @@ public class PicturePreviewActivity extends BaseActivity {
                 String uri = photo.getUri();
                 Glide.with(container.getContext())
                         .load(uri)
+                        .transition(DrawableTransitionOptions.withCrossFade())
                         .apply(new RequestOptions()
                                 .override(480, 800)
                                 .priority(Priority.HIGH)
@@ -327,6 +330,7 @@ public class PicturePreviewActivity extends BaseActivity {
                     String uri = photo.getUri();
                     Glide.with(PicturePreviewActivity.this)
                             .asBitmap()
+                            .transition(BitmapTransitionOptions.withCrossFade())
                             .load(uri)
                             .apply(new RequestOptions()
                                     .error(mDefaultDrawable)
@@ -365,6 +369,7 @@ public class PicturePreviewActivity extends BaseActivity {
                     String uri = photo.getUri();
                     Glide.with(container.getContext())
                             .asBitmap()
+                            .transition(BitmapTransitionOptions.withCrossFade())
                             .load(uri)
                             .apply(new RequestOptions()
                                     .error(mDefaultDrawable)

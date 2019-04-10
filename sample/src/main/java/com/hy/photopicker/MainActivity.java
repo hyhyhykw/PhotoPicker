@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
                 new PhotoPicker()
                         .max(9)
                         .select(mFeedbackSelectPictureAdapter.mData)
-                        .video()
                         .start(this);
 //                new PhotoPicker()
 //                        .edit(true)

@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hy.picker.R;
 import com.hy.picker.core.CrystalCategory;
 
@@ -44,6 +45,7 @@ public class CrystalCategoryAdapter extends BaseRecyclerAdapter<CrystalCategory.
             final CrystalCategory.Category item = getItem(getAdapterPosition());
             Glide.with(mContext)
                     .load(item.getImage())
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(mIvCrystal);
             mTvName.setText(item.getName());
             itemView.setOnClickListener(v -> {
