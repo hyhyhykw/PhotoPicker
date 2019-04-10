@@ -273,7 +273,7 @@ public class MediaScannerUtils {
                 photoDirectory.setId(bucketId);
                 photoDirectory.setName(name);
 
-                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken,resolution);
+                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken, resolution);
 
                 if (!directories.contains(photoDirectory)) {
                     photoDirectory.setCoverPath(path);
@@ -422,7 +422,7 @@ public class MediaScannerUtils {
                 photoDirectory.setName(name);
 
 
-                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken,resolution);
+                Photo photo = new Photo(path, title, size, duration, width, height, mimeType, datetaken, resolution);
 
                 int updateIndex;
                 if (!directories.contains(photoDirectory)) {
@@ -450,6 +450,7 @@ public class MediaScannerUtils {
                 }
 
                 if (mBuilder.add) {
+                    photo.setSelected(true);
                     if (MediaListHolder.selectPhotos.isEmpty()) {
                         MediaListHolder.selectPhotos.add(photo);
                     } else {

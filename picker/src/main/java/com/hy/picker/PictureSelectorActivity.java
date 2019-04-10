@@ -272,10 +272,11 @@ public class PictureSelectorActivity extends BaseActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
-        if (null == mSelectItems || mSelectItems.isEmpty()) {
-            MediaListHolder.selectPhotos.clear();
-        } else {
-            MediaListHolder.selectPhotos.clear();
+        MediaListHolder.selectPhotos.clear();
+        if (null != mSelectItems && !mSelectItems.isEmpty()) {
+            for (Photo selectItem : mSelectItems) {
+                selectItem.setSelected(true);
+            }
             MediaListHolder.selectPhotos.addAll(mSelectItems);
         }
 
@@ -321,12 +322,11 @@ public class PictureSelectorActivity extends BaseActivity {
 
             Photo item = MediaListHolder.selectPhotos.get(0);
             Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
-//                intent.putExtra("sendOrigin", mSendOrigin);
             intent.putExtra(EXTRA_IS_GIF, item.isGif());
             intent.putExtra(EXTRA_MAX, max);
             intent.putExtra(EXTRA_IS_PREVIEW, true);
 
-            startActivity(intent);
+            startActivityForResult(intent, PICKER_REQUEST_PREVIEW);
         });
 
 
@@ -367,6 +367,7 @@ public class PictureSelectorActivity extends BaseActivity {
             return false;
         });
     }
+
 
     private float listLastY;
     private int mScrollState;
@@ -438,7 +439,24 @@ public class PictureSelectorActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CAMERA) {
+            if (requestCode == PICKER_REQUEST_PREVIEW) {
+                boolean hasChange = false;
+                for (int i = MediaListHolder.selectPhotos.size() - 1; i >= 0; i--) {
+                    Photo photo = MediaListHolder.selectPhotos.get(i);
+                    if (!photo.isSelected()) {
+                        if (!hasChange) {
+                            hasChange = true;
+                        }
+                        MediaListHolder.selectPhotos.remove(i);
+                    }
+                }
+
+                if (hasChange) {
+                    mGridViewAdapter.notifyDataSetChanged();
+                    updateToolbar();
+                }
+
+            } else if (requestCode == REQUEST_CAMERA) {
                 if (mTakePictureUri != null) {
                     String path = mTakePictureUri.getEncodedPath();// getPathFromUri(this, mTakePhotoUri);
 
@@ -906,20 +924,17 @@ public class PictureSelectorActivity extends BaseActivity {
                     } else {
 //                            item.setSelected(isChecked);
                         if (isChecked) {
+                            item.setSelected(true);
                             MediaListHolder.selectPhotos.add(item);
+                            mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
                         } else {
+                            item.setSelected(false);
                             MediaListHolder.selectPhotos.remove(item);
+                            mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
                         }
                     }
-                    if (MediaListHolder.selectPhotos.contains(item)) {
-                        mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
-                    } else {
-                        mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
-                    }
-
                     updateToolbar();
                 }
-
             });
 
 
@@ -956,8 +971,10 @@ public class PictureSelectorActivity extends BaseActivity {
                         } else {
 //                            item.setSelected(isChecked);
                             if (isChecked) {
+                                item.setSelected(true);
                                 MediaListHolder.selectPhotos.add(item);
                             } else {
+                                item.setSelected(false);
                                 MediaListHolder.selectPhotos.remove(item);
                             }
                         }
@@ -978,6 +995,7 @@ public class PictureSelectorActivity extends BaseActivity {
             if (video) {
                 tvTime.setText(CommonUtils.format(item.getDuration()));
                 mask.setOnClickListener(v -> {
+                    item.setSelected(true);
                     MediaListHolder.selectPhotos.add(item);
                     setResult(RESULT_OK, new Intent()
                             .putParcelableArrayListExtra(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos)));

@@ -120,10 +120,10 @@ public class PicturePreviewActivity extends BaseActivity {
 
         mSelectBox.setText(R.string.picker_picprev_select);
 
-        mSelectBox.setChecked(MediaListHolder.selectPhotos.contains(mItemList.get(mCurrentIndex)));
+        mSelectBox.setChecked(mItemList.get(mCurrentIndex).isSelected());
         mSelectBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (buttonView.isPressed()) {
-                if (isChecked && MediaListHolder.selectPhotos.size() == max) {
+                if (isChecked && getSelNum() == max) {
                     mSelectBox.setChecked(false);
 
 
@@ -139,16 +139,21 @@ public class PicturePreviewActivity extends BaseActivity {
                             .putExtra(PICKER_EXTRA_PHOTO, photo));
 
                     if (isChecked) {
+                        photo.setSelected(true);
                         MediaListHolder.selectPhotos.add(photo);
                     } else {
-                        MediaListHolder.selectPhotos.remove(photo);
-                        if (mIsPreview) {
-                            mViewPager.getAdapter().notifyDataSetChanged();
-                            if (MediaListHolder.selectPhotos.size() == 0) {
-                                finish();
-                                return;
-                            }
+                        photo.setSelected(false);
+                        if (!mIsPreview) {
+                            MediaListHolder.selectPhotos.remove(photo);
                         }
+
+//                        if (mIsPreview) {
+//                            mViewPager.getAdapter().notifyDataSetChanged();
+//                            if (MediaListHolder.selectPhotos.size() == 0) {
+//                                finish();
+//                                return;
+//                            }
+//                        }
                     }
                     updateToolbar();
                 }
@@ -168,7 +173,7 @@ public class PicturePreviewActivity extends BaseActivity {
                 mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size()));
 
                 Photo photo = mItemList.get(position);
-                mSelectBox.setChecked(MediaListHolder.selectPhotos.contains(photo));
+                mSelectBox.setChecked(photo.isSelected());
                 mTvEdit.setVisibility(photo.isGif() ? View.GONE : View.VISIBLE);
             }
 
@@ -183,6 +188,16 @@ public class PicturePreviewActivity extends BaseActivity {
         updateToolbar();
     }
 
+
+    private int getSelNum() {
+        int num = 0;
+        for (Photo photo : MediaListHolder.selectPhotos) {
+            if (photo.isSelected()) {
+                num += 1;
+            }
+        }
+        return num;
+    }
 
     private File mEditFile;
 
@@ -205,6 +220,23 @@ public class PicturePreviewActivity extends BaseActivity {
                 .putExtra(EXTRA_MAX, max));
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mIsPreview) {
+            setResult(RESULT_OK);
+        }
+        super.onBackPressed();
+
+    }
+
+    @Override
+    public void finish() {
+        if (mIsPreview) {
+            setResult(RESULT_OK);
+        }
+        super.finish();
+
+    }
 
     @Override
     protected void onDestroy() {
@@ -249,11 +281,14 @@ public class PicturePreviewActivity extends BaseActivity {
     }
 
     private void updateToolbar() {
-        int selNum = MediaListHolder.selectPhotos.size();
+
+        int selNum = getSelNum();
+
+//        int selNum = MediaListHolder.selectPhotos.size();
 
         mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size()));
 
-        mSelectBox.setChecked(MediaListHolder.selectPhotos.contains(mItemList.get(mCurrentIndex)));
+        mSelectBox.setChecked(mItemList.get(mCurrentIndex).isSelected());
         if (mItemList.size() == 1 && selNum == 0) {
             mBtnSend.setText(R.string.picker_picsel_toolbar_send);
 //            mUseOrigin.setText(R.string.rc_picprev_origin);

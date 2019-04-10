@@ -17,7 +17,9 @@ import com.hy.picker.core.file.IMGFileDecoder;
 import com.hy.picker.core.util.IMGUtils;
 import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.ImgScanListener;
+import com.hy.picker.utils.SetList;
 import com.hy.picker.utils.SingleMediaScanner;
+import com.picker2.model.Photo;
 import com.picker2.utils.MediaListHolder;
 import com.picker2.utils.MediaScannerUtils;
 
@@ -148,7 +150,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && null != data) {
             String path = data.getStringExtra(EXTRA_PATH);
-            Log.e("TAG",path);
+            Log.e("TAG", path);
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 1;
             options.inJustDecodeBounds = true;
@@ -303,7 +305,17 @@ public class IMGEditActivity extends IMGEditBaseActivity {
                         return;
                     }
 
-                    if (MediaListHolder.selectPhotos.size() < max) {
+                    SetList<Photo> selectPhotos = MediaListHolder.selectPhotos;
+
+                    int selectNum = 0;
+                    for (Photo selectPhoto : selectPhotos) {
+                        if (selectPhoto.isSelected()) {
+                            selectNum += 1;
+                        }
+                    }
+
+                    if (selectNum < max) {
+                        photo.setSelected(true);
                         MediaListHolder.selectPhotos.add(photo);
                         Intent intent = new Intent(PICKER_ACTION_MEDIA_ADD);
                         intent.putExtra(PICKER_EXTRA_PHOTO, photo);
@@ -316,8 +328,6 @@ public class IMGEditActivity extends IMGEditBaseActivity {
 
                     finish();
                 });
-
-
     }
 
     @Override

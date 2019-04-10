@@ -1,6 +1,5 @@
 package com.picker2.model;
 
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -25,6 +24,7 @@ public class Photo implements Parcelable, Comparable<Photo> {
     private String mimeType;
     private long time;
     private String resolution;
+    private boolean selected;
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
         public Photo createFromParcel(Parcel source) {
@@ -64,9 +64,9 @@ public class Photo implements Parcelable, Comparable<Photo> {
                 } catch (Exception ignore) {
 
                 }
-            }else{
-                width= PhotoContext.getScreenWidth();
-                height=PhotoContext.getScreenHeight();
+            } else {
+                width = PhotoContext.getScreenWidth();
+                height = PhotoContext.getScreenHeight();
             }
     }
 
@@ -83,6 +83,7 @@ public class Photo implements Parcelable, Comparable<Photo> {
         mimeType = in.readString();
         time = in.readLong();
         resolution = in.readString();
+        selected = in.readInt() == 1;
     }
 
     @Override
@@ -212,14 +213,19 @@ public class Photo implements Parcelable, Comparable<Photo> {
         dest.writeString(mimeType);
         dest.writeLong(time);
         dest.writeString(resolution);
+        dest.writeInt(selected ? 1 : 0);
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     @Override
     public int compareTo(@NonNull Photo o) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return Long.compare(time, o.time);
-        } else {
-            return Long.compare(time, o.time);
-        }
+        return Long.compare(time, o.time);
     }
 }
