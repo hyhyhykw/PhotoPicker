@@ -13,6 +13,7 @@ import com.hy.picker.R;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Rationale;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -25,37 +26,46 @@ import androidx.core.app.AppOpsManagerCompat;
  * @author HY
  */
 public class PermissionUtils {
-    private final Context mActivity;
-    private PermissionListener mPermissionListener;
+    private WeakReference<Context> mReference;
+    private WeakReference<PermissionListener> mListenerReference;
 
     private final Rationale<List<String>> mRationale;
     private final PermissionSetting mSetting;
 
     public PermissionUtils setPermissionListener(PermissionListener permissionListener) {
-        mPermissionListener = permissionListener;
+        mListenerReference = new WeakReference<>(permissionListener);
         return this;
     }
 
     public PermissionUtils(Context activity) {
-        mActivity = activity;
+        mReference=new WeakReference<>(activity);
+//        mActivity = activity;
         mRationale = new DefaultRationale();
         mSetting = new PermissionSetting(activity);
     }
 
 
     public void requestPermission(int requestCode,String... permissions) {
-        AndPermission.with(mActivity)
+        if (mReference==null) return;
+        Context context = mReference.get();
+        if (null==context) return;
+        AndPermission.with(context)
                 .runtime()
                 .permission(permissions)
                 .rationale(mRationale)
                 .onGranted(permission -> {
-                    if (null != mPermissionListener) mPermissionListener.onResult();
+                    if (null==mListenerReference) return;
+                    PermissionListener permissionListener = mListenerReference.get();
+                    if (null != permissionListener) permissionListener.onResult();
                 })
                 .onDenied(permission -> {
-                    Toast.makeText(mActivity, R.string.picker_failure, Toast.LENGTH_SHORT).show();
+                    if (mReference==null) return;
+                    Context context1 = mReference.get();
+                    if (null==context1) return;
+                    Toast.makeText(context1, R.string.picker_failure, Toast.LENGTH_SHORT).show();
                     String[] strings = permission.toArray(new String[]{});
 
-                    if (!checkPermissions(mActivity, strings)) {
+                    if (!checkPermissions(context1, strings)) {
                         mSetting.showSetting(permission,requestCode);
                     }
                 })

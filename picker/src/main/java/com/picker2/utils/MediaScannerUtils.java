@@ -11,6 +11,7 @@ import com.hy.picker.R;
 import com.picker2.model.Photo;
 import com.picker2.model.PhotoDirectory;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -106,10 +107,10 @@ public class MediaScannerUtils {
         private boolean gif;
         private boolean gifOnly;
         private boolean video;
-        private final Context mContext;
+        private WeakReference<Context> mReference;
 
         public Builder(Context context) {
-            mContext = context;
+            mReference = new WeakReference<>(context);
         }
 
         public Builder gif(boolean gif) {
@@ -195,7 +196,10 @@ public class MediaScannerUtils {
                 }
             }
 
-            Context context = mBuilder.mContext;
+            WeakReference<Context> reference = mBuilder.mReference;
+            if (null==reference) return null;
+            Context context = reference.get();
+            if (null==context) return null;
             ContentResolver resolver = context.getContentResolver();
             Cursor cursor = resolver.query(queryUri, projection, selections, selectionArgs, order);
 
@@ -246,6 +250,7 @@ public class MediaScannerUtils {
             while (cursor.moveToNext()) {
                 long size = cursor.getInt(cursor.getColumnIndexOrThrow(SIZE));
                 if (size < 1) continue;
+
 
                 long datetaken = cursor.getLong(cursor.getColumnIndexOrThrow(DATE_TAKEN));
                 String bucketId = cursor.getString(cursor.getColumnIndexOrThrow(BUCKET_ID));
@@ -347,7 +352,11 @@ public class MediaScannerUtils {
             }
 
 
-            Context context = mBuilder.mContext;
+            WeakReference<Context> reference = mBuilder.mReference;
+            if (null==reference) return null;
+            Context context = reference.get();
+            if (null==context) return null;
+
             ContentResolver resolver = context.getContentResolver();
             Cursor cursor = resolver.query(queryUri, projection, selections, selectionArgs, order);
 
