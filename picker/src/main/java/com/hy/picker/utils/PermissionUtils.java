@@ -49,7 +49,7 @@ public class PermissionUtils {
         if (mReference==null) return;
         Context context = mReference.get();
         if (null==context) return;
-        AndPermission.with(context)
+        AndPermission.with(context.getApplicationContext())
                 .runtime()
                 .permission(permissions)
                 .rationale(mRationale)
@@ -65,7 +65,7 @@ public class PermissionUtils {
                     Toast.makeText(context1, R.string.picker_failure, Toast.LENGTH_SHORT).show();
                     String[] strings = permission.toArray(new String[]{});
 
-                    if (!checkPermissions(context1, strings)) {
+                    if (!checkPermissions(context1.getApplicationContext(), strings)) {
                         mSetting.showSetting(permission,requestCode);
                     }
                 })

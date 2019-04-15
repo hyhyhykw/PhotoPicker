@@ -2,6 +2,7 @@ package com.hy.picker;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -10,15 +11,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
-import com.github.chrisbanes.photoview.PhotoView;
+import com.github.piasy.biv.view.BigImageView;
+import com.github.piasy.biv.view.FrescoImageViewFactory;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
-import com.hy.picker.utils.PickerScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
 import com.picker2.model.Photo;
 
@@ -104,57 +100,21 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
         @NonNull
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
             Photo photo = mItemList.get(position);
-            if (photo.isGif()) {
-                final PhotoView imageView = new PhotoView(container.getContext());
-                imageView.setOnClickListener(v -> finish());
-
-                String uri = photo.getUri();
-                Glide.with(container.getContext())
-                        .load(new File(uri))
-                        .apply(new RequestOptions()
-                                .error(mDefaultDrawable)
-                                .override(480, 800)
-                                .priority(Priority.HIGH)
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .placeholder(mDefaultDrawable))
-                        .into(imageView);
-                container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                return imageView;
-
-            } else {
-
-                String uri = photo.getUri();
-
-                if (photo.isLong()) {
-                    PickerScaleImageView scaleImageView = new PickerScaleImageView(container.getContext());
-                    Glide.with(container)
-                            .asBitmap()
-                            .load(uri)
-                            .apply(new RequestOptions()
-                                    .error(mDefaultDrawable)
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .placeholder(mDefaultDrawable))
-                            .into(new PickerScaleViewTarget(scaleImageView));
-
-                    container.addView(scaleImageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-                    return scaleImageView;
-                } else {
-                    PhotoView scaleImageView = new PhotoView(container.getContext());
-                    Glide.with(container)
-                            .asBitmap()
-                            .load(uri)
-                            .apply(new RequestOptions()
-                                    .error(mDefaultDrawable)
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .placeholder(mDefaultDrawable))
-                            .into(scaleImageView);
-
-                    container.addView(scaleImageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-                    return scaleImageView;
-                }
+            String uri = photo.getUri();
+            BigImageView imageView = new BigImageView(container.getContext());
+            imageView.setOnClickListener(v -> finish());
+            imageView.setFailureImage(mDefaultDrawable);
+            imageView.setFailureImageInitScaleType(ImageView.ScaleType.CENTER_CROP);
+            if (photo.isGif() || !photo.isLong()) {
+                imageView.setImageViewFactory(new FrescoImageViewFactory());
             }
+
+
+            imageView.showImage(Uri.fromFile(new File(uri)));
+
+            container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            return imageView;
+
         }
 
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {

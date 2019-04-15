@@ -37,6 +37,13 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
         switch (type) {
             case FeedbackSelectPictureAdapter.TYPE_PHOTO:
                 PhotoPicker.preview(position, mFeedbackSelectPictureAdapter.mData);
+//                startActivity(
+//                        new Intent(this, TestPreviewActivity.class)
+//                                .putExtra("test", mFeedbackSelectPictureAdapter.getItem(position))
+//                );
+
+
+
                 break;
             case FeedbackSelectPictureAdapter.TYPE_ADD:
                 new PhotoPicker()

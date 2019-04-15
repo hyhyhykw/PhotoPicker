@@ -18,17 +18,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
-import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
-import com.github.chrisbanes.photoview.PhotoView;
+import com.github.piasy.biv.view.BigImageView;
+import com.github.piasy.biv.view.FrescoImageViewFactory;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
-import com.hy.picker.utils.PickerScaleViewTarget;
 import com.hy.picker.view.HackyViewPager;
 import com.picker2.model.Photo;
 import com.picker2.utils.MediaListHolder;
@@ -324,101 +317,32 @@ public class PicturePreviewActivity extends BaseActivity {
 
         @NonNull
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
+
+
             Photo photo = mItemList.get(position);
+            String uri = photo.getUri();
+            BigImageView imageView = new BigImageView(container.getContext());
+            imageView.setOnClickListener(v -> {
+                mFullScreen = !mFullScreen;
+                if (mFullScreen) {
 
-            if (photo.isGif()) {
-                PhotoView imageView = new PhotoView(container.getContext());
-                imageView.setOnPhotoTapListener((v, x, y) -> {
-                    mFullScreen = !mFullScreen;
-//                        View decorView;
-//                        byte uiOptions;
-                    if (mFullScreen) {
-
-                        mToolbarTop.setVisibility(View.INVISIBLE);
-                        mToolbarBottom.setVisibility(View.INVISIBLE);
-                    } else {
-
-                        mToolbarTop.setVisibility(View.VISIBLE);
-                        mToolbarBottom.setVisibility(View.VISIBLE);
-//                            AppTool.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
-                    }
-                });
-
-                String uri = photo.getUri();
-                Glide.with(container.getContext())
-                        .load(uri)
-                        .transition(DrawableTransitionOptions.withCrossFade())
-                        .apply(new RequestOptions()
-                                .override(480, 800)
-                                .priority(Priority.HIGH)
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .error(mDefaultDrawable)
-                                .placeholder(mDefaultDrawable))
-                        .into(imageView);
-                container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                return imageView;
-
-            } else {
-
-                if (photo.isLong()) {
-                    PickerScaleImageView scaleImageView = new PickerScaleImageView(container.getContext());
-                    String uri = photo.getUri();
-                    Glide.with(PicturePreviewActivity.this)
-                            .asBitmap()
-                            .transition(BitmapTransitionOptions.withCrossFade())
-                            .load(uri)
-                            .apply(new RequestOptions()
-                                    .error(mDefaultDrawable)
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .placeholder(mDefaultDrawable))
-                            .into(new PickerScaleViewTarget(scaleImageView));
-
-                    scaleImageView.setOnClickListener(v -> {
-                        mFullScreen = !mFullScreen;
-                        if (mFullScreen) {
-                            mToolbarTop.setVisibility(View.INVISIBLE);
-                            mToolbarBottom.setVisibility(View.INVISIBLE);
-                        } else {
-                            mToolbarTop.setVisibility(View.VISIBLE);
-                            mToolbarBottom.setVisibility(View.VISIBLE);
-                        }
-                    });
-                    container.addView(scaleImageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-                    return scaleImageView;
+                    mToolbarTop.setVisibility(View.INVISIBLE);
+                    mToolbarBottom.setVisibility(View.INVISIBLE);
                 } else {
-                    PhotoView imageView = new PhotoView(container.getContext());
-                    imageView.setOnPhotoTapListener((v, x, y) -> {
-                        mFullScreen = !mFullScreen;
-                        if (mFullScreen) {
 
-                            mToolbarTop.setVisibility(View.INVISIBLE);
-                            mToolbarBottom.setVisibility(View.INVISIBLE);
-                        } else {
-
-                            mToolbarTop.setVisibility(View.VISIBLE);
-                            mToolbarBottom.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-                    String uri = photo.getUri();
-                    Glide.with(container.getContext())
-                            .asBitmap()
-                            .transition(BitmapTransitionOptions.withCrossFade())
-                            .load(uri)
-                            .apply(new RequestOptions()
-                                    .error(mDefaultDrawable)
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .placeholder(mDefaultDrawable))
-                            .into(imageView);
-                    container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    return imageView;
+                    mToolbarTop.setVisibility(View.VISIBLE);
+                    mToolbarBottom.setVisibility(View.VISIBLE);
+//                            AppTool.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
                 }
-
+            });
+            if (!photo.isLong()||photo.isGif()) {
+                imageView.setImageViewFactory(new FrescoImageViewFactory());
             }
-
-
+            imageView.showImage(Uri.fromFile(new File(uri)));
+            container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            return imageView;
         }
+
 
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             container.removeView((View) object);

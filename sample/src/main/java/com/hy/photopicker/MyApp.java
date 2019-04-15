@@ -19,6 +19,7 @@ public class MyApp extends Application implements PhotoModule, CrashModule {
     public void onCreate() {
         super.onCreate();
         PhotoPicker.init(this);
+//        Fresco.initialize(this);
 //        CrashHandler.getInstance().install(this, this);
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.

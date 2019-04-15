@@ -4,17 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@color/picker_color_white">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="9dp"
-        android:scaleType="centerCrop"
-        android:layout_marginTop="9dp"
-        android:src="@drawable/icon_no_pic"
-        tools:ignore="ContentDescription"/>
+        fresco:fadeDuration="300"
+        fresco:actualImageScaleType="centerCrop"/>
 
     <ImageView
         android:id="@+id/iv_delete_image"
