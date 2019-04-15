@@ -1,5 +1,6 @@
 package com.hy.picker;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,12 +13,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.ImgScanListener;
 import com.hy.picker.utils.MyFileProvider;
+import com.hy.picker.utils.Permission;
 import com.hy.picker.utils.SingleMediaScanner;
 import com.picker2.PickerConstants;
 import com.picker2.model.Photo;
@@ -29,15 +32,18 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Created time : 2018/8/23 10:56.
  *
  * @author HY
  */
-public class OpenCameraResultActivity extends Activity implements PickerConstants {
+public class OpenCameraResultActivity extends Activity implements PickerConstants, EasyPermissions.PermissionCallbacks,
+        EasyPermissions.RationaleCallbacks {
     public static final int REQUEST_CAMERA = 0x357;
-    public static final int REQUEST_EDIT = 0x753;
+//    public static final int REQUEST_EDIT = 0x753;
     private boolean video;
 
     private SureReceiver mSureReceiver;
@@ -52,7 +58,19 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
         registerReceiver(mSureReceiver, intentFilter);
         video = getIntent().getBooleanExtra(EXTRA_PICK_VIDEO, false);
         isEdit = getIntent().getBooleanExtra(EXTRA_EDIT, false);
-        requestCamera();
+
+        String[] perms = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            requestCamera();
+        } else {
+            List<String> permissionNames = Permission.transformText(this, perms);
+            String message = getString(R.string.picker_message_permission_rationale, TextUtils.join("\n", permissionNames));
+            EasyPermissions.requestPermissions(
+                    this,
+                    message,
+                    RC_CAMERA_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA);
+        }
+
     }
 
 
@@ -83,6 +101,27 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_CAMERA_STORAGE) {
+            if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                requestCamera();
+            } else {
+                if (isFirst) {
+                    List<String> permissionNames = Permission.transformText(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
+                    String message = getString(R.string.picker_message_permission_always_failed, TextUtils.join("\n", permissionNames));
+
+                    new AppSettingsDialog.Builder(this)
+                            .setRationale(message)
+                            .setRequestCode(requestCode)
+                            .build()
+                            .show();
+                    isFirst = false;
+                } else {
+                    finish();
+                }
+
+            }
+            return;
+        }
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CAMERA) {
                 if (mTakePictureUri != null) {
@@ -122,6 +161,53 @@ public class OpenCameraResultActivity extends Activity implements PickerConstant
         } else {
             finish();
         }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        requestCamera();
+    }
+
+    private boolean isFirst = true;
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            if (isFirst) {
+                List<String> permissionNames = Permission.transformText(this, perms.toArray(new String[]{}));
+                String message = getString(R.string.picker_message_permission_always_failed, TextUtils.join("\n", permissionNames));
+
+                new AppSettingsDialog.Builder(this)
+                        .setRationale(message)
+                        .setRequestCode(requestCode)
+                        .build()
+                        .show();
+            } else {
+                finish();
+            }
+
+        } else {
+            finish();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onRationaleAccepted(int requestCode) {
+        isFirst = false;
+    }
+
+    @Override
+    public void onRationaleDenied(int requestCode) {
+        isFirst = false;
+        finish();
     }
 
     private class SureReceiver extends BroadcastReceiver {
