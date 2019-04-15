@@ -44,7 +44,8 @@ dependencies {
 //    api 'com.github.chrisbanes:PhotoView:2.3.0'
     api 'androidx.exifinterface:exifinterface:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
-    api 'com.yanzhenjie.permission:x:2.0.1'
+//    api 'com.yanzhenjie.permission:x:2.0.1'
+    api 'pub.devrel:easypermissions:3.0.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 }
 

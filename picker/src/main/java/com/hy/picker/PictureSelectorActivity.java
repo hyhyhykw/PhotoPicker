@@ -1,5 +1,6 @@
 package com.hy.picker;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -45,14 +47,13 @@ import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.ImgScanListener;
 import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.MyGridItemDecoration;
-import com.hy.picker.utils.PermissionUtils;
+import com.hy.picker.utils.Permission;
 import com.hy.picker.utils.SingleMediaScanner;
 import com.picker2.model.Photo;
 import com.picker2.model.PhotoDirectory;
 import com.picker2.utils.AndroidLifecycleUtils;
 import com.picker2.utils.MediaListHolder;
 import com.picker2.utils.MediaScannerUtils;
-import com.yanzhenjie.permission.runtime.Permission;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,9 +66,12 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored", "FieldCanBeLocal"})
-public class PictureSelectorActivity extends BaseActivity {
+public class PictureSelectorActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks,
+        EasyPermissions.RationaleCallbacks {
     public static final int REQUEST_CAMERA = 1;
     private RecyclerView mGridView;
     private ImageView mBtnBack;
@@ -260,15 +264,31 @@ public class PictureSelectorActivity extends BaseActivity {
 
 
         Looper.myQueue().addIdleHandler(() -> {
-            new PermissionUtils(PictureSelectorActivity.this)
-                    .setPermissionListener(this::initView)
-                    .requestPermission(PERMISSION_REQUEST_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE);
+            String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            List<String> permissionNames = Permission.transformText(this, perms);
+            String message = getString(R.string.picker_message_permission_rationale, TextUtils.join("\n", permissionNames));
+            EasyPermissions.requestPermissions(
+                    this,
+                    message,
+                    RC_WRITE_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+//            new PermissionUtils(PictureSelectorActivity.this)
+//                    .setPermissionListener(this::initView)
+//                    .requestPermission(PERMISSION_REQUEST_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE);
             return false;
         });
 
 
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     private void initView() {
@@ -373,6 +393,59 @@ public class PictureSelectorActivity extends BaseActivity {
     private int mScrollState;
     private boolean canDown;
 
+    @Override
+    public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
+        if (requestCode == RC_WRITE_STORAGE) {
+            initView();
+        } else if (requestCode == RC_CAMERA) {
+            requestCamera();
+        }
+    }
+
+    private boolean isFirst = true;
+
+    @Override
+    public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
+
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            if (isFirst) {
+                List<String> permissionNames = Permission.transformText(this, perms.toArray(new String[]{}));
+                String message = getString(R.string.picker_message_permission_always_failed, TextUtils.join("\n", permissionNames));
+
+                new AppSettingsDialog.Builder(this)
+                        .setRationale(message)
+                        .setRequestCode(requestCode)
+                        .build()
+                        .show();
+            } else {
+                finish();
+            }
+
+        } else {
+            if (requestCode == RC_WRITE_STORAGE) {
+                finish();
+            }
+        }
+    }
+
+    @Override
+    public void onRationaleAccepted(int requestCode) {
+        isFirst = false;
+//        if (requestCode == RC_WRITE_STORAGE) {
+//            initView();
+//        } else if (requestCode == RC_CAMERA) {
+//
+//        }
+    }
+
+    @Override
+    public void onRationaleDenied(int requestCode) {
+        isFirst = false;
+        if (requestCode == RC_WRITE_STORAGE) {
+            finish();
+        }
+    }
+
     private class MaskClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
@@ -438,6 +511,34 @@ public class PictureSelectorActivity extends BaseActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_WRITE_STORAGE) {
+            if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                initView();
+            } else {
+                if (isFirst) {
+                    List<String> permissionNames = Permission.transformText(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
+                    String message = getString(R.string.picker_message_permission_always_failed, TextUtils.join("\n", permissionNames));
+
+                    new AppSettingsDialog.Builder(this)
+                            .setRationale(message)
+                            .setRequestCode(requestCode)
+                            .build()
+                            .show();
+                    isFirst = false;
+                } else {
+                    finish();
+                }
+
+            }
+            return;
+        }
+        if (requestCode == RC_CAMERA) {
+            if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
+                requestCamera();
+            }
+            return;
+        }
+
         if (resultCode == RESULT_OK) {
             if (requestCode == PICKER_REQUEST_PREVIEW) {
                 boolean hasChange = false;
@@ -1022,9 +1123,19 @@ public class PictureSelectorActivity extends BaseActivity {
             mTvTitle.setText(video ?
                     R.string.picker_picsel_record_video :
                     R.string.picker_picsel_take_picture);
-            mMask.setOnClickListener(v -> new PermissionUtils(PictureSelectorActivity.this)
-                    .setPermissionListener(PictureSelectorActivity.this::requestCamera)
-                    .requestPermission(PERMISSION_REQUEST_EXTERNAL_CAMERA, Permission.CAMERA));
+            mMask.setOnClickListener(v -> {
+                String[] perms = {Manifest.permission.CAMERA};
+                if (EasyPermissions.hasPermissions(PictureSelectorActivity.this, perms)) {
+                    requestCamera();
+                } else {
+                    List<String> permissionNames = Permission.transformText(PictureSelectorActivity.this, perms);
+                    String message = getString(R.string.picker_message_permission_rationale, TextUtils.join("\n", permissionNames));
+                    EasyPermissions.requestPermissions(
+                            PictureSelectorActivity.this,
+                            message,
+                            RC_CAMERA, Manifest.permission.CAMERA);
+                }
+            });
 
         }
     }

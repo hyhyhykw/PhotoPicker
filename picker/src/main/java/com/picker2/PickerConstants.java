@@ -44,4 +44,8 @@ public interface PickerConstants {
     int PERMISSION_REQUEST_EXTERNAL_STORAGE = 0x1c;
     int PERMISSION_REQUEST_EXTERNAL_CAMERA = 0x1b;
     int PICKER_REQUEST_PREVIEW=0x1a;
+
+    int RC_WRITE_STORAGE=0x19;
+    int RC_CAMERA=0x18;
+    int RC_CAMERA_STORAGE=0x17;
 }

@@ -68,4 +68,15 @@
     <string name="picker_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-en/Category.json</string>
     <string name="picker_video_play_error">Video Play error</string>
     <string name="picker_str_picture_save_failed">Picture save failed</string>
+
+    <string name="permission_name_calendar">Calendar</string>
+    <string name="permission_name_camera">Camera</string>
+    <string name="permission_name_contacts">Contacts</string>
+    <string name="permission_name_accounts">Accounts</string>
+    <string name="permission_name_location">Location</string>
+    <string name="permission_name_microphone">Microphone</string>
+    <string name="permission_name_phone">Phone</string>
+    <string name="permission_name_sensors">Body Sensors</string>
+    <string name="permission_name_sms">SMS</string>
+    <string name="permission_name_storage">Storage</string>
 </resources>

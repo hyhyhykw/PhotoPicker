@@ -1,20 +1,23 @@
 package com.hy.picker;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 
-import com.hy.picker.utils.PermissionUtils;
+import com.hy.picker.utils.Permission;
 import com.picker2.PickerConstants;
 import com.picker2.model.Photo;
 import com.picker2.utils.MediaListHolder;
-import com.yanzhenjie.permission.runtime.Permission;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.Nullable;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Created time : 2018/8/20 8:17.
@@ -132,12 +135,22 @@ public class PhotoPicker implements PickerConstants {
 
     public void openCamera(final Activity context) {
 //        sTakePhotoListener = takePhotoListener;
-        new PermissionUtils(context)
-                .setPermissionListener(() -> context.startActivityForResult(new Intent(context, OpenCameraResultActivity.class)
-                        .putExtra(EXTRA_EDIT, isEdit)
-                        .putExtra(EXTRA_PICK_VIDEO, isVideo)/*
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)*/, isVideo ? PICKER_REQUEST_TAKE_VIDEO : PICKER_REQUEST_TAKE_PHOTO))
-                .requestPermission(PERMISSION_REQUEST_EXTERNAL_CAMERA, Permission.CAMERA, Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE);
+        String[] perms = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(context, perms)) {
+            context.startActivityForResult(new Intent(context, OpenCameraResultActivity.class)
+                            .putExtra(EXTRA_EDIT, isEdit)
+                            .putExtra(EXTRA_PICK_VIDEO, isVideo),
+                    isVideo ? PICKER_REQUEST_TAKE_VIDEO : PICKER_REQUEST_TAKE_PHOTO);
+        } else {
+            List<String> permissionNames = Permission.transformText(context, perms);
+            String message = context.getString(R.string.picker_message_permission_rationale, TextUtils.join("\n", permissionNames));
+            EasyPermissions.requestPermissions(
+                    context,
+                    message,
+                    RC_CAMERA_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA);
+
+        }
+
     }
 
     @Nullable
@@ -181,8 +194,8 @@ public class PhotoPicker implements PickerConstants {
             }
         } else {
             boolean delete = cache.delete();
-            if (BuildConfig.DEBUG){
-                Log.d("TAG","缓存文件：" + cache + "删除" + (delete ? "成功" : "失败"));
+            if (BuildConfig.DEBUG) {
+                Log.d("TAG", "缓存文件：" + cache + "删除" + (delete ? "成功" : "失败"));
             }
         }
     }

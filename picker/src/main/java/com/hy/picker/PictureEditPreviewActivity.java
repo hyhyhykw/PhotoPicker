@@ -79,18 +79,6 @@ public class PictureEditPreviewActivity extends BaseActivity {
 
 
                 if (mPicItem.isGif() || !mPicItem.isLong()) {
-//                    mPhotoView.setVisibility(View.VISIBLE);
-//                    Glide.with(PictureEditPreviewActivity.this)
-//                            .asGif()
-//                            .load(uri)
-//                            .transition(DrawableTransitionOptions.withCrossFade())
-//                            .apply(new RequestOptions()
-//                                    .override(480, 800)
-//                                    .priority(Priority.HIGH)
-//                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                                    .error(mDefaultDrawable)
-//                                    .placeholder(mDefaultDrawable))
-//                            .into(mPhotoView);
 
                     mLongIv.setImageViewFactory(new FrescoImageViewFactory());
                 }
