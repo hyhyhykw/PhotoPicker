@@ -66,12 +66,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:checkedButton="@+id/cr_red"
+                android:checkedButton="@+id/picker_cr_red"
                 android:gravity="center"
                 android:orientation="horizontal">
 
                 <com.hy.picker.view.IMGColorRadio
-                    android:id="@id/cr_red"
+                    android:id="@id/picker_cr_red"
                     android:layout_width="@dimen/picker_image_color_radio_size"
                     android:layout_height="@dimen/picker_image_color_radio_size"
                     android:layout_margin="@dimen/picker_image_color_margin"
@@ -163,12 +163,10 @@
             android:contentDescription="@string/picker_text"
             android:gravity="center"
             android:onClick="onClick"
-            android:visibility="gone"
             android:src="@drawable/picker_btn_image"
             android:textColor="#FFF"/>
 
         <Space
-            android:visibility="gone"
             android:layout_width="@dimen/picker_image_mode_space"
             android:layout_height="wrap_content"/>
 

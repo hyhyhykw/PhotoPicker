@@ -2,7 +2,6 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@id/picker_whole_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -13,12 +12,6 @@
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"/>-->
 
-    <com.github.piasy.biv.view.BigImageView
-        android:id="@id/picker_long_photo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:initScaleType="fitCenter"
-        app:optimizeDisplay="true"/>
     <RelativeLayout
         android:id="@id/picker_preview_toolbar"
         android:layout_width="match_parent"

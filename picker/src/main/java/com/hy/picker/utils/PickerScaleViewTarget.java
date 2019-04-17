@@ -7,10 +7,9 @@
 //
 //import com.bumptech.glide.request.target.CustomViewTarget;
 //import com.bumptech.glide.request.transition.Transition;
-//import com.davemorrissey.labs.subscaleview.ImageSource;
-//import com.davemorrissey.labs.subscaleview.ImageViewState;
-//import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
-//
+//import com.hy.picker.view.ImageSource;
+//import com.hy.picker.view.ImageViewState;
+//import com.hy.picker.view.PickerScaleImageView;
 //import androidx.annotation.NonNull;
 //import androidx.annotation.Nullable;
 //

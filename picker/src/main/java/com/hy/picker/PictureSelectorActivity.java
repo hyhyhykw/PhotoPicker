@@ -107,6 +107,7 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
     private Drawable mDefaultDrawable;
     private ImageView mIvType;
     private int size;
+    private int dp75;
 
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -122,6 +123,9 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
         registerReceiver(mSelectReceiver, intentFilter);
         int dp4 = SizeUtils.dp2px(this, 4);
         size = (PhotoContext.getScreenWidth() - dp4 * 3) / 4;
+
+        dp75 = SizeUtils.px2dp(this, 75);
+
 
         mDefaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
         Drawable typeDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_preview_type);
@@ -241,17 +245,11 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!AndroidLifecycleUtils.canLoadImage(PictureSelectorActivity.this)) return;
-                switch (newState) {
-                    case RecyclerView.SCROLL_STATE_IDLE: // The RecyclerView is not currently scrolling.
-                        //对于滚动不加载图片的尝试
-                        Glide.with(recyclerView.getContext()).resumeRequests();
-                        break;
-                    case RecyclerView.SCROLL_STATE_DRAGGING: // The RecyclerView is currently being dragged by outside input such as user touch input.
-                        Glide.with(recyclerView.getContext()).resumeRequests();
-                        break;
-                    case RecyclerView.SCROLL_STATE_SETTLING: // The RecyclerView is currently animating to a final position while not under
-                        Glide.with(recyclerView.getContext()).pauseRequests();
-                        break;
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    Glide.with(getContext()).resumeRequests();
+                } else {
+                    Glide.with(getContext()).pauseRequests();
+
                 }
             }
         });
@@ -271,10 +269,6 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                     this,
                     message,
                     RC_WRITE_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-//            new PermissionUtils(PictureSelectorActivity.this)
-//                    .setPermissionListener(this::initView)
-//                    .requestPermission(PERMISSION_REQUEST_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE);
             return false;
         });
 
@@ -402,13 +396,12 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
         }
     }
 
-    private boolean isFirst = true;
 
     @Override
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
 
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            if (isFirst) {
+            if (requestCode == RC_WRITE_STORAGE) {
                 List<String> permissionNames = Permission.transformText(this, perms.toArray(new String[]{}));
                 String message = getString(R.string.picker_message_permission_always_failed, TextUtils.join("\n", permissionNames));
 
@@ -417,10 +410,7 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                         .setRequestCode(requestCode)
                         .build()
                         .show();
-            } else {
-                finish();
             }
-
         } else {
             if (requestCode == RC_WRITE_STORAGE) {
                 finish();
@@ -430,17 +420,10 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
 
     @Override
     public void onRationaleAccepted(int requestCode) {
-        isFirst = false;
-//        if (requestCode == RC_WRITE_STORAGE) {
-//            initView();
-//        } else if (requestCode == RC_CAMERA) {
-//
-//        }
     }
 
     @Override
     public void onRationaleDenied(int requestCode) {
-        isFirst = false;
         if (requestCode == RC_WRITE_STORAGE) {
             finish();
         }
@@ -515,20 +498,8 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
             if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 initView();
             } else {
-                if (isFirst) {
-                    List<String> permissionNames = Permission.transformText(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
-                    String message = getString(R.string.picker_message_permission_always_failed, TextUtils.join("\n", permissionNames));
-
-                    new AppSettingsDialog.Builder(this)
-                            .setRationale(message)
-                            .setRequestCode(requestCode)
-                            .build()
-                            .show();
-                    isFirst = false;
-                } else {
-                    finish();
-                }
-
+                Toast.makeText(this, R.string.picker_str_permission_denied, Toast.LENGTH_SHORT).show();
+                finish();
             }
             return;
         }
@@ -915,20 +886,20 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                 selected = itemView.findViewById(R.id.picker_catalog_selected);
             }
 
-            void bind(final int position) {
+            void bind(int position) {
 
                 boolean showSelected = selectCateIndex == position;
 
                 PhotoDirectory item = getItem(position);
 
+
                 Glide.with(getContext())
                         .asBitmap()
                         .load(item.getCoverPath())
-                        .thumbnail(0.5f)
-                        .override(size)
                         .apply(new RequestOptions()
                                 .placeholder(mDefaultDrawable)
                                 .error(mDefaultDrawable))
+                        .override(dp75)
                         .into(image);
 
                 tvNumber.setText(String.format(getResources().getString(R.string.picker_picsel_catalog_number), item.getPhotos().size()));
@@ -940,22 +911,25 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                     if (position == selectCateIndex) {
                         hideCatalog();
                     } else {
+                        hideCatalog();
                         selectCateIndex = position;
                         mPicType.setText(tvName.getText().toString());
-
                         MediaListHolder.currentPhotos.clear();
                         MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories.get(position).getPhotos());
 
                         mCatalogAdapter.notifyDataSetChanged();
                         mGridViewAdapter.notifyDataSetChanged();
-
-                        mGridView.smoothScrollToPosition(0);
-                        hideCatalog();
+                        GridLayoutManager layoutManager = (GridLayoutManager) mGridView.getLayoutManager();
+                        if (layoutManager.findFirstVisibleItemPosition() != 0) {
+                            Glide.with(getContext()).pauseRequests();
+                            CommonUtils.postDelay(() -> mGridView.smoothScrollToPosition(0), 350);
+                        }
                     }
                 });
             }
         }
     }
+
 
     class ItemHolder extends RecyclerView.ViewHolder {
         ImageView image;
@@ -998,21 +972,28 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                 ivGif.setVisibility(View.GONE);
             }
 
+
+            ViewGroup.LayoutParams params = image.getLayoutParams();
+            if (params.height != size || params.width != size) {
+                params.width = size;
+                params.height = size;
+                image.setLayoutParams(params);
+            }
+
             String uri = item.getUri();
 
 
             Glide.with(getContext())
                     .asBitmap()
-                    .load(new File(uri))
-                    .thumbnail(0.5f)
-                    .transition(BitmapTransitionOptions.withCrossFade())
+                    .load(uri)
                     .apply(new RequestOptions()
-                            .error(mDefaultDrawable)
-                            .override(size)
-                            .placeholder(mDefaultDrawable))
+                            .placeholder(mDefaultDrawable)
+                            .error(mDefaultDrawable))
+                    .override(size)
+                    .thumbnail(0.7f)
+                    .transition(new BitmapTransitionOptions()
+                            .crossFade())
                     .into(image);
-
-
             checkBox.setChecked(MediaListHolder.selectPhotos.contains(item));
 
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -1070,7 +1051,6 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                                     Toast.LENGTH_SHORT).show();
                             checkBox.setChecked(false);
                         } else {
-//                            item.setSelected(isChecked);
                             if (isChecked) {
                                 item.setSelected(true);
                                 MediaListHolder.selectPhotos.add(item);

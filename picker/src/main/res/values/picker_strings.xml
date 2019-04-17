@@ -42,8 +42,8 @@
     <string name="picker_failure">失败</string>
 
     <string name="picker_title_dialog">提示</string>
-    <string name="picker_message_permission_rationale">允许以下权限以便程序继续执行：\n\n%1$s</string>
-    <string name="picker_message_permission_always_failed">我们需要以下权限，请在设置中为我们开启：\n\n%1$s</string>
+    <string name="picker_message_permission_rationale">使用图片选择功能，App需要以下权限，请允许：\n\n%1$s</string>
+    <string name="picker_message_permission_always_failed">使用图片选择功能，App需要以下权限，请在设置中开启：\n\n%1$s</string>
     <string name="picker_photo_failure">拍照失败</string>
     <string name="picker_video_failure">录制失败</string>
     <string name="picker_photo_edit">编辑</string>
@@ -72,14 +72,15 @@
     <string name="picker_video_play_error">文件播放错误</string>
     <string name="picker_str_picture_save_failed">图片保存失败</string>
 
-    <string name="permission_name_calendar">日历</string>
-    <string name="permission_name_camera">相机</string>
-    <string name="permission_name_contacts">通讯录</string>
-    <string name="permission_name_accounts">手机账号</string>
-    <string name="permission_name_location">位置信息</string>
-    <string name="permission_name_microphone">麦克风</string>
-    <string name="permission_name_phone">电话</string>
-    <string name="permission_name_sensors">身体传感器</string>
-    <string name="permission_name_sms">短信</string>
-    <string name="permission_name_storage">存储空间</string>
+    <string name="picker_permission_name_calendar">日历</string>
+    <string name="picker_permission_name_camera">相机</string>
+    <string name="picker_permission_name_contacts">通讯录</string>
+    <string name="picker_permission_name_accounts">手机账号</string>
+    <string name="picker_permission_name_location">位置信息</string>
+    <string name="picker_permission_name_microphone">麦克风</string>
+    <string name="picker_permission_name_phone">电话</string>
+    <string name="picker_permission_name_sensors">身体传感器</string>
+    <string name="picker_permission_name_sms">短信</string>
+    <string name="picker_permission_name_storage">存储空间</string>
+    <string name="picker_str_permission_denied">权限被拒绝</string>
 </resources>

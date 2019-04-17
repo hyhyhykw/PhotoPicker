@@ -18,8 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.piasy.biv.view.BigImageView;
-import com.github.piasy.biv.view.FrescoImageViewFactory;
+import com.hy.picker.view.ImageSource;
+import com.hy.picker.view.PickerScaleImageView;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.hy.picker.utils.DisplayOptimizeListener;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.view.HackyViewPager;
@@ -36,6 +42,7 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
+import me.relex.photodraweeview.PhotoDraweeView;
 
 
 /**
@@ -297,10 +304,8 @@ public class PicturePreviewActivity extends BaseActivity {
         }
     }
 
-    private class PreviewAdapter extends PagerAdapter {
-        private PreviewAdapter() {
-        }
 
+    private class PreviewAdapter extends PagerAdapter {
 
         @Override
         public int getItemPosition(@NonNull Object object) {
@@ -318,29 +323,78 @@ public class PicturePreviewActivity extends BaseActivity {
         @NonNull
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
-
             Photo photo = mItemList.get(position);
             String uri = photo.getUri();
-            BigImageView imageView = new BigImageView(container.getContext());
-            imageView.setOnClickListener(v -> {
-                mFullScreen = !mFullScreen;
-                if (mFullScreen) {
+            if (photo.isGif()) {
+                SimpleDraweeView imageView = new SimpleDraweeView(container.getContext());
+                GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
+                hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+                hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+                imageView.setOnClickListener(v -> {
+                    mFullScreen = !mFullScreen;
+                    if (mFullScreen) {
 
-                    mToolbarTop.setVisibility(View.INVISIBLE);
-                    mToolbarBottom.setVisibility(View.INVISIBLE);
+                        mToolbarTop.setVisibility(View.INVISIBLE);
+                        mToolbarBottom.setVisibility(View.INVISIBLE);
+                    } else {
+
+                        mToolbarTop.setVisibility(View.VISIBLE);
+                        mToolbarBottom.setVisibility(View.VISIBLE);
+                    }
+                });
+                DraweeController controller = Fresco.newDraweeControllerBuilder()
+                        .setUri(Uri.fromFile(new File(photo.getUri())))
+                        .setAutoPlayAnimations(true)
+                        .build();
+                imageView.setController(controller);
+                hierarchy.setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+                container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                return imageView;
+            } else {
+                if (photo.isLong()) {
+
+                    PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
+                    imageView.setOnClickListener(v -> {
+                        mFullScreen = !mFullScreen;
+                        if (mFullScreen) {
+
+                            mToolbarTop.setVisibility(View.INVISIBLE);
+                            mToolbarBottom.setVisibility(View.INVISIBLE);
+                        } else {
+
+                            mToolbarTop.setVisibility(View.VISIBLE);
+                            mToolbarBottom.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    imageView.setMinimumTileDpi(160);
+
+                    imageView.setOnImageEventListener(new DisplayOptimizeListener(imageView));
+                    imageView.setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CENTER_INSIDE);
+                    imageView.setImage(ImageSource.uri(Uri.fromFile(new File(photo.getUri()))));
+                    container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    return imageView;
                 } else {
+                    PhotoDraweeView imageView = new PhotoDraweeView(container.getContext());
+                    imageView.setOnViewTapListener((view, x, y) -> {
+                        mFullScreen = !mFullScreen;
+                        if (mFullScreen) {
 
-                    mToolbarTop.setVisibility(View.VISIBLE);
-                    mToolbarBottom.setVisibility(View.VISIBLE);
-//                            AppTool.processMIUI(PicturePreviewActivity.this, mIsStatusBlack);
+                            mToolbarTop.setVisibility(View.INVISIBLE);
+                            mToolbarBottom.setVisibility(View.INVISIBLE);
+                        } else {
+
+                            mToolbarTop.setVisibility(View.VISIBLE);
+                            mToolbarBottom.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    imageView.setPhotoUri(Uri.fromFile(new File(uri)));
+
+                    container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    return imageView;
                 }
-            });
-            if (!photo.isLong()||photo.isGif()) {
-                imageView.setImageViewFactory(new FrescoImageViewFactory());
             }
-            imageView.showImage(Uri.fromFile(new File(uri)));
-            container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            return imageView;
+
+
         }
 
 

@@ -3,9 +3,6 @@ package com.hy.picker;
 import android.content.Context;
 import android.util.DisplayMetrics;
 
-import com.github.piasy.biv.BigImageViewer;
-import com.github.piasy.biv.loader.fresco.FrescoImageLoader;
-
 /**
  * Created time : 2018/8/13 16:37.
  *
@@ -23,7 +20,7 @@ public class PhotoContext {
         screenWidth = displayMetrics.widthPixels;
         screenHeight = displayMetrics.heightPixels;
 
-        BigImageViewer.initialize(FrescoImageLoader.with(photoModule.getContext()));
+//        BigImageViewer.initialize(FrescoImageLoader.with(photoModule.getContext()));
 //        ViewTarget.setTagId(R.id.picker_tag_glide);
     }
 

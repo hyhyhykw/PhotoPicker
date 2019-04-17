@@ -1,4 +1,4 @@
-package com.davemorrissey.labs.subscaleview.decoder;
+package com.hy.picker.view.decoder;
 
 import android.app.ActivityManager;
 import android.content.ContentResolver;
@@ -16,7 +16,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
+import com.hy.picker.view.PickerScaleImageView;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -41,7 +41,7 @@ import static android.content.Context.ACTIVITY_SERVICE;
  * <p>
  * An implementation of {@link ImageRegionDecoder} using a pool of {@link BitmapRegionDecoder}s,
  * to provide true parallel loading of tiles. This is only effective if parallel loading has been
- * enabled in the view by calling {@link com.davemorrissey.labs.subscaleview.PickerScaleImageView#setExecutor(Executor)}
+ * enabled in the view by calling {@link PickerScaleImageView#setExecutor(Executor)}
  * with a multi-threaded {@link Executor} instance.
  * </p><p>
  * One decoder is initialised when the class is initialised. This is enough to decode base layer tiles.

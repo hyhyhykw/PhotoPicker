@@ -207,8 +207,8 @@ public class MediaScannerUtils {
                 return null;
             }
 
-            final List<PhotoDirectory> directories = MediaListHolder.allDirectories;
-            final PhotoDirectory photoDirectoryAll = new PhotoDirectory();
+             List<PhotoDirectory> directories = MediaListHolder.allDirectories;
+             PhotoDirectory photoDirectoryAll = new PhotoDirectory();
 
             String BUCKET_ID;
             String TITLE;
@@ -317,7 +317,7 @@ public class MediaScannerUtils {
         final Photo mPhoto;
         final int position;
 
-        public ResultParams(Photo photo, int position) {
+         ResultParams(Photo photo, int position) {
             mPhoto = photo;
             this.position = position;
         }

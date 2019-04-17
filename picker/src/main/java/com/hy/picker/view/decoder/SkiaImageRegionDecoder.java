@@ -1,4 +1,4 @@
-package com.davemorrissey.labs.subscaleview.decoder;
+package com.hy.picker.view.decoder;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -12,18 +12,19 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
-import androidx.annotation.Keep;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.davemorrissey.labs.subscaleview.PickerScaleImageView;
+import com.hy.picker.view.PickerScaleImageView;
 
 import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Default implementation of {@link ImageRegionDecoder}

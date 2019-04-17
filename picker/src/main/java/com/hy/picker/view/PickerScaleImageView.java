@@ -1,4 +1,4 @@
-package com.davemorrissey.labs.subscaleview;
+package com.hy.picker.view;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -28,12 +28,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 
-import com.davemorrissey.labs.subscaleview.decoder.CompatDecoderFactory;
-import com.davemorrissey.labs.subscaleview.decoder.DecoderFactory;
-import com.davemorrissey.labs.subscaleview.decoder.ImageDecoder;
-import com.davemorrissey.labs.subscaleview.decoder.ImageRegionDecoder;
-import com.davemorrissey.labs.subscaleview.decoder.SkiaImageDecoder;
-import com.davemorrissey.labs.subscaleview.decoder.SkiaImageRegionDecoder;
+import com.hy.picker.view.decoder.CompatDecoderFactory;
+import com.hy.picker.view.decoder.DecoderFactory;
+import com.hy.picker.view.decoder.ImageDecoder;
+import com.hy.picker.view.decoder.ImageRegionDecoder;
+import com.hy.picker.view.decoder.SkiaImageDecoder;
+import com.hy.picker.view.decoder.SkiaImageRegionDecoder;
 import com.hy.picker.R.styleable;
 
 import java.lang.ref.WeakReference;

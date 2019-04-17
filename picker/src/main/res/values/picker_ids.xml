@@ -70,4 +70,5 @@
     <item name="picker_item_gif" type="id"/>
     <item name="picker_long_photo" type="id"/>
     <item name="picker_video_view" type="id"/>
+    <item name="picker_cr_red" type="id"/>
 </resources>

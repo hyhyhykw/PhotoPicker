@@ -11,8 +11,14 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.piasy.biv.view.BigImageView;
-import com.github.piasy.biv.view.FrescoImageViewFactory;
+import com.hy.picker.view.ImageSource;
+import com.hy.picker.view.PickerScaleImageView;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.hy.picker.utils.DisplayOptimizeListener;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.view.HackyViewPager;
@@ -27,6 +33,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import me.relex.photodraweeview.PhotoDraweeView;
 
 /**
  * Created time : 2018/12/28 16:38.
@@ -101,19 +108,41 @@ public class SelectedPicturePreviewActivity extends BaseActivity {
         public Object instantiateItem(@NonNull ViewGroup container, int position) {
             Photo photo = mItemList.get(position);
             String uri = photo.getUri();
-            BigImageView imageView = new BigImageView(container.getContext());
-            imageView.setOnClickListener(v -> finish());
-            imageView.setFailureImage(mDefaultDrawable);
-            imageView.setFailureImageInitScaleType(ImageView.ScaleType.CENTER_CROP);
-            if (photo.isGif() || !photo.isLong()) {
-                imageView.setImageViewFactory(new FrescoImageViewFactory());
+            if (photo.isGif()) {
+                SimpleDraweeView imageView = new SimpleDraweeView(container.getContext());
+                GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
+                hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+                hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+                imageView.setOnClickListener(v -> finish());
+                DraweeController controller = Fresco.newDraweeControllerBuilder()
+                        .setUri(Uri.fromFile(new File(photo.getUri())))
+                        .setAutoPlayAnimations(true)
+                        .build();
+                imageView.setController(controller);
+                hierarchy.setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+                container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                return imageView;
+            } else {
+                if (photo.isLong()) {
+
+                    PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
+                    imageView.setOnClickListener(v -> finish());
+                    imageView.setMinimumTileDpi(160);
+
+                    imageView.setOnImageEventListener(new DisplayOptimizeListener(imageView));
+                    imageView.setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CENTER_INSIDE);
+                    imageView.setImage(ImageSource.uri(Uri.fromFile(new File(photo.getUri()))));
+                    container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    return imageView;
+                } else {
+                    PhotoDraweeView imageView = new PhotoDraweeView(container.getContext());
+                    imageView.setOnViewTapListener((view, x, y) -> finish());
+                    imageView.setPhotoUri(Uri.fromFile(new File(uri)));
+
+                    container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    return imageView;
+                }
             }
-
-
-            imageView.showImage(Uri.fromFile(new File(uri)));
-
-            container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            return imageView;
 
         }
 

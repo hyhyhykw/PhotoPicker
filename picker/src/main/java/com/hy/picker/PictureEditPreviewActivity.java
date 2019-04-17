@@ -8,22 +8,30 @@ import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.MessageQueue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.piasy.biv.view.BigImageView;
-import com.github.piasy.biv.view.FrescoImageViewFactory;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
+import com.hy.picker.utils.DisplayOptimizeListener;
+import com.hy.picker.view.ImageSource;
+import com.hy.picker.view.PickerScaleImageView;
 import com.picker2.model.Photo;
 import com.picker2.utils.AndroidLifecycleUtils;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 import androidx.core.content.ContextCompat;
+import me.relex.photodraweeview.PhotoDraweeView;
 
 /**
  * Created time : 2018/8/2 8:23.
@@ -32,17 +40,18 @@ import androidx.core.content.ContextCompat;
  */
 public class PictureEditPreviewActivity extends BaseActivity {
 
-    private View mWholeView;
+    private RelativeLayout mWholeView;
     private View mToolbarTop;
     private ImageView mBtnBack;
     private TextView mBtnSend;
     //    private AppCompatRadioButton mUseOrigin;
 //    private PhotoView mPhotoView;
-    private BigImageView mLongIv;
+//    private BigImageView mLongIv;
     private boolean mFullScreen;
 
     private Photo mPicItem;
     private Drawable mDefaultDrawable;
+    private View mView;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,35 +79,35 @@ public class PictureEditPreviewActivity extends BaseActivity {
         }
 
 
-        mLongIv.setFailureImage(mDefaultDrawable);
-        mLongIv.setFailureImageInitScaleType(ImageView.ScaleType.CENTER_CROP);
+        if (mPicItem.isLong()) {
+            mView = new PickerScaleImageView(this);
+            mView.setOnClickListener(v -> {
+                mFullScreen = !mFullScreen;
+                if (mFullScreen) {
+                    mToolbarTop.setVisibility(View.INVISIBLE);
+                } else {
 
-        Looper.myQueue().addIdleHandler(() -> {
-            if (AndroidLifecycleUtils.canLoadImage(PictureEditPreviewActivity.this)) {
-                String uri = mPicItem.getUri();
-
-
-                if (mPicItem.isGif() || !mPicItem.isLong()) {
-
-                    mLongIv.setImageViewFactory(new FrescoImageViewFactory());
+                    mToolbarTop.setVisibility(View.VISIBLE);
                 }
+            });
+        } else {
+            mView = new PhotoDraweeView(this);
+            GenericDraweeHierarchy hierarchy = ((PhotoDraweeView) mView).getHierarchy();
+            hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+            hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+            hierarchy.setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+            ((PhotoDraweeView) mView).setOnViewTapListener((view, x, y) -> {
+                mFullScreen = !mFullScreen;
+                if (mFullScreen) {
+                    mToolbarTop.setVisibility(View.INVISIBLE);
+                } else {
 
-                mLongIv.showImage(Uri.fromFile(new File(uri)));
-            }
-            return false;
-        });
-
-
-        mLongIv.setOnClickListener(v -> {
-            mFullScreen = !mFullScreen;
-            if (mFullScreen) {
-                mToolbarTop.setVisibility(View.INVISIBLE);
-            } else {
-
-                mToolbarTop.setVisibility(View.VISIBLE);
-            }
-        });
-
+                    mToolbarTop.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+        mWholeView.addView(mView, 0, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        Looper.myQueue().addIdleHandler(new MyIdleHandler(this));
 
         mWholeView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
@@ -111,9 +120,41 @@ public class PictureEditPreviewActivity extends BaseActivity {
             sendBroadcast(broadcast);
             onBackPressed();
         });
-
     }
 
+    private static final class MyIdleHandler implements MessageQueue.IdleHandler {
+        private WeakReference<PictureEditPreviewActivity> mReference;
+
+        MyIdleHandler(PictureEditPreviewActivity activity) {
+            mReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public boolean queueIdle() {
+            if (null == mReference) return false;
+
+            PictureEditPreviewActivity activity = mReference.get();
+            if (AndroidLifecycleUtils.canLoadImage(activity)) {
+                activity.init();
+            }
+            return false;
+        }
+    }
+
+    private void init() {
+        if (mView instanceof PickerScaleImageView) {
+            PickerScaleImageView imageView = (PickerScaleImageView) mView;
+            imageView.setMinimumTileDpi(160);
+
+            imageView.setOnImageEventListener(new DisplayOptimizeListener(imageView));
+            imageView.setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CENTER_INSIDE);
+            imageView.setImage(ImageSource.uri(Uri.fromFile(new File(mPicItem.getUri()))));
+        } else if (mView instanceof PhotoDraweeView) {
+            PhotoDraweeView imageView = (PhotoDraweeView) mView;
+
+            imageView.setPhotoUri(Uri.fromFile(new File(mPicItem.getUri())));
+        }
+    }
 
     private void initView() {
         mToolbarTop = findViewById(R.id.picker_preview_toolbar);
@@ -121,7 +162,7 @@ public class PictureEditPreviewActivity extends BaseActivity {
         mBtnSend = findViewById(R.id.picker_sure);
         mWholeView = findViewById(R.id.picker_whole_layout);
 //        mPhotoView = findViewById(R.id.picker_photo_preview);
-        mLongIv = findViewById(R.id.picker_long_photo);
+//        mLongIv = findViewById(R.id.picker_long_photo);
         int enableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_send_color_enable);
         int disableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_send_color_disable);
 

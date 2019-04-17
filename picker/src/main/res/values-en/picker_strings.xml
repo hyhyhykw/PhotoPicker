@@ -25,8 +25,8 @@
 
     <string name="picker_failure">Failure</string>
     <string name="picker_title_dialog">Reminder</string>
-    <string name="picker_message_permission_rationale">Allow the following permissions for the program to continue execution：\n\n%1$s</string>
-    <string name="picker_message_permission_always_failed">We need the following permissions, please open for us in the settings：\n\n%1$s</string>
+    <string name="picker_message_permission_rationale">With the image selection function, the app requires the following permissions, please allow: \n\n%1$s</string>
+    <string name="picker_message_permission_always_failed">With the image selection function, the app requires the following permissions, please open it in the settings: \n\n%1$s</string>
     <!-- PictureSelectorActivity -->
     <string name="picker_picsel_toolbar">Picture</string>
     <string name="picker_picsel_toolbar_send">Choose</string>
@@ -69,14 +69,15 @@
     <string name="picker_video_play_error">Video Play error</string>
     <string name="picker_str_picture_save_failed">Picture save failed</string>
 
-    <string name="permission_name_calendar">Calendar</string>
-    <string name="permission_name_camera">Camera</string>
-    <string name="permission_name_contacts">Contacts</string>
-    <string name="permission_name_accounts">Accounts</string>
-    <string name="permission_name_location">Location</string>
-    <string name="permission_name_microphone">Microphone</string>
-    <string name="permission_name_phone">Phone</string>
-    <string name="permission_name_sensors">Body Sensors</string>
-    <string name="permission_name_sms">SMS</string>
-    <string name="permission_name_storage">Storage</string>
+    <string name="picker_permission_name_calendar">Calendar</string>
+    <string name="picker_permission_name_camera">Camera</string>
+    <string name="picker_permission_name_contacts">Contacts</string>
+    <string name="picker_permission_name_accounts">Accounts</string>
+    <string name="picker_permission_name_location">Location</string>
+    <string name="picker_permission_name_microphone">Microphone</string>
+    <string name="picker_permission_name_phone">Phone</string>
+    <string name="picker_permission_name_sensors">Body Sensors</string>
+    <string name="picker_permission_name_sms">SMS</string>
+    <string name="picker_permission_name_storage">Storage</string>
+    <string name="picker_str_permission_denied">Permission denied</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.picker2;
 
+import android.Manifest;
+
 /**
  * Created time : 2018/12/27 20:40.
  *
@@ -36,6 +38,9 @@ public interface PickerConstants {
     String EXTRA_IMAGE_URI = "com.hy.picker.extra.IMAGE_URL";
     String EXTRA_IMAGE_SAVE_PATH = "com.hy.picker.extra.IMAGE_SAVE_PATH";
 
+
+    int REQUEST_CAMERA = 0x357;
+
     int PICKER_REQUEST_TAKE_VIDEO = 0x20;
     int PICKER_REQUEST_TAKE_PHOTO = 0x1f;
     int PICKER_REQUEST_MULTI_PICK = 0x1e;
@@ -43,9 +48,11 @@ public interface PickerConstants {
     int REQUEST_EDIT = 0x987;
     int PERMISSION_REQUEST_EXTERNAL_STORAGE = 0x1c;
     int PERMISSION_REQUEST_EXTERNAL_CAMERA = 0x1b;
-    int PICKER_REQUEST_PREVIEW=0x1a;
+    int PICKER_REQUEST_PREVIEW = 0x1a;
 
-    int RC_WRITE_STORAGE=0x19;
-    int RC_CAMERA=0x18;
-    int RC_CAMERA_STORAGE=0x17;
+    int RC_WRITE_STORAGE = 0x19;
+    int RC_CAMERA = 0x18;
+    int RC_CAMERA_STORAGE = 0x17;
+
+    String[] CAMERA_PERMISSION = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 }
