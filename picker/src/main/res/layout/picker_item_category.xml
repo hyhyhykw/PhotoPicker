@@ -3,6 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:background="@color/picker_color_white"
               android:foreground="@drawable/picker_foreground"
               android:gravity="center_vertical"
@@ -13,13 +14,18 @@
               tools:targetApi="m"
               tools:ignore="UnusedAttribute">
 
-    <ImageView
+    <!--<ImageView-->
+        <!--android:id="@id/picker_iv_crystal"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:contentDescription="@string/picker_app_name"-->
+        <!--android:scaleType="centerCrop"/>-->
+
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@id/picker_iv_crystal"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:contentDescription="@string/picker_app_name"
-        android:scaleType="centerCrop"/>
-
+        app:fadeDuration="300"/>
     <TextView
         android:id="@id/picker_tv_name"
         android:layout_width="wrap_content"

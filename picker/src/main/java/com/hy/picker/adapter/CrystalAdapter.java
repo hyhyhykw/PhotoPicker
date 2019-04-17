@@ -1,16 +1,24 @@
 package com.hy.picker.adapter;
 
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.hy.picker.PhotoContext;
+import com.hy.picker.PictureSelectorActivity;
 import com.hy.picker.R;
 import com.hy.picker.core.CrystalResult;
 import com.hy.picker.core.ExistBean;
 import com.hy.picker.core.util.CrystalDownloadUtils;
 import com.hy.picker.core.util.FileUtils;
+import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.view.CompletedView;
 
 import androidx.annotation.NonNull;
@@ -23,9 +31,11 @@ import androidx.annotation.NonNull;
 public class CrystalAdapter extends BaseRecyclerAdapter<CrystalResult.Crystal, CrystalAdapter.ViewHolder> {
 
     private final String cate;
+    private final Drawable mDefaultDrawable;
 
-    public CrystalAdapter(String cate) {
+    public CrystalAdapter(String cate, Drawable defaultDrawable) {
         this.cate = cate;
+        mDefaultDrawable = defaultDrawable;
     }
 
     @NonNull
@@ -40,8 +50,10 @@ public class CrystalAdapter extends BaseRecyclerAdapter<CrystalResult.Crystal, C
     }
 
 
+    private int imageSize;
+
     public class ViewHolder extends BaseRecyclerAdapter.BaseViewHolder {
-        private final ImageView mIvCrystal;
+        private final SimpleDraweeView mIvCrystal;
         private final ImageView mIvDownload;
         private final TextView mTvSize;
         private final TextView mTvWait;
@@ -61,10 +73,22 @@ public class CrystalAdapter extends BaseRecyclerAdapter<CrystalResult.Crystal, C
             final int position = getAdapterPosition();
             CrystalResult.Crystal item = getItem(position);
 
-            Glide.with(mContext)
-                    .load(item.getRes())
-                    .thumbnail(0.3f)
-                    .into(mIvCrystal);
+            if (imageSize == 0) {
+                imageSize = (PhotoContext.getScreenWidth() - 4) / 4 - SizeUtils.dp2px(mContext, 20);
+            }
+
+            ViewGroup.LayoutParams layoutParams = mIvCrystal.getLayoutParams();
+            if (layoutParams.height != imageSize || layoutParams.width != imageSize) {
+                layoutParams.width = imageSize;
+                layoutParams.height = imageSize;
+            }
+            GenericDraweeHierarchy hierarchy = mIvCrystal.getHierarchy();
+            hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+            hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+
+            mIvCrystal.setController(PictureSelectorActivity
+                    .getDraweeController(mIvCrystal, Uri.parse(item.getRes()), imageSize, imageSize));
+
             mTvSize.setText(FileUtils.formatFileSize(item.getLength()));
 
             final ExistBean exist = FileUtils.isExist(mContext, cate, item);

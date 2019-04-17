@@ -9,8 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
-import com.picker2.utils.AndroidLifecycleUtils;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,23 +52,10 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-            switch (newState) {
-                case RecyclerView.SCROLL_STATE_IDLE: // The RecyclerView is not currently scrolling.
-                    //对于滚动不加载图片的尝试
-                    if (AndroidLifecycleUtils.canLoadImage(recyclerView.getContext())) {
-                        Glide.with(recyclerView.getContext()).resumeRequests();
-                    }
-                    break;
-                case RecyclerView.SCROLL_STATE_DRAGGING: // The RecyclerView is currently being dragged by outside input such as user touch input.
-                    if (AndroidLifecycleUtils.canLoadImage(recyclerView.getContext())) {
-                        Glide.with(recyclerView.getContext()).resumeRequests();
-                    }
-                    break;
-                case RecyclerView.SCROLL_STATE_SETTLING: // The RecyclerView is currently animating to a final position while not under
-                    if (AndroidLifecycleUtils.canLoadImage(recyclerView.getContext())) {
-                        Glide.with(recyclerView.getContext()).pauseRequests();
-                    }
-                    break;
+            if (newState==RecyclerView.SCROLL_STATE_IDLE){
+                Fresco.getImagePipeline().resume();
+            }else{
+                Fresco.getImagePipeline().pause();
             }
         }
 

@@ -22,15 +22,11 @@ import androidx.annotation.Nullable;
 public class PhotoPicker implements PickerConstants {
 
 
-    //    static PhotoListener sPhotoListener;
-    //    static TakePhotoListener sTakePhotoListener;
     private boolean isEdit;
 
 
     public PhotoPicker() {
         isEdit = false;
-//        sTakePhotoListener = null;
-//        sPhotoListener = null;
         MediaListHolder.currentPhotos.clear();
         MediaListHolder.selectPhotos.clear();
         MediaListHolder.allDirectories.clear();
@@ -43,15 +39,6 @@ public class PhotoPicker implements PickerConstants {
         isVideo = true;
         return this;
     }
-
-//    public static void destroy() {
-//        isEdit = false;
-////        sTakePhotoListener = null;
-////        sPhotoListener = null;
-//        MediaListHolder.currentPhotos.clear();
-//        MediaListHolder.selectPhotos.clear();
-//        MediaListHolder.allDirectories.clear();
-//    }
 
     public static void init(PhotoModule photoModule) {
         PhotoContext.setPhotoModule(photoModule);

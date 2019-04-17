@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="92dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
@@ -19,14 +20,13 @@
         android:layout_centerVertical="true"
         android:background="@drawable/picker_picsel_catalog_pic_shadow">
 
-        <ImageView
+
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@id/picker_catalog_image"
             android:layout_width="75dp"
             android:layout_height="75dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            tools:ignore="ContentDescription"/>
-
+            app:fadeDuration="300"
+            app:actualImageScaleType="centerCrop"/>
     </FrameLayout>
 
     <LinearLayout

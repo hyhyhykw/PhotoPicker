@@ -1,13 +1,18 @@
 package com.hy.picker.adapter;
 
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.hy.picker.PictureSelectorActivity;
 import com.hy.picker.R;
 import com.hy.picker.core.CrystalCategory;
+import com.hy.picker.core.util.SizeUtils;
 
 import androidx.annotation.NonNull;
 
@@ -18,6 +23,11 @@ import androidx.annotation.NonNull;
  */
 public class CrystalCategoryAdapter extends BaseRecyclerAdapter<CrystalCategory.Category, CrystalCategoryAdapter.ViewHolder> {
 
+    private final Drawable mDefaultDrawable;
+
+    public CrystalCategoryAdapter(Drawable defaultDrawable) {
+        mDefaultDrawable = defaultDrawable;
+    }
 
     @NonNull
     @Override
@@ -30,8 +40,10 @@ public class CrystalCategoryAdapter extends BaseRecyclerAdapter<CrystalCategory.
         return R.layout.picker_item_category;
     }
 
+    private int imageSize;
+
     public class ViewHolder extends BaseRecyclerAdapter.BaseViewHolder {
-        private final ImageView mIvCrystal;
+        private final SimpleDraweeView mIvCrystal;
         private final TextView mTvName;
 
         ViewHolder(View itemView) {
@@ -43,10 +55,29 @@ public class CrystalCategoryAdapter extends BaseRecyclerAdapter<CrystalCategory.
         @Override
         public void bind() {
             final CrystalCategory.Category item = getItem(getAdapterPosition());
-            Glide.with(mContext)
-                    .load(item.getImage())
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(mIvCrystal);
+//            Glide.with(mContext)
+//                    .load(item.getImage())
+//                    .transition(DrawableTransitionOptions.withCrossFade())
+//                    .into(mIvCrystal);
+
+            if (imageSize == 0) {
+                imageSize =  SizeUtils.dp2px(mContext, 50);
+            }
+
+            ViewGroup.LayoutParams layoutParams = mIvCrystal.getLayoutParams();
+            if (layoutParams.height != imageSize || layoutParams.width != imageSize) {
+                layoutParams.width = imageSize;
+                layoutParams.height = imageSize;
+            }
+
+            GenericDraweeHierarchy hierarchy = mIvCrystal.getHierarchy();
+            hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+            hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+
+            mIvCrystal.setController(PictureSelectorActivity
+                    .getDraweeController(mIvCrystal, Uri.parse(item.getImage()), imageSize, imageSize));
+
+
             mTvName.setText(item.getName());
             itemView.setOnClickListener(v -> {
                 if (null != mOnItemClickListener) mOnItemClickListener.onClick(item);

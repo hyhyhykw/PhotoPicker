@@ -7,20 +7,25 @@
               android:foreground="@drawable/picker_foreground"
               android:gravity="center"
               android:orientation="vertical"
-              tools:targetApi="m"
-              tools:ignore="UnusedAttribute">
+              tools:ignore="UnusedAttribute"
+              tools:targetApi="m">
 
     <com.hy.picker.view.SquareLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp">
 
-        <ImageView
+        <!--<ImageView-->
+            <!--android:id="@id/picker_iv_crystal"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:contentDescription="@string/picker_app_name"/>-->
+
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@id/picker_iv_crystal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="@string/picker_app_name"/>
-
+            app:fadeDuration="300"/>
     </com.hy.picker.view.SquareLayout>
 
     <LinearLayout

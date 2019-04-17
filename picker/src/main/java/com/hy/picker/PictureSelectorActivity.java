@@ -38,9 +38,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.DraweeView;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
@@ -246,9 +252,9 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!AndroidLifecycleUtils.canLoadImage(PictureSelectorActivity.this)) return;
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Glide.with(getContext()).resumeRequests();
+                    Fresco.getImagePipeline().resume();
                 } else {
-                    Glide.with(getContext()).pauseRequests();
+                    Fresco.getImagePipeline().pause();
 
                 }
             }
@@ -872,7 +878,7 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
         }
 
         private class ViewHolder {
-            ImageView image;
+            SimpleDraweeView image;
             TextView tvName;
             TextView tvNumber;
             ImageView selected;
@@ -892,16 +898,12 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
 
                 PhotoDirectory item = getItem(position);
 
+//
 
-                Glide.with(getContext())
-                        .asBitmap()
-                        .load(item.getCoverPath())
-                        .apply(new RequestOptions()
-                                .placeholder(mDefaultDrawable)
-                                .error(mDefaultDrawable))
-                        .override(dp75)
-                        .into(image);
-
+                GenericDraweeHierarchy hierarchy = image.getHierarchy();
+                hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+                hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+                image.setController(getDraweeController(image, Uri.fromFile(new File(item.getCoverPath())), dp75, dp75));
                 tvNumber.setText(String.format(getResources().getString(R.string.picker_picsel_catalog_number), item.getPhotos().size()));
 
                 tvName.setText(item.getName());
@@ -921,7 +923,7 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                         mGridViewAdapter.notifyDataSetChanged();
                         GridLayoutManager layoutManager = (GridLayoutManager) mGridView.getLayoutManager();
                         if (layoutManager.findFirstVisibleItemPosition() != 0) {
-                            Glide.with(getContext()).pauseRequests();
+                            Fresco.getImagePipeline().pause();
                             CommonUtils.postDelay(() -> mGridView.smoothScrollToPosition(0), 350);
                         }
                     }
@@ -930,9 +932,23 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
         }
     }
 
+    public static DraweeController getDraweeController(DraweeView targetView, Uri uri,
+                                                        int width, int height) {
+
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
+                //根据View的尺寸放缩图片
+                .setResizeOptions(new ResizeOptions(width, height))
+                .build();
+
+        return Fresco.newDraweeControllerBuilder()
+                .setOldController(targetView.getController())
+                .setImageRequest(request)
+                .setCallerContext(uri)
+                .build();
+    }
 
     class ItemHolder extends RecyclerView.ViewHolder {
-        ImageView image;
+        SimpleDraweeView image;
         View mask;
         AppCompatCheckBox checkBox;
         View itemView;
@@ -980,20 +996,14 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                 image.setLayoutParams(params);
             }
 
-            String uri = item.getUri();
+//            String uri = item.getUri();
 
 
-            Glide.with(getContext())
-                    .asBitmap()
-                    .load(uri)
-                    .apply(new RequestOptions()
-                            .placeholder(mDefaultDrawable)
-                            .error(mDefaultDrawable))
-                    .override(size)
-                    .thumbnail(0.7f)
-                    .transition(new BitmapTransitionOptions()
-                            .crossFade())
-                    .into(image);
+
+            GenericDraweeHierarchy hierarchy = image.getHierarchy();
+            hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+            hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+            image.setController(getDraweeController(image, Uri.fromFile(new File(item.getUri())), size, size));
             checkBox.setChecked(MediaListHolder.selectPhotos.contains(item));
 
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {

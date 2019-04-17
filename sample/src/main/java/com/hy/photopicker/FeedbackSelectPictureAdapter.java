@@ -31,11 +31,14 @@ package com.hy.photopicker;
 //                    别人笑我太疯癫，我笑自己命太贱；
 //                    但见满街漂亮妹，哪个归得程序员？
 
+import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.picker2.model.Photo;
+
+import java.io.File;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -96,7 +99,7 @@ public class FeedbackSelectPictureAdapter extends BaseRecyclerAdapter<Photo, Bas
 
     class PicHolder extends BaseRecyclerAdapter.BaseViewHolder {
 
-        final ImageView mIvImage;
+        final SimpleDraweeView mIvImage;
         final ImageView mIvDeleteImage;
 
         PicHolder(View itemView) {
@@ -117,11 +120,12 @@ public class FeedbackSelectPictureAdapter extends BaseRecyclerAdapter<Photo, Bas
 //                path = item.getOriginalPath();
 //            }
 
-            Glide.with(mContext)
-                    .load(item.getUri())
-                    .thumbnail(0.4f)
-                    .into(mIvImage);
+//            Glide.with(mContext)
+//                    .load(item.getUri())
+//                    .thumbnail(0.4f)
+//                    .into(mIvImage);
 
+            mIvImage.setImageURI(Uri.fromFile(new File(item.getUri())));
 
             mIvImage.setOnClickListener(v -> mOnItemClickListener.onClick(getAdapterPosition(), TYPE_PHOTO));
             mIvDeleteImage.setOnClickListener(v -> mOnItemClickListener.onClick(getAdapterPosition(), TYPE_DELETE));

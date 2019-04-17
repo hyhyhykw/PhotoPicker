@@ -2,15 +2,18 @@ package com.hy.picker;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Looper;
 
 import com.google.gson.Gson;
 import com.hy.picker.adapter.CrystalAdapter;
 import com.hy.picker.core.CrystalResult;
 import com.hy.picker.core.ExistBean;
+import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.DefaultItemDecoration;
 import com.hy.picker.utils.NetworkUtils;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 /**
@@ -29,7 +32,13 @@ public class PickerCrystalActivity extends BaseListActivity implements CrystalAd
         rvCrystal.addItemDecoration(new DefaultItemDecoration(Color.parseColor("#f5f5f5")));
         int id = getIntent().getIntExtra(EXTRA_ID, 1);
         cate = getCateFromId(id);
-        mCrystalAdapter = new CrystalAdapter(cate);
+
+        Drawable defaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
+        if (null == defaultDrawable) {
+            defaultDrawable = ContextCompat.getDrawable(this, R.drawable.picker_grid_image_default);
+        }
+
+        mCrystalAdapter = new CrystalAdapter(cate, defaultDrawable);
         mCrystalAdapter.setOnItemClickListener(this);
         rvCrystal.setAdapter(mCrystalAdapter);
         rvCrystal.setLayoutManager(new GridLayoutManager(this, 3));

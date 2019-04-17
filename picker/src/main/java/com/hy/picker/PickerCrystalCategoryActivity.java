@@ -2,15 +2,18 @@ package com.hy.picker;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Looper;
 
 import com.google.gson.Gson;
 import com.hy.picker.adapter.CrystalCategoryAdapter;
 import com.hy.picker.core.CrystalCategory;
+import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.DefaultItemDecoration;
 import com.hy.picker.utils.NetworkUtils;
 import com.picker2.PickerConstants;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
@@ -20,14 +23,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
  */
 public class PickerCrystalCategoryActivity extends BaseListActivity implements CrystalCategoryAdapter.OnItemClickListener, Constants, PickerConstants {
 
-    private final CrystalCategoryAdapter mCrystalCategoryAdapter = new CrystalCategoryAdapter();
+    private CrystalCategoryAdapter mCrystalCategoryAdapter;
 
     private boolean isOther;
 
     @Override
     protected void initView() {
         rvCrystal.addItemDecoration(new DefaultItemDecoration(Color.parseColor("#f5f5f5")));
+
+
+        Drawable mDefaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
+        if (null == mDefaultDrawable) {
+            mDefaultDrawable = ContextCompat.getDrawable(this, R.drawable.picker_grid_image_default);
+        }
+        mCrystalCategoryAdapter = new CrystalCategoryAdapter(mDefaultDrawable);
         mCrystalCategoryAdapter.setOnItemClickListener(this);
+
         rvCrystal.setAdapter(mCrystalCategoryAdapter);
         rvCrystal.setLayoutManager(new LinearLayoutManager(this));
 
@@ -66,7 +77,7 @@ public class PickerCrystalCategoryActivity extends BaseListActivity implements C
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK&&data!=null) {
+        if (resultCode == RESULT_OK && data != null) {
             setResult(RESULT_OK, data);
             finish();
         }
