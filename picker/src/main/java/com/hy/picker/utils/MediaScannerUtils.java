@@ -1,4 +1,4 @@
-package com.picker2.utils;
+package com.hy.picker.utils;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -8,8 +8,8 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 
 import com.hy.picker.R;
-import com.picker2.model.Photo;
-import com.picker2.model.PhotoDirectory;
+import com.hy.picker.model.Photo;
+import com.hy.picker.model.PhotoDirectory;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -141,6 +141,13 @@ public class MediaScannerUtils {
             return this;
         }
 
+        private int max;
+
+        public Builder max(int max) {
+            this.max = max;
+            return this;
+        }
+
         public MediaScannerUtils build() {
             return new MediaScannerUtils(this);
         }
@@ -197,9 +204,9 @@ public class MediaScannerUtils {
             }
 
             WeakReference<Context> reference = mBuilder.mReference;
-            if (null==reference) return null;
+            if (null == reference) return null;
             Context context = reference.get();
-            if (null==context) return null;
+            if (null == context) return null;
             ContentResolver resolver = context.getContentResolver();
             Cursor cursor = resolver.query(queryUri, projection, selections, selectionArgs, order);
 
@@ -207,8 +214,8 @@ public class MediaScannerUtils {
                 return null;
             }
 
-             List<PhotoDirectory> directories = MediaListHolder.allDirectories;
-             PhotoDirectory photoDirectoryAll = new PhotoDirectory();
+            List<PhotoDirectory> directories = MediaListHolder.allDirectories;
+            PhotoDirectory photoDirectoryAll = new PhotoDirectory();
 
             String BUCKET_ID;
             String TITLE;
@@ -317,7 +324,7 @@ public class MediaScannerUtils {
         final Photo mPhoto;
         final int position;
 
-         ResultParams(Photo photo, int position) {
+        ResultParams(Photo photo, int position) {
             mPhoto = photo;
             this.position = position;
         }
@@ -353,9 +360,9 @@ public class MediaScannerUtils {
 
 
             WeakReference<Context> reference = mBuilder.mReference;
-            if (null==reference) return null;
+            if (null == reference) return null;
             Context context = reference.get();
-            if (null==context) return null;
+            if (null == context) return null;
 
             ContentResolver resolver = context.getContentResolver();
             Cursor cursor = resolver.query(queryUri, projection, selections, selectionArgs, order);
@@ -458,7 +465,7 @@ public class MediaScannerUtils {
                     updateIndex = index;
                 }
 
-                if (mBuilder.add) {
+                if (mBuilder.add && MediaListHolder.selectPhotos.size() != mBuilder.max) {
                     photo.setSelected(true);
                     if (MediaListHolder.selectPhotos.isEmpty()) {
                         MediaListHolder.selectPhotos.add(photo);

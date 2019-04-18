@@ -36,7 +36,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.picker2.model.Photo;
+import com.hy.picker.model.Photo;
 
 import java.io.File;
 

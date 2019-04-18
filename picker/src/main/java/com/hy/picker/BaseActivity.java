@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
-import com.picker2.PickerConstants;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

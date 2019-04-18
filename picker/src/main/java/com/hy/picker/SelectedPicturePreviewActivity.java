@@ -22,7 +22,7 @@ import com.hy.picker.utils.DisplayOptimizeListener;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.view.HackyViewPager;
-import com.picker2.model.Photo;
+import com.hy.picker.model.Photo;
 
 import java.io.File;
 import java.util.ArrayList;

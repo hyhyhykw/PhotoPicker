@@ -12,37 +12,29 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hy.picker.view.ImageSource;
-import com.hy.picker.view.PickerScaleImageView;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
-import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.hy.picker.utils.DisplayOptimizeListener;
+import com.hy.picker.adapter.PreviewAdapter;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
+import com.hy.picker.utils.OnItemClickListener;
 import com.hy.picker.view.HackyViewPager;
-import com.picker2.model.Photo;
-import com.picker2.utils.MediaListHolder;
+import com.hy.picker.model.Photo;
+import com.hy.picker.utils.AndroidLifecycleUtils;
+import com.hy.picker.utils.MediaListHolder;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
-import me.relex.photodraweeview.PhotoDraweeView;
 
 
 /**
@@ -69,11 +61,38 @@ public class PicturePreviewActivity extends BaseActivity {
 
     private int max;
     private TextView mTvEdit;
-    //    private int mStartIndex;
-    private Drawable mDefaultDrawable;
 
     private PreviewReceiver mPreviewReceiver;
     private boolean mIsPreview;
+
+    private PreviewAdapter mPreviewAdapter;
+
+
+    private static final class WeakListener implements OnItemClickListener {
+
+        private WeakReference<PicturePreviewActivity> mReference;
+
+        WeakListener(PicturePreviewActivity activity) {
+            mReference = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void onClick(int position, boolean isChange) {
+            if (null == mReference) return;
+            PicturePreviewActivity activity = mReference.get();
+            if (!AndroidLifecycleUtils.canLoadImage(activity)) return;
+            activity.mFullScreen = !activity.mFullScreen;
+            if (activity.mFullScreen) {
+
+                activity.mToolbarTop.setVisibility(View.INVISIBLE);
+                activity.mToolbarBottom.setVisibility(View.INVISIBLE);
+            } else {
+
+                activity.mToolbarTop.setVisibility(View.VISIBLE);
+                activity.mToolbarBottom.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,9 +103,10 @@ public class PicturePreviewActivity extends BaseActivity {
         registerReceiver(mPreviewReceiver, intentFilter);
 
         initView();
-        mDefaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
-        if (null == mDefaultDrawable) {
-            mDefaultDrawable = ContextCompat.getDrawable(this, R.drawable.picker_grid_image_default);
+        //    private int mStartIndex;
+        Drawable defaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
+        if (null == defaultDrawable) {
+            defaultDrawable = ContextCompat.getDrawable(this, R.drawable.picker_grid_image_default);
         }
 
 
@@ -100,7 +120,6 @@ public class PicturePreviewActivity extends BaseActivity {
         boolean isGif = intent.getBooleanExtra(EXTRA_IS_GIF, false);
         mTvEdit.setVisibility(isGif ? View.GONE : View.VISIBLE);
         mIsPreview = intent.getBooleanExtra(EXTRA_IS_PREVIEW, false);
-//        mUseOrigin.setChecked(intent.getBooleanExtra("sendOrigin", false));
         mCurrentIndex = intent.getIntExtra(EXTRA_INDEX, 0);
 
         mItemList = mIsPreview ? MediaListHolder.selectPhotos : MediaListHolder.currentPhotos;
@@ -113,7 +132,6 @@ public class PicturePreviewActivity extends BaseActivity {
 
         mBtnSend.setOnClickListener(v -> {
             sendBroadcast(new Intent(PICKER_ACTION_MEDIA_SEND));
-//                setResult(RESULT_SEND);
             finish();
         });
 
@@ -146,23 +164,17 @@ public class PicturePreviewActivity extends BaseActivity {
                         if (!mIsPreview) {
                             MediaListHolder.selectPhotos.remove(photo);
                         }
-
-//                        if (mIsPreview) {
-//                            mViewPager.getAdapter().notifyDataSetChanged();
-//                            if (MediaListHolder.selectPhotos.size() == 0) {
-//                                finish();
-//                                return;
-//                            }
-//                        }
                     }
                     updateToolbar();
                 }
             }
         });
-
-        mViewPager.setAdapter(new PreviewAdapter());
-        mViewPager.setCurrentItem(mCurrentIndex);
+        mPreviewAdapter = new PreviewAdapter(defaultDrawable);
+        mPreviewAdapter.setOnItemClickListener(new WeakListener(this));
+        mViewPager.setAdapter(mPreviewAdapter);
         mViewPager.setOffscreenPageLimit(1);
+
+        mPreviewAdapter.reset(mItemList);
 
         mViewPager.addOnPageChangeListener(new OnPageChangeListener() {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -180,6 +192,8 @@ public class PicturePreviewActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+        mViewPager.setCurrentItem(mCurrentIndex);
+
 
         mTvEdit.setOnClickListener(v -> {
             Photo photo = mItemList.get(mViewPager.getCurrentItem());
@@ -199,8 +213,6 @@ public class PicturePreviewActivity extends BaseActivity {
         return num;
     }
 
-    private File mEditFile;
-
     private void toEdit(Uri uri) {
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         if (!path.exists()) {
@@ -212,11 +224,11 @@ public class PicturePreviewActivity extends BaseActivity {
         }
 
         String name = "IMG-EDIT-" + CommonUtils.format(new Date(), "yyyy-MM-dd-HHmmss") + ".jpg";
-        mEditFile = new File(path, name);
+        File editFile = new File(path, name);
 
         startActivity(new Intent(this, IMGEditActivity.class)
                 .putExtra(EXTRA_IMAGE_URI, uri)
-                .putExtra(EXTRA_IMAGE_SAVE_PATH, mEditFile.getAbsolutePath())
+                .putExtra(EXTRA_IMAGE_SAVE_PATH, editFile.getAbsolutePath())
                 .putExtra(EXTRA_MAX, max));
     }
 
@@ -305,103 +317,103 @@ public class PicturePreviewActivity extends BaseActivity {
     }
 
 
-    private class PreviewAdapter extends PagerAdapter {
-
-        @Override
-        public int getItemPosition(@NonNull Object object) {
-            return POSITION_NONE;
-        }
-
-        public int getCount() {
-            return mItemList.size();
-        }
-
-        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-            return view == object;
-        }
-
-        @NonNull
-        public Object instantiateItem(@NonNull ViewGroup container, int position) {
-
-            Photo photo = mItemList.get(position);
-            String uri = photo.getUri();
-            if (photo.isGif()) {
-                SimpleDraweeView imageView = new SimpleDraweeView(container.getContext());
-                GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
-                hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
-                hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
-                imageView.setOnClickListener(v -> {
-                    mFullScreen = !mFullScreen;
-                    if (mFullScreen) {
-
-                        mToolbarTop.setVisibility(View.INVISIBLE);
-                        mToolbarBottom.setVisibility(View.INVISIBLE);
-                    } else {
-
-                        mToolbarTop.setVisibility(View.VISIBLE);
-                        mToolbarBottom.setVisibility(View.VISIBLE);
-                    }
-                });
-                DraweeController controller = Fresco.newDraweeControllerBuilder()
-                        .setUri(Uri.fromFile(new File(photo.getUri())))
-                        .setAutoPlayAnimations(true)
-                        .build();
-                imageView.setController(controller);
-                hierarchy.setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
-                container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                return imageView;
-            } else {
-                if (photo.isLong()) {
-
-                    PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
-                    imageView.setOnClickListener(v -> {
-                        mFullScreen = !mFullScreen;
-                        if (mFullScreen) {
-
-                            mToolbarTop.setVisibility(View.INVISIBLE);
-                            mToolbarBottom.setVisibility(View.INVISIBLE);
-                        } else {
-
-                            mToolbarTop.setVisibility(View.VISIBLE);
-                            mToolbarBottom.setVisibility(View.VISIBLE);
-                        }
-                    });
-                    imageView.setMinimumTileDpi(160);
-
-                    imageView.setOnImageEventListener(new DisplayOptimizeListener(imageView));
-                    imageView.setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CENTER_INSIDE);
-                    imageView.setImage(ImageSource.uri(Uri.fromFile(new File(photo.getUri()))));
-                    container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    return imageView;
-                } else {
-                    PhotoDraweeView imageView = new PhotoDraweeView(container.getContext());
-                    imageView.setOnViewTapListener((view, x, y) -> {
-                        mFullScreen = !mFullScreen;
-                        if (mFullScreen) {
-
-                            mToolbarTop.setVisibility(View.INVISIBLE);
-                            mToolbarBottom.setVisibility(View.INVISIBLE);
-                        } else {
-
-                            mToolbarTop.setVisibility(View.VISIBLE);
-                            mToolbarBottom.setVisibility(View.VISIBLE);
-                        }
-                    });
-                    imageView.setPhotoUri(Uri.fromFile(new File(uri)));
-
-                    container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                    return imageView;
-                }
-            }
-
-
-        }
-
-
-        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-            container.removeView((View) object);
-        }
-    }
+//    private class PreviewAdapter extends PagerAdapter {
+//
+//        @Override
+//        public int getItemPosition(@NonNull Object object) {
+//            return POSITION_NONE;
+//        }
+//
+//        public int getCount() {
+//            return mItemList.size();
+//        }
+//
+//        public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+//            return view == object;
+//        }
+//
+//        @NonNull
+//        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+//
+//            Photo photo = mItemList.get(position);
+//            String uri = photo.getUri();
+//            if (photo.isGif()) {
+//                SimpleDraweeView imageView = new SimpleDraweeView(container.getContext());
+//                GenericDraweeHierarchy hierarchy = imageView.getHierarchy();
+//                hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+//                hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
+//                imageView.setOnClickListener(v -> {
+//                    mFullScreen = !mFullScreen;
+//                    if (mFullScreen) {
+//
+//                        mToolbarTop.setVisibility(View.INVISIBLE);
+//                        mToolbarBottom.setVisibility(View.INVISIBLE);
+//                    } else {
+//
+//                        mToolbarTop.setVisibility(View.VISIBLE);
+//                        mToolbarBottom.setVisibility(View.VISIBLE);
+//                    }
+//                });
+//                DraweeController controller = Fresco.newDraweeControllerBuilder()
+//                        .setUri(Uri.fromFile(new File(photo.getUri())))
+//                        .setAutoPlayAnimations(true)
+//                        .build();
+//                imageView.setController(controller);
+//                hierarchy.setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
+//                container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                return imageView;
+//            } else {
+//                if (photo.isLong()) {
+//
+//                    PickerScaleImageView imageView = new PickerScaleImageView(container.getContext());
+//                    imageView.setOnClickListener(v -> {
+//                        mFullScreen = !mFullScreen;
+//                        if (mFullScreen) {
+//
+//                            mToolbarTop.setVisibility(View.INVISIBLE);
+//                            mToolbarBottom.setVisibility(View.INVISIBLE);
+//                        } else {
+//
+//                            mToolbarTop.setVisibility(View.VISIBLE);
+//                            mToolbarBottom.setVisibility(View.VISIBLE);
+//                        }
+//                    });
+//                    imageView.setMinimumTileDpi(160);
+//
+//                    imageView.setOnImageEventListener(new DisplayOptimizeListener(imageView));
+//                    imageView.setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CENTER_INSIDE);
+//                    imageView.setImage(ImageSource.uri(Uri.fromFile(new File(photo.getUri()))));
+//                    container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                    return imageView;
+//                } else {
+//                    PhotoDraweeView imageView = new PhotoDraweeView(container.getContext());
+//                    imageView.setOnViewTapListener((view, x, y) -> {
+//                        mFullScreen = !mFullScreen;
+//                        if (mFullScreen) {
+//
+//                            mToolbarTop.setVisibility(View.INVISIBLE);
+//                            mToolbarBottom.setVisibility(View.INVISIBLE);
+//                        } else {
+//
+//                            mToolbarTop.setVisibility(View.VISIBLE);
+//                            mToolbarBottom.setVisibility(View.VISIBLE);
+//                        }
+//                    });
+//                    imageView.setPhotoUri(Uri.fromFile(new File(uri)));
+//
+//                    container.addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                    return imageView;
+//                }
+//            }
+//
+//
+//        }
+//
+//
+//        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+//            container.removeView((View) object);
+//        }
+//    }
 
 
     public class PreviewReceiver extends BroadcastReceiver {
@@ -410,11 +422,14 @@ public class PicturePreviewActivity extends BaseActivity {
             if (null == intent) return;
             String action = intent.getAction();
             if (action == null) return;
+
+            Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
             switch (action) {
 
                 case PICKER_ACTION_MEDIA_ADD: {
                     runOnUiThread(() -> {
-                        mViewPager.getAdapter().notifyDataSetChanged();
+                        mPreviewAdapter.add(0, photo);
+
                         updateToolbar();
                     });
 

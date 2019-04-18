@@ -23,9 +23,8 @@ import com.hy.picker.utils.ImgScanListener;
 import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.Permission;
 import com.hy.picker.utils.SingleMediaScanner;
-import com.picker2.PickerConstants;
-import com.picker2.model.Photo;
-import com.picker2.utils.MediaScannerUtils;
+import com.hy.picker.model.Photo;
+import com.hy.picker.utils.MediaScannerUtils;
 
 import java.io.File;
 import java.util.Date;
@@ -239,6 +238,7 @@ public class OpenCameraResultActivity extends AppCompatActivity implements Picke
         new MediaScannerUtils.Builder(OpenCameraResultActivity.this)
                 .path(path)
                 .video(video)
+                .add(false)
                 .build()
                 .scanner((photo, updateIndex) -> {
                     if (photo == null) {

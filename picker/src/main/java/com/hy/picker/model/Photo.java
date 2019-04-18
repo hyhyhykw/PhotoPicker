@@ -1,4 +1,4 @@
-package com.picker2.model;
+package com.hy.picker.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

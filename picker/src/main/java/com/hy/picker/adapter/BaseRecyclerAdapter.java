@@ -12,8 +12,6 @@ import android.view.ViewGroup;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import androidx.annotation.LayoutRes;
@@ -28,7 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * @author HY
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseViewHolder> extends RecyclerView.Adapter<V> {
+abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseViewHolder> extends RecyclerView.Adapter<V> {
 
     protected final List<T> mData = new ArrayList<>();
 
@@ -85,59 +83,6 @@ public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseV
         mData.clear();
         mData.addAll(data);
         notifyDataSetChanged();
-    }
-
-    public void reset(@NonNull Collection<T> data) {
-        mData.clear();
-        mData.addAll(data);
-        notifyDataSetChanged();
-    }
-
-    public void reset(@NonNull T[] data) {
-        reset(Arrays.asList(data));
-    }
-
-    public void addData(@NonNull List<T> data) {
-        mData.addAll(data);
-        notifyDataSetChanged();
-    }
-
-    public void addData(@NonNull Collection<T> data) {
-        mData.addAll(data);
-        notifyDataSetChanged();
-    }
-
-    public void addData(@NonNull T[] data) {
-        addData(Arrays.asList(data));
-    }
-
-    public void addItem(T t) {
-        mData.add(t);
-        notifyItemInserted(mData.size() - 1);
-    }
-
-    public void changeItem(int position, T t) {
-        mData.set(position, t);
-        notifyItemChanged(position);
-    }
-
-    public void addItem(T t, int position) {
-        mData.add(position, t);
-        notifyItemInserted(position);
-    }
-
-    public void deleteItem(int position) {
-        mData.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, mData.size() - position);
-    }
-
-    public T getFirst() {
-        return mData.get(0);
-    }
-
-    public T getLast() {
-        return mData.get(mData.size() - 1);
     }
 
     public T getItem(int position) {

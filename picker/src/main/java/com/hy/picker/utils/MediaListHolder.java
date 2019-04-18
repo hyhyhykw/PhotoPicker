@@ -1,8 +1,8 @@
-package com.picker2.utils;
+package com.hy.picker.utils;
 
 import com.hy.picker.utils.SetList;
-import com.picker2.model.Photo;
-import com.picker2.model.PhotoDirectory;
+import com.hy.picker.model.Photo;
+import com.hy.picker.model.PhotoDirectory;
 
 import java.util.ArrayList;
 import java.util.List;

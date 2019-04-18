@@ -19,9 +19,9 @@ import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.ImgScanListener;
 import com.hy.picker.utils.SetList;
 import com.hy.picker.utils.SingleMediaScanner;
-import com.picker2.model.Photo;
-import com.picker2.utils.MediaListHolder;
-import com.picker2.utils.MediaScannerUtils;
+import com.hy.picker.model.Photo;
+import com.hy.picker.utils.MediaListHolder;
+import com.hy.picker.utils.MediaScannerUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -295,6 +295,7 @@ public class IMGEditActivity extends IMGEditBaseActivity {
         new MediaScannerUtils.Builder(IMGEditActivity.this)
                 .video(false)
                 .path(path)
+                .max(max)
                 .build()
                 .scanner((photo, updateIndex) -> {
                     if (photo == null) {

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.hy.picker.PhotoPicker;
-import com.picker2.model.Photo;
+import com.hy.picker.model.Photo;
 
 import java.util.ArrayList;
 

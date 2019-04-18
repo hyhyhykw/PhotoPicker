@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
-import com.picker2.PickerConstants;
-import com.picker2.model.Photo;
-import com.picker2.utils.MediaListHolder;
+import com.hy.picker.model.Photo;
+import com.hy.picker.utils.MediaListHolder;
 
 import java.io.File;
 import java.util.ArrayList;

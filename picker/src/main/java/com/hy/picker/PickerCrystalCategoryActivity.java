@@ -11,7 +11,6 @@ import com.hy.picker.core.CrystalCategory;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.DefaultItemDecoration;
 import com.hy.picker.utils.NetworkUtils;
-import com.picker2.PickerConstants;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;

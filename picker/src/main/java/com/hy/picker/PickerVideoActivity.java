@@ -16,8 +16,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.hy.picker.utils.CommonUtils;
-import com.picker2.PickerConstants;
-import com.picker2.model.Photo;
+import com.hy.picker.model.Photo;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

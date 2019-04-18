@@ -22,15 +22,11 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,14 +35,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.DraweeView;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.hy.picker.adapter.CateDlgAdapter;
+import com.hy.picker.adapter.PictureAdapter;
 import com.hy.picker.core.util.SizeUtils;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
@@ -55,11 +50,11 @@ import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.MyGridItemDecoration;
 import com.hy.picker.utils.Permission;
 import com.hy.picker.utils.SingleMediaScanner;
-import com.picker2.model.Photo;
-import com.picker2.model.PhotoDirectory;
-import com.picker2.utils.AndroidLifecycleUtils;
-import com.picker2.utils.MediaListHolder;
-import com.picker2.utils.MediaScannerUtils;
+import com.hy.picker.model.Photo;
+import com.hy.picker.model.PhotoDirectory;
+import com.hy.picker.utils.AndroidLifecycleUtils;
+import com.hy.picker.utils.MediaListHolder;
+import com.hy.picker.utils.MediaScannerUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -68,7 +63,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
-import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -99,8 +93,8 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
     private boolean preview;
     private boolean video;
     private boolean gifOnly;
-    private GridViewAdapter mGridViewAdapter;
-    private CatalogAdapter mCatalogAdapter;
+    private PictureAdapter mGridViewAdapter;
+//    private CatalogAdapter mCatalogAdapter;
 
     private View mToolbarMask;
     private View mBottomBarMask;
@@ -112,8 +106,10 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
     private SelectReceiver mSelectReceiver;
     private Drawable mDefaultDrawable;
     private ImageView mIvType;
-    private int size;
-    private int dp75;
+//    private int size;
+//    private int dp75;
+
+    private CateDlgAdapter mCateDlgAdapter;
 
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -127,10 +123,10 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
         intentFilter.addAction(PICKER_ACTION_MEDIA_SELECT);
         intentFilter.addAction(PICKER_ACTION_MEDIA_SEND);
         registerReceiver(mSelectReceiver, intentFilter);
-        int dp4 = SizeUtils.dp2px(this, 4);
-        size = (PhotoContext.getScreenWidth() - dp4 * 3) / 4;
+//        int dp4 = SizeUtils.dp2px(this, 4);
+//        size = (PhotoContext.getScreenWidth() - dp4 * 3) / 4;
 
-        dp75 = SizeUtils.px2dp(this, 75);
+//        dp75 = SizeUtils.px2dp(this, 75);
 
 
         mDefaultDrawable = AttrsUtils.getTypeValueDrawable(this, R.attr.picker_image_default);
@@ -242,7 +238,45 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
         mCatalogWindow.setVisibility(View.GONE);
 
         int spanCount = AttrsUtils.getTypeValueInt(this, R.attr.picker_grid_span);
-        mGridViewAdapter = new GridViewAdapter();
+        mGridViewAdapter = new PictureAdapter(max, preview, isShowCamera, video, mDefaultDrawable);
+        mGridViewAdapter.setOnItemListener(new PictureAdapter.OnItemListener() {
+            @Override
+            public void onItemClick(Photo photo) {
+                if (video) {
+                    setResult(RESULT_OK, new Intent()
+                            .putParcelableArrayListExtra(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos)));
+                    finish();
+                    return;
+                }
+                if (!preview && max == 1) {
+                    ArrayList<Photo> list = new ArrayList<>();
+                    list.add(photo);
+                    setResult(RESULT_OK, new Intent()
+                            .putParcelableArrayListExtra(EXTRA_ITEMS, list));
+                    finish();
+                }
+            }
+
+            @Override
+            public void onItemChecked() {
+                updateToolbar();
+            }
+
+            @Override
+            public void onCameraClick() {
+                String[] perms = {Manifest.permission.CAMERA};
+                if (EasyPermissions.hasPermissions(PictureSelectorActivity.this, perms)) {
+                    requestCamera();
+                } else {
+                    List<String> permissionNames = Permission.transformText(PictureSelectorActivity.this, perms);
+                    String message = getString(R.string.picker_message_permission_rationale, TextUtils.join("\n", permissionNames));
+                    EasyPermissions.requestPermissions(
+                            PictureSelectorActivity.this,
+                            message,
+                            RC_CAMERA, Manifest.permission.CAMERA);
+                }
+            }
+        });
         mGridView.setAdapter(mGridViewAdapter);
         mGridView.setLayoutManager(new GridLayoutManager(this, spanCount));
         mGridView.addItemDecoration(new MyGridItemDecoration(this));
@@ -259,8 +293,27 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                 }
             }
         });
-        mCatalogAdapter = new CatalogAdapter();
-        mCatalogListView.setAdapter(mCatalogAdapter);
+//        mCatalogAdapter = new CatalogAdapter();
+        mCateDlgAdapter = new CateDlgAdapter(mDefaultDrawable);
+
+        mCateDlgAdapter.setOnItemClickListener((position, isChange) -> {
+            hideCatalog();
+            selectCateIndex = position;
+            if (isChange) {
+                PhotoDirectory item = mCateDlgAdapter.getItem(position);
+                mPicType.setText(item.getName());
+                MediaListHolder.currentPhotos.clear();
+                MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories.get(position).getPhotos());
+
+                mGridViewAdapter.reset(MediaListHolder.currentPhotos);
+                GridLayoutManager layoutManager = (GridLayoutManager) mGridView.getLayoutManager();
+                if (layoutManager != null && layoutManager.findFirstVisibleItemPosition() != 0) {
+                    Fresco.getImagePipeline().pause();
+                    CommonUtils.postDelay(() -> mGridView.smoothScrollToPosition(0), 350);
+                }
+            }
+        });
+        mCatalogListView.setAdapter(mCateDlgAdapter);
         mCatalogListView.setTranslationY(catalogHeight);
         mCatalogListView.setVisibility(View.VISIBLE);
 
@@ -277,8 +330,6 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                     RC_WRITE_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE);
             return false;
         });
-
-
     }
 
 
@@ -309,8 +360,8 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                 .scanner(success -> {
                     if (success)
                         runOnUiThread(() -> {
-                            mGridViewAdapter.notifyDataSetChanged();
-                            mCatalogAdapter.notifyDataSetChanged();
+                            mCateDlgAdapter.reset(MediaListHolder.allDirectories);
+                            mGridViewAdapter.reset(MediaListHolder.currentPhotos);
                             updateToolbar();
                             if (mLytLoad.getVisibility() == View.VISIBLE) {
                                 mLytLoad.setVisibility(View.GONE);
@@ -332,7 +383,7 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
         mPicType.setEnabled(true);
         mPicType.setOnClickListener(v -> showCatalog());
 
-        if (preview) {
+        if (preview && !video) {
             mPreviewBtn.setVisibility(View.VISIBLE);
         } else {
             mPreviewBtn.setVisibility(View.GONE);
@@ -577,6 +628,7 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
         new MediaScannerUtils.Builder(PictureSelectorActivity.this)
                 .path(path)
                 .video(video)
+                .max(max)
                 .build()
                 .scanner((photo, updateIndex) -> {
                     if (photo == null) {
@@ -589,21 +641,26 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                     if (selectCateIndex == 0) {
                         if (MediaListHolder.currentPhotos.isEmpty()) {
                             MediaListHolder.currentPhotos.add(photo);
+                            mGridViewAdapter.add(photo);
                         } else {
                             MediaListHolder.currentPhotos.add(0, photo);
+                            mGridViewAdapter.add(0, photo);
                         }
                     } else {
                         if (selectCateIndex == updateIndex) {
                             if (MediaListHolder.currentPhotos.isEmpty()) {
                                 MediaListHolder.currentPhotos.add(photo);
+                                mGridViewAdapter.add(photo);
                             } else {
                                 MediaListHolder.currentPhotos.add(0, photo);
+                                mGridViewAdapter.add(0, photo);
                             }
                         }
                     }
 
-                    mGridViewAdapter.notifyDataSetChanged();
-                    mCatalogAdapter.notifyDataSetChanged();
+                    Fresco.getImagePipeline().pause();
+                    CommonUtils.postDelay(() -> mGridView.smoothScrollToPosition(0), 50);
+                    mCateDlgAdapter.reset(MediaListHolder.allDirectories);
                     updateToolbar();
                 });
 
@@ -668,16 +725,11 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                 case PICKER_ACTION_MEDIA_SELECT: {
                     Photo photo = intent.getParcelableExtra(PICKER_EXTRA_PHOTO);
                     if (mGridViewAdapter != null) {
-                        int index;
+                        int index = MediaListHolder.currentPhotos.indexOf(photo);
 
-                        index = MediaListHolder.currentPhotos.indexOf(photo);
+                        mGridViewAdapter.notifyItemChanged(isShowCamera ? index + 1 : index);
 
-                        runOnUiThread(() -> {
-                            mGridViewAdapter.notifyItemChanged(isShowCamera ? index + 1 : index);
-
-                            updateToolbar();
-                        });
-
+                        updateToolbar();
                     }
                 }
                 break;
@@ -688,33 +740,35 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                     if (selectCateIndex == 0) {
                         if (MediaListHolder.currentPhotos.isEmpty()) {
                             MediaListHolder.currentPhotos.add(photo);
+                            mGridViewAdapter.add(photo);
                         } else {
                             MediaListHolder.currentPhotos.add(0, photo);
+                            mGridViewAdapter.add(0, photo);
                         }
                     } else {
                         if (selectCateIndex == updateIndex) {
                             if (MediaListHolder.currentPhotos.isEmpty()) {
                                 MediaListHolder.currentPhotos.add(photo);
+                                mGridViewAdapter.add(photo);
                             } else {
                                 MediaListHolder.currentPhotos.add(0, photo);
+                                mGridViewAdapter.add(0, photo);
                             }
                         }
                     }
 
-                    runOnUiThread(() -> {
-                        mGridViewAdapter.notifyDataSetChanged();
-                        mCatalogAdapter.notifyDataSetChanged();
-                        updateToolbar();
-                    });
+                    Fresco.getImagePipeline().pause();
+                    CommonUtils.postDelay(() -> mGridView.smoothScrollToPosition(0), 50);
+
+                    mCateDlgAdapter.reset(MediaListHolder.allDirectories);
+                    updateToolbar();
 
                 }
                 break;
                 case PICKER_ACTION_MEDIA_SEND: {
-                    runOnUiThread(() -> {
-                        PictureSelectorActivity.this.setResult(RESULT_OK, new Intent()
-                                .putParcelableArrayListExtra(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos)));
-                        finish();
-                    });
+                    PictureSelectorActivity.this.setResult(RESULT_OK, new Intent()
+                            .putParcelableArrayListExtra(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos)));
+                    finish();
 
                 }
                 break;
@@ -844,96 +898,8 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
 
     private int selectCateIndex = 0;
 
-    private class CatalogAdapter extends BaseAdapter {
-        private LayoutInflater mInflater = getLayoutInflater();
-
-        public int getCount() {
-
-            return MediaListHolder.allDirectories.size();
-        }
-
-        public PhotoDirectory getItem(int position) {
-            return MediaListHolder.allDirectories.get(position);
-        }
-
-        public long getItemId(int position) {
-            return position;
-        }
-
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            final ViewHolder holder;
-            if (convertView == null) {
-                view = mInflater.inflate(R.layout.picker_item_lst_catalog, parent, false);
-                holder = new ViewHolder(view);
-
-                view.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            holder.bind(position);
-
-            return view;
-        }
-
-        private class ViewHolder {
-            SimpleDraweeView image;
-            TextView tvName;
-            TextView tvNumber;
-            ImageView selected;
-            View itemView;
-
-            private ViewHolder(View itemView) {
-                this.itemView = itemView;
-                image = itemView.findViewById(R.id.picker_catalog_image);
-                tvName = itemView.findViewById(R.id.picker_catalog_name);
-                tvNumber = itemView.findViewById(R.id.picker_catalog_photo_number);
-                selected = itemView.findViewById(R.id.picker_catalog_selected);
-            }
-
-            void bind(int position) {
-
-                boolean showSelected = selectCateIndex == position;
-
-                PhotoDirectory item = getItem(position);
-
-//
-
-                GenericDraweeHierarchy hierarchy = image.getHierarchy();
-                hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
-                hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
-                image.setController(getDraweeController(image, Uri.fromFile(new File(item.getCoverPath())), dp75, dp75));
-                tvNumber.setText(String.format(getResources().getString(R.string.picker_picsel_catalog_number), item.getPhotos().size()));
-
-                tvName.setText(item.getName());
-                selected.setVisibility(showSelected ? View.VISIBLE : View.INVISIBLE);
-
-                itemView.setOnClickListener(v -> {
-                    if (position == selectCateIndex) {
-                        hideCatalog();
-                    } else {
-                        hideCatalog();
-                        selectCateIndex = position;
-                        mPicType.setText(tvName.getText().toString());
-                        MediaListHolder.currentPhotos.clear();
-                        MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories.get(position).getPhotos());
-
-                        mCatalogAdapter.notifyDataSetChanged();
-                        mGridViewAdapter.notifyDataSetChanged();
-                        GridLayoutManager layoutManager = (GridLayoutManager) mGridView.getLayoutManager();
-                        if (layoutManager.findFirstVisibleItemPosition() != 0) {
-                            Fresco.getImagePipeline().pause();
-                            CommonUtils.postDelay(() -> mGridView.smoothScrollToPosition(0), 350);
-                        }
-                    }
-                });
-            }
-        }
-    }
-
     public static DraweeController getDraweeController(DraweeView targetView, Uri uri,
-                                                        int width, int height) {
+                                                       int width, int height) {
 
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
                 //根据View的尺寸放缩图片
@@ -945,235 +911,5 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                 .setImageRequest(request)
                 .setCallerContext(uri)
                 .build();
-    }
-
-    class ItemHolder extends RecyclerView.ViewHolder {
-        SimpleDraweeView image;
-        View mask;
-        AppCompatCheckBox checkBox;
-        View itemView;
-        ImageView ivGif;
-        RelativeLayout lytVideo;
-        TextView tvTime;
-
-        ItemHolder(@NonNull View itemView) {
-            super(itemView);
-            this.itemView = itemView;
-            image = itemView.findViewById(R.id.picker_photo_image);
-            mask = itemView.findViewById(R.id.picker_item_mask);
-            checkBox = itemView.findViewById(R.id.picker_item_checkbox);
-            ivGif = itemView.findViewById(R.id.picker_iv_gif);
-            lytVideo = itemView.findViewById(R.id.picker_lyt_video);
-            tvTime = itemView.findViewById(R.id.picker_video_time);
-            if (video) {
-                checkBox.setVisibility(View.GONE);
-                lytVideo.setVisibility(View.VISIBLE);
-            }
-        }
-
-        void bind() {
-            int adapterPosition = getAdapterPosition();
-            final int position;
-            if (isShowCamera) {
-                position = adapterPosition - 1;
-            } else {
-                position = adapterPosition;
-            }
-
-            final Photo item = MediaListHolder.currentPhotos.get(position);
-
-            if (item.isGif()) {
-                ivGif.setVisibility(View.VISIBLE);
-            } else {
-                ivGif.setVisibility(View.GONE);
-            }
-
-
-            ViewGroup.LayoutParams params = image.getLayoutParams();
-            if (params.height != size || params.width != size) {
-                params.width = size;
-                params.height = size;
-                image.setLayoutParams(params);
-            }
-
-//            String uri = item.getUri();
-
-
-
-            GenericDraweeHierarchy hierarchy = image.getHierarchy();
-            hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
-            hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
-            image.setController(getDraweeController(image, Uri.fromFile(new File(item.getUri())), size, size));
-            checkBox.setChecked(MediaListHolder.selectPhotos.contains(item));
-
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (buttonView.isPressed()) {
-                    if (getTotalSelectedNum() == max && isChecked) {
-                        Toast.makeText(getApplicationContext(),
-                                getResources().getQuantityString(R.plurals.picker_picsel_selected_max, 1, max),
-                                Toast.LENGTH_SHORT).show();
-                        buttonView.setChecked(false);
-                    } else {
-//                            item.setSelected(isChecked);
-                        if (isChecked) {
-                            item.setSelected(true);
-                            MediaListHolder.selectPhotos.add(item);
-                            mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
-                        } else {
-                            item.setSelected(false);
-                            MediaListHolder.selectPhotos.remove(item);
-                            mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
-                        }
-                    }
-                    updateToolbar();
-                }
-            });
-
-
-            if (MediaListHolder.selectPhotos.contains(item)) {
-                mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
-            } else {
-                mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
-            }
-
-            mask.setOnClickListener(v -> {
-
-                if (preview) {
-                    Intent intent = new Intent(PictureSelectorActivity.this, PicturePreviewActivity.class);
-                    intent.putExtra(EXTRA_INDEX, position);
-                    intent.putExtra(EXTRA_IS_GIF, item.isGif());
-                    intent.putExtra(EXTRA_MAX, max);
-
-                    startActivity(intent);
-                } else {
-                    if (max == 1) {
-                        ArrayList<Photo> list = new ArrayList<>();
-                        list.add(item);
-                        setResult(RESULT_OK, new Intent()
-                                .putParcelableArrayListExtra(EXTRA_ITEMS, list));
-                        finish();
-                    } else {
-                        checkBox.toggle();
-                        boolean isChecked = checkBox.isChecked();
-                        if (getTotalSelectedNum() == max && isChecked) {
-                            Toast.makeText(getApplicationContext(),
-                                    getResources().getQuantityString(R.plurals.picker_picsel_selected_max, 1, max),
-                                    Toast.LENGTH_SHORT).show();
-                            checkBox.setChecked(false);
-                        } else {
-                            if (isChecked) {
-                                item.setSelected(true);
-                                MediaListHolder.selectPhotos.add(item);
-                            } else {
-                                item.setSelected(false);
-                                MediaListHolder.selectPhotos.remove(item);
-                            }
-                        }
-                        if (MediaListHolder.selectPhotos.contains(item)) {
-                            mask.setBackgroundColor(getResources().getColor(R.color.picker_picsel_grid_mask_pressed));
-                        } else {
-                            mask.setBackgroundResource(R.drawable.picker_sp_grid_mask);
-                        }
-
-                        updateToolbar();
-                    }
-                }
-
-
-            });
-
-
-            if (video) {
-                tvTime.setText(CommonUtils.format(item.getDuration()));
-                mask.setOnClickListener(v -> {
-                    item.setSelected(true);
-                    MediaListHolder.selectPhotos.add(item);
-                    setResult(RESULT_OK, new Intent()
-                            .putParcelableArrayListExtra(EXTRA_ITEMS, new ArrayList<>(MediaListHolder.selectPhotos)));
-                    finish();
-                });
-            }
-        }
-    }
-
-
-    class CameraHolder extends RecyclerView.ViewHolder {
-
-        private final ImageButton mMask;
-        private final TextView mTvTitle;
-
-        CameraHolder(@NonNull View itemView) {
-            super(itemView);
-            mMask = itemView.findViewById(R.id.picker_camera_mask);
-            mTvTitle = itemView.findViewById(R.id.picker_take_picture);
-
-        }
-
-        void bind() {
-            mTvTitle.setText(video ?
-                    R.string.picker_picsel_record_video :
-                    R.string.picker_picsel_take_picture);
-            mMask.setOnClickListener(v -> {
-                String[] perms = {Manifest.permission.CAMERA};
-                if (EasyPermissions.hasPermissions(PictureSelectorActivity.this, perms)) {
-                    requestCamera();
-                } else {
-                    List<String> permissionNames = Permission.transformText(PictureSelectorActivity.this, perms);
-                    String message = getString(R.string.picker_message_permission_rationale, TextUtils.join("\n", permissionNames));
-                    EasyPermissions.requestPermissions(
-                            PictureSelectorActivity.this,
-                            message,
-                            RC_CAMERA, Manifest.permission.CAMERA);
-                }
-            });
-
-        }
-    }
-
-    private class GridViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        private LayoutInflater mInflater = getLayoutInflater();
-
-        @Override
-        public int getItemViewType(int position) {
-            if (!isShowCamera) return 1;
-            else {
-                if (position == 0) {
-                    return 0;
-                } else
-                    return 1;
-            }
-        }
-
-        @NonNull
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            final RecyclerView.ViewHolder holder;
-
-            if (viewType == 0) {
-                View cameraView = mInflater.inflate(R.layout.picker_grid_camera, parent, false);
-
-                holder = new CameraHolder(cameraView);
-            } else {
-                View convertView = mInflater.inflate(R.layout.picker_grid_item, parent, false);
-                holder = new ItemHolder(convertView);
-            }
-
-            return holder;
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
-            if (viewHolder instanceof PictureSelectorActivity.ItemHolder) {
-                ((ItemHolder) viewHolder).bind();
-            } else if (viewHolder instanceof CameraHolder) {
-                ((CameraHolder) viewHolder).bind();
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return MediaListHolder.currentPhotos.size() + (isShowCamera ? 1 : 0);
-        }
-
     }
 }

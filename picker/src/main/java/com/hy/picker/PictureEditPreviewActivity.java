@@ -24,8 +24,8 @@ import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.DisplayOptimizeListener;
 import com.hy.picker.view.ImageSource;
 import com.hy.picker.view.PickerScaleImageView;
-import com.picker2.model.Photo;
-import com.picker2.utils.AndroidLifecycleUtils;
+import com.hy.picker.model.Photo;
+import com.hy.picker.utils.AndroidLifecycleUtils;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
