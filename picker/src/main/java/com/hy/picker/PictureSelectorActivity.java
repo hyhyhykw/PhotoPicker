@@ -43,18 +43,18 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.hy.picker.adapter.CateDlgAdapter;
 import com.hy.picker.adapter.PictureAdapter;
 import com.hy.picker.core.util.SizeUtils;
+import com.hy.picker.model.Photo;
+import com.hy.picker.model.PhotoDirectory;
+import com.hy.picker.utils.AndroidLifecycleUtils;
 import com.hy.picker.utils.AttrsUtils;
 import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.ImgScanListener;
+import com.hy.picker.utils.MediaListHolder;
+import com.hy.picker.utils.MediaScannerUtils;
 import com.hy.picker.utils.MyFileProvider;
 import com.hy.picker.utils.MyGridItemDecoration;
 import com.hy.picker.utils.Permission;
 import com.hy.picker.utils.SingleMediaScanner;
-import com.hy.picker.model.Photo;
-import com.hy.picker.model.PhotoDirectory;
-import com.hy.picker.utils.AndroidLifecycleUtils;
-import com.hy.picker.utils.MediaListHolder;
-import com.hy.picker.utils.MediaScannerUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -110,6 +110,8 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
 //    private int dp75;
 
     private CateDlgAdapter mCateDlgAdapter;
+    private int mSize;
+    private int mCount;
 
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -137,11 +139,11 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
         int disableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_preview_color_disable);
         int enableColor = AttrsUtils.getTypeValueColor(this, R.attr.picker_preview_color_enable);
 
-        int colors[] = new int[]{
+        int[] colors = new int[]{
                 disableColor, enableColor
         };
 
-        int states[][] = new int[][]{
+        int[][] states = new int[][]{
                 new int[]{
                         -android.R.attr.state_enabled
                 },
@@ -160,7 +162,12 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
-        catalogHeight = PhotoContext.getScreenHeight() - SizeUtils.dp2px(this, 145) - CommonUtils.getStatusBarHeight(this);
+        int screenHeight = PhotoContext.getScreenHeight();
+        int statusBarHeight = CommonUtils.getStatusBarHeight(this);
+        int gridHeight = screenHeight - statusBarHeight - SizeUtils.dp2px(this, 96);
+        catalogHeight = screenHeight - SizeUtils.dp2px(this, 145) - statusBarHeight;
+
+        mCount = (int) Math.ceil(gridHeight * 1.0 / mSize);
 
         Intent intent = getIntent();
         max = intent.getIntExtra(EXTRA_MAX, 9);
@@ -193,7 +200,7 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                 sendDisableColor,
                 sendEnableColor
         };
-        int sendStates[][] = new int[][]{
+        int[][] sendStates = new int[][]{
                 new int[]{
                         -android.R.attr.state_enabled
                 },
@@ -238,7 +245,9 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
         mCatalogWindow.setVisibility(View.GONE);
 
         int spanCount = AttrsUtils.getTypeValueInt(this, R.attr.picker_grid_span);
-        mGridViewAdapter = new PictureAdapter(max, preview, isShowCamera, video, mDefaultDrawable);
+
+        mSize = (PhotoContext.getScreenWidth() - SizeUtils.dp2px(this, 4) * 3) / 4;
+        mGridViewAdapter = new PictureAdapter(max, preview, isShowCamera, video, mDefaultDrawable, mSize);
         mGridViewAdapter.setOnItemListener(new PictureAdapter.OnItemListener() {
             @Override
             public void onItemClick(Photo photo) {
@@ -659,7 +668,9 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                     }
 
                     Fresco.getImagePipeline().pause();
-                    CommonUtils.postDelay(() -> mGridView.smoothScrollToPosition(0), 50);
+                    CommonUtils.postDelay(() -> {
+                        mGridView.smoothScrollToPosition(0);
+                    }, 50);
                     mCateDlgAdapter.reset(MediaListHolder.allDirectories);
                     updateToolbar();
                 });
@@ -757,7 +768,9 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                         }
                     }
 
-                    Fresco.getImagePipeline().pause();
+                    if (mGridViewAdapter.getItemCount() > mCount) {
+                        Fresco.getImagePipeline().pause();
+                    }
                     CommonUtils.postDelay(() -> mGridView.smoothScrollToPosition(0), 50);
 
                     mCateDlgAdapter.reset(MediaListHolder.allDirectories);

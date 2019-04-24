@@ -17,13 +17,12 @@ import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.hy.picker.PhotoContext;
+import com.hy.picker.PickerConstants;
 import com.hy.picker.PicturePreviewActivity;
 import com.hy.picker.PictureSelectorActivity;
 import com.hy.picker.R;
-import com.hy.picker.core.util.SizeUtils;
-import com.hy.picker.utils.CommonUtils;
-import com.hy.picker.PickerConstants;
 import com.hy.picker.model.Photo;
+import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.MediaListHolder;
 
 import java.io.File;
@@ -49,12 +48,13 @@ public class PictureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final boolean video;
     private final Drawable mDefaultDrawable;
 
-    public PictureAdapter(int max, boolean preview, boolean camera, boolean video, Drawable defaultDrawable) {
+    public PictureAdapter(int max, boolean preview, boolean camera, boolean video, Drawable defaultDrawable,int size) {
         this.max = max;
         this.preview = preview;
         this.camera = camera;
         this.video = video;
         mDefaultDrawable = defaultDrawable;
+        this.size=size;
     }
 
     public void reset(List<Photo> photos) {
@@ -89,9 +89,9 @@ public class PictureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
 
-        if (size == 0) {
-            size = (PhotoContext.getScreenWidth() - SizeUtils.dp2px(context, 4) * 3) / 4;
-        }
+//        if (size == 0) {
+//            size = (PhotoContext.getScreenWidth() - SizeUtils.dp2px(context, 4) * 3) / 4;
+//        }
 
         LayoutInflater inflater = LayoutInflater.from(context);
         RecyclerView.ViewHolder holder;
@@ -108,7 +108,7 @@ public class PictureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return holder;
     }
 
-    private int size;
+    private final int size;
 
     public interface OnItemListener {
         void onItemClick(Photo photo);
