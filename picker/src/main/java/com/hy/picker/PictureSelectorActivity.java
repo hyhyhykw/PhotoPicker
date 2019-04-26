@@ -317,7 +317,9 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                 mGridViewAdapter.reset(MediaListHolder.currentPhotos);
                 GridLayoutManager layoutManager = (GridLayoutManager) mGridView.getLayoutManager();
                 if (layoutManager != null && layoutManager.findFirstVisibleItemPosition() != 0) {
-                    Fresco.getImagePipeline().pause();
+                    if (MediaListHolder.currentPhotos.size() > mCount) {
+                        Fresco.getImagePipeline().pause();
+                    }
                     CommonUtils.postDelay(() -> mGridView.smoothScrollToPosition(0), 350);
                 }
             }
@@ -667,10 +669,7 @@ public class PictureSelectorActivity extends BaseActivity implements EasyPermiss
                         }
                     }
 
-                    Fresco.getImagePipeline().pause();
-                    CommonUtils.postDelay(() -> {
-                        mGridView.smoothScrollToPosition(0);
-                    }, 50);
+                    CommonUtils.postDelay(() -> mGridView.smoothScrollToPosition(0), 50);
                     mCateDlgAdapter.reset(MediaListHolder.allDirectories);
                     updateToolbar();
                 });
