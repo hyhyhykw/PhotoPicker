@@ -63,7 +63,7 @@ public class OpenCameraResultActivity extends AppCompatActivity implements Picke
         if (EasyPermissions.hasPermissions(this, CAMERA_PERMISSION)) {
             requestCamera();
         } else {
-            String p[];
+            String[] p;
             if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 p = new String[]{Manifest.permission.CAMERA};
             } else if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
@@ -176,7 +176,7 @@ public class OpenCameraResultActivity extends AppCompatActivity implements Picke
     public void onPermissionsDenied(int requestCode, @NonNull List<String> perms) {
 
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            String p[];
+            String[] p;
             if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 p = new String[]{Manifest.permission.CAMERA};
             } else if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {

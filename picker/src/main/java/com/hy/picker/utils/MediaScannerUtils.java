@@ -272,6 +272,11 @@ public class MediaScannerUtils {
 
                 String resolution;
                 if (mBuilder.video) {
+                    if (path.length()<4) continue;
+                    String suffix = path.substring(path.length() - 4);
+                    if (".mp4".equalsIgnoreCase(suffix)){
+                        continue;
+                    }
                     duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
                     resolution = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RESOLUTION));
                     if (duration < 1000) continue;
