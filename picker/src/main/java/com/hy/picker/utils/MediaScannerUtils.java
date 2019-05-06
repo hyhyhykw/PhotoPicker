@@ -274,7 +274,7 @@ public class MediaScannerUtils {
                 if (mBuilder.video) {
                     if (path.length()<4) continue;
                     String suffix = path.substring(path.length() - 4);
-                    if (".mp4".equalsIgnoreCase(suffix)){
+                    if (!".mp4".equalsIgnoreCase(suffix)){
                         continue;
                     }
                     duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION));
