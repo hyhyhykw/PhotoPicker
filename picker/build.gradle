@@ -7,7 +7,7 @@ android {
     compileSdkVersion 28
     resourcePrefix "picker_"
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 42
         versionName "4.2"

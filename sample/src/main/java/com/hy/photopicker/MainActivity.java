@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
                 break;
             case FeedbackSelectPictureAdapter.TYPE_ADD:
                 new PhotoPicker()
-                        .max(9)
-//                        .video()
+//                        .max(9)
+                        .video()
                         .select(mFeedbackSelectPictureAdapter.mData)
                         .start(this);
 //

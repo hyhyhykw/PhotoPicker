@@ -119,10 +119,12 @@ public class CateDlgAdapter extends BaseAdapter {
             GenericDraweeHierarchy hierarchy = image.getHierarchy();
             hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
             hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP);
-            image.setController(PictureSelectorActivity.
-                    getDraweeController(image,
-                            Uri.fromFile(new File(item.getCoverPath())),
-                            dp75, dp75));
+            if (null!=item.getCoverPath()) {
+                image.setController(PictureSelectorActivity.
+                        getDraweeController(image,
+                                Uri.fromFile(new File(item.getCoverPath())),
+                                dp75, dp75));
+            }
             tvNumber.setText(String.format(
                     PhotoContext.getContext().
                             getResources()
