@@ -234,7 +234,7 @@ public class PictureAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             .putExtra(EXTRA_IS_GIF, item.isGif())
                             .putExtra(EXTRA_MAX, max);
 
-                    PhotoContext.getContext().startActivity(intent);
+                    itemView.getContext().startActivity(intent);
                 } else {
                     if (max == 1) {
                         if (null != mOnItemListener) {
