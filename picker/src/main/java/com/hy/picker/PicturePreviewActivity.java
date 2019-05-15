@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -18,13 +17,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hy.picker.adapter.PreviewAdapter;
-import com.hy.picker.utils.AttrsUtils;
-import com.hy.picker.utils.CommonUtils;
-import com.hy.picker.utils.OnItemClickListener;
-import com.hy.picker.view.HackyViewPager;
 import com.hy.picker.model.Photo;
 import com.hy.picker.utils.AndroidLifecycleUtils;
+import com.hy.picker.utils.AttrsUtils;
+import com.hy.picker.utils.CommonUtils;
 import com.hy.picker.utils.MediaListHolder;
+import com.hy.picker.utils.OnItemClickListener;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -34,7 +32,7 @@ import java.util.Locale;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
+import androidx.viewpager2.widget.ViewPager2;
 
 
 /**
@@ -52,7 +50,7 @@ public class PicturePreviewActivity extends BaseActivity {
     private TextView mBtnSend;
     //    private AppCompatRadioButton mUseOrigin;
     private AppCompatCheckBox mSelectBox;
-    private HackyViewPager mViewPager;
+    private ViewPager2 mViewPager;
 
     private ArrayList<Photo> mItemList;
 
@@ -110,10 +108,8 @@ public class PicturePreviewActivity extends BaseActivity {
         }
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            mToolbarTop.setPadding(0, CommonUtils.getStatusBarHeight(this), 0, 0);
-        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        mToolbarTop.setPadding(0, CommonUtils.getStatusBarHeight(this), 0, 0);
 
         Intent intent = getIntent();
         max = intent.getIntExtra(EXTRA_MAX, 9);
@@ -171,15 +167,14 @@ public class PicturePreviewActivity extends BaseActivity {
         });
         mPreviewAdapter = new PreviewAdapter(defaultDrawable);
         mPreviewAdapter.setOnItemClickListener(new WeakListener(this));
+
         mViewPager.setAdapter(mPreviewAdapter);
-        mViewPager.setOffscreenPageLimit(1);
+
+//        mViewPager.setOffscreenPageLimit(1);
 
         mPreviewAdapter.reset(mItemList);
-
-        mViewPager.addOnPageChangeListener(new OnPageChangeListener() {
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
+        mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
             public void onPageSelected(int position) {
                 mCurrentIndex = position;
                 mIndexTotal.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size()));
@@ -188,11 +183,19 @@ public class PicturePreviewActivity extends BaseActivity {
                 mSelectBox.setChecked(photo.isSelected());
                 mTvEdit.setVisibility(photo.isGif() ? View.GONE : View.VISIBLE);
             }
-
-            public void onPageScrollStateChanged(int state) {
-            }
         });
-        mViewPager.setCurrentItem(mCurrentIndex);
+//        mViewPager.addOnPageChangeListener(new OnPageChangeListener() {
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//            }
+//
+//            public void onPageSelected(int position) {
+//
+//            }
+//
+//            public void onPageScrollStateChanged(int state) {
+//            }
+//        });
+        mViewPager.setCurrentItem(mCurrentIndex,false);
 
 
         mTvEdit.setOnClickListener(v -> {
