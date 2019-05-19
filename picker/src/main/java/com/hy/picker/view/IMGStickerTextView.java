@@ -10,12 +10,12 @@ import android.widget.TextView;
 import com.hy.picker.IMGTextEditDialog;
 import com.hy.picker.core.IMGText;
 
+import androidx.annotation.NonNull;
+
 /**
  * Created by felix on 2017/11/14 下午7:27.
  */
 public class IMGStickerTextView extends IMGStickerView implements IMGTextEditDialog.Callback {
-
-    private static final String TAG = "IMGStickerTextView";
 
     private TextView mTextView;
 
@@ -87,9 +87,9 @@ public class IMGStickerTextView extends IMGStickerView implements IMGTextEditDia
     }
 
     @Override
-    public void onText(IMGText text) {
+    public void onText(@NonNull IMGText text) {
         mText = text;
-        if (mText != null && mTextView != null) {
+        if (mTextView != null) {
             mTextView.setText(mText.getText());
             mTextView.setTextColor(mText.getColor());
         }

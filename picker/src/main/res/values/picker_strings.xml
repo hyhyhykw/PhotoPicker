@@ -83,4 +83,6 @@
     <string name="picker_permission_name_sms">短信</string>
     <string name="picker_permission_name_storage">存储空间</string>
     <string name="picker_str_permission_denied">权限被拒绝</string>
+
+    <string name="picker_str_click_too_fast">不要頻繁操作</string>
 </resources>

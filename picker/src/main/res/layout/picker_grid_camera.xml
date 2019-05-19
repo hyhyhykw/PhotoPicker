@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.hy.picker.view.SquareLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="127dp">
+    android:layout_height="wrap_content"
+    android:background="#353535">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#353535">
-
-        <TextView
-            android:id="@id/picker_take_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center_horizontal"
-            android:drawablePadding="12dp"
-            android:drawableTop="@drawable/picker_grid_camera"
-            android:text="@string/picker_picsel_take_picture"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"/>
-
-    </RelativeLayout>
 
     <ImageButton
         android:id="@id/picker_camera_mask"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:background="@drawable/picker_selector_grid_camera_mask"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"/>
-</com.hy.picker.view.SquareLayout>
+
+    <TextView
+        android:id="@id/picker_take_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_horizontal"
+        android:drawableTop="@drawable/picker_grid_camera"
+        android:drawablePadding="12dp"
+        android:text="@string/picker_picsel_take_picture"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/picker_camera_mask"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/picker_camera_mask"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

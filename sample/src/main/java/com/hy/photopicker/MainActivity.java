@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
     public void onClick(int position, @FeedbackSelectPictureAdapter.Type int type) {
         switch (type) {
             case FeedbackSelectPictureAdapter.TYPE_PHOTO:
-                PhotoPicker.preview(position, mFeedbackSelectPictureAdapter.mData);
+                PhotoPicker.Companion.preview(position, mFeedbackSelectPictureAdapter.mData);
 //                startActivity(
 //                        new Intent(this, TestPreviewActivity.class)
 //                                .putExtra("test", mFeedbackSelectPictureAdapter.getItem(position))
@@ -66,13 +66,13 @@ public class MainActivity extends AppCompatActivity implements FeedbackSelectPic
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-        if (PhotoPicker.isSingle(requestCode)) {
-            Photo photo = PhotoPicker.obtainTakeResult(requestCode, resultCode, data);
+        if (PhotoPicker.Companion.isSingle(requestCode)) {
+            Photo photo = PhotoPicker.Companion.obtainTakeResult(requestCode, resultCode, data);
             if (null != photo) {
                 mFeedbackSelectPictureAdapter.addItem(photo);
             }
         } else {
-            ArrayList<Photo> photos = PhotoPicker.obtainMultiResult(requestCode, resultCode, data);
+            ArrayList<Photo> photos = PhotoPicker.Companion.obtainMultiResult(requestCode, resultCode, data);
             mFeedbackSelectPictureAdapter.reset(photos);
         }
         super.onActivityResult(requestCode, resultCode, data);

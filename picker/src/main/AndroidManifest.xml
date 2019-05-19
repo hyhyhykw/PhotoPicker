@@ -11,14 +11,31 @@
     <application>
 
         <activity
-            android:name=".PickerVideoActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="sensor"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-
-        <activity
             android:name="com.hy.picker.OpenCameraResultActivity"
             android:theme="@style/PickerCameraTheme"/>
+        <activity
+            android:name="com.hy.picker.IMGEditActivity"
+            android:theme="@style/PickerEditTheme"/>
 
+        <activity
+            android:name="com.hy.picker.PictureSelectorActivity"
+            android:theme="@style/PickerTheme"/>
+        <activity
+            android:name="com.hy.picker.PicturePreviewActivity"
+            android:theme="@style/PickerTheme"/>
+        <activity
+            android:name="com.hy.picker.PictureEditPreviewActivity"
+            android:theme="@style/PickerTheme"/>
+        <activity
+            android:name="com.hy.picker.PickerCrystalCategoryActivity"
+            android:theme="@style/PickerTheme"/>
+
+        <activity
+            android:name="com.hy.picker.PickerCrystalActivity"
+            android:theme="@style/PickerTheme"/>
+        <activity
+            android:name="com.hy.picker.SelectedPicturePreviewActivity"
+            android:theme="@style/PickerTheme"
+            />
     </application>
 </manifest>

@@ -10,6 +10,8 @@ import com.hy.picker.PhotoModule;
 import com.hy.picker.PhotoPicker;
 import com.squareup.leakcanary.LeakCanary;
 
+import androidx.annotation.NonNull;
+
 /**
  * Created time : 2018/8/20 9:55.
  *
@@ -19,7 +21,7 @@ public class MyApp extends Application implements PhotoModule, CrashModule {
     @Override
     public void onCreate() {
         super.onCreate();
-        PhotoPicker.init(this);
+        PhotoPicker.Companion.init(this);
         Fresco.initialize(this);
 //        CrashHandler.getInstance().install(this, this);
         if (LeakCanary.isInAnalyzerProcess(this)) {
@@ -30,6 +32,7 @@ public class MyApp extends Application implements PhotoModule, CrashModule {
         LeakCanary.install(this);
     }
 
+    @NonNull
     @Override
     public Context getContext() {
         return this;

@@ -1,58 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="92dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
-    android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackground"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
-    tools:targetApi="m"
-    tools:ignore="KeyboardInaccessibleWidget,UnusedAttribute">
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    app:layout_optimizationLevel="standard"
+    tools:ignore="KeyboardInaccessibleWidget,UnusedAttribute"
+    tools:targetApi="m">
 
-    <FrameLayout
-        android:id="@id/picker_image_layout"
+
+    <ImageView
+        android:id="@+id/iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:background="@drawable/picker_picsel_catalog_pic_shadow">
+        android:background="@drawable/picker_picsel_catalog_pic_shadow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@id/picker_catalog_image"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        app:actualImageScaleType="centerCrop"
+        app:fadeDuration="300"
+        app:layout_constraintStart_toStartOf="@id/iv"
+        app:layout_constraintTop_toTopOf="@id/iv"/>
 
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@id/picker_catalog_image"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            app:fadeDuration="300"
-            app:actualImageScaleType="centerCrop"/>
-    </FrameLayout>
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="46dp"/>
+
+    <TextView
+        android:id="@id/picker_catalog_photo_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="@id/picker_catalog_name"
+        app:layout_constraintTop_toBottomOf="@id/guideline"/>
+
+    <TextView
+        android:id="@id/picker_catalog_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="14dp"
-        android:layout_toEndOf="@id/picker_image_layout"
-        android:orientation="vertical"
-        tools:ignore="RelativeOverlap">
+        android:layout_marginBottom="2dp"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintStart_toEndOf="@id/iv"/>
 
-        <TextView
-            android:id="@id/picker_catalog_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@id/picker_catalog_photo_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="13sp"/>
-
-    </LinearLayout>
 
     <ImageView
         android:id="@id/picker_catalog_selected"
@@ -62,7 +70,9 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="30dp"
         android:src="@drawable/picker_picsel_catalog_selected"
-        android:tint="?attr/picker_send_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"/>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

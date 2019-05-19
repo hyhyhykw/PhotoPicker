@@ -1,82 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:foreground="@drawable/picker_foreground"
-              android:gravity="center"
-              android:orientation="vertical"
-              tools:ignore="UnusedAttribute"
-              tools:targetApi="m">
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="@drawable/picker_foreground"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:ignore="UnusedAttribute"
+    tools:targetApi="m">
 
-    <com.hy.picker.view.SquareLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@id/picker_iv_crystal"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        app:fadeDuration="300"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:viewAspectRatio="1"/>
 
-        <!--<ImageView-->
-            <!--android:id="@id/picker_iv_crystal"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:contentDescription="@string/picker_app_name"/>-->
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@id/picker_iv_crystal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:fadeDuration="300"/>
-    </com.hy.picker.view.SquareLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@id/picker_tv_size"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp">
+        android:layout_marginTop="10dp"
+        android:textColor="@color/picker_color_black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/picker_iv_crystal"/>
 
-        <TextView
-            android:id="@id/picker_tv_size"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/picker_color_black"
-            android:textSize="14sp"/>
+    <ImageView
+        android:id="@id/picker_iv_download"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:contentDescription="@string/picker_app_name"
+        android:src="@drawable/picker_download"
+        app:layout_constraintBottom_toBottomOf="@+id/picker_tv_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/picker_tv_size"/>
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+    <TextView
+        android:id="@id/picker_tv_wait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/picker_waiting"
+        android:textColor="@color/picker_color_black"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/picker_iv_download"/>
 
-            <com.hy.picker.view.CompletedView
-                android:id="@id/picker_download_progress"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:visibility="gone"
-                app:picker_complete_circleColor="@color/picker_color_white"
-                app:picker_complete_radius="9dp"
-                app:picker_complete_ringBgColor="#f1f1f1"
-                app:picker_complete_ringColor="#28b9fc"
-                app:picker_complete_strokeWidth="1dp"/>
+    <com.hy.picker.view.CompletedView
+        android:id="@id/picker_download_progress"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/picker_iv_download"
+        app:layout_constraintTop_toTopOf="@id/picker_iv_download"
+        app:picker_complete_circleColor="@color/picker_color_white"
+        app:picker_complete_radius="9dp"
+        app:picker_complete_ringBgColor="#f1f1f1"
+        app:picker_complete_ringColor="#28b9fc"
+        app:picker_complete_strokeWidth="1dp"/>
 
-
-            <TextView
-                android:id="@id/picker_tv_wait"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/picker_waiting"
-                android:textColor="@color/picker_color_black"
-                android:textSize="12sp"
-                android:visibility="gone"/>
-
-            <ImageView
-                android:id="@id/picker_iv_download"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/picker_app_name"
-                android:src="@drawable/picker_download"/>
-
-        </FrameLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

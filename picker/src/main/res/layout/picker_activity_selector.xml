@@ -1,191 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/picker_selector_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/picker_photo_back"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <View
+        android:id="@id/picker_title_bg"
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@id/picker_back"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@id/picker_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/picker_app_name"
+        android:foreground="@drawable/picker_foreground"
+        android:src="@drawable/picker_picsel_back_normal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UnusedAttribute"
+        tools:targetApi="m"/>
+
+    <TextView
+        android:id="@id/picker_title"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
+        android:layout_toEndOf="@id/picker_back"
+        android:gravity="center_vertical"
+        android:text="@string/picker_picsel_toolbar"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@id/picker_back"
+        app:layout_constraintTop_toTopOf="@id/picker_back"/>
+
+    <TextView
+        android:id="@id/picker_send"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp"
+        android:enabled="false"
+        android:foreground="@drawable/picker_send_foreground"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/picker_picsel_toolbar_send"
+        android:textAllCaps="true"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/picker_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/picker_back"
+        tools:ignore="UnusedAttribute"
+        tools:targetApi="m"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@id/picker_photo_grd"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="1dp"
+        app:layout_constraintBottom_toTopOf="@id/picker_preview_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/picker_back"/>
+
+
+    <ProgressBar
+        android:id="@id/picker_photo_load"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/picker_title_bg"
-        android:fitsSystemWindows="true"
-        android:minHeight="48dp">
+        android:indeterminateBehavior="repeat"
+        android:indeterminateDrawable="@drawable/picker_progress_bar"
+        app:layout_constraintBottom_toBottomOf="@id/picker_photo_grd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/picker_photo_grd"/>
 
-        <ImageView
-            android:id="@id/picker_back"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/picker_app_name"
-            android:foreground="@drawable/picker_foreground"
-            android:src="@drawable/picker_picsel_back_normal"
-            android:tint="?attr/picker_back_color"
-            tools:ignore="UnusedAttribute"
-            tools:targetApi="m"/>
-
-        <TextView
-            android:id="@id/picker_title"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginBottom="1dp"
-            android:layout_toEndOf="@id/picker_back"
-            android:gravity="center_vertical"
-            android:text="@string/picker_picsel_toolbar"
-            android:textColor="?attr/picker_title_color"
-            android:textSize="18sp"/>
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            tools:ignore="RelativeOverlap">
-
-            <TextView
-                android:id="@id/picker_send"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:background="@drawable/picker_send_bg"
-                android:enabled="false"
-                android:foreground="@drawable/picker_send_foreground"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="@string/picker_picsel_toolbar_send"
-                android:textAllCaps="true"
-                android:textSize="14sp"
-                tools:ignore="UnusedAttribute"
-                tools:targetApi="m"/>
-        </FrameLayout>
-
-        <View
-            android:id="@id/picker_toolbar_mask"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@android:color/transparent"
-            android:visibility="gone"/>
-    </RelativeLayout>
-
-    <FrameLayout
+    <View
+        android:id="@id/picker_selector_mask"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="1dp">
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/picker_catalog_lst"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@id/picker_photo_grd"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="48dp"
-            android:background="?attr/picker_photo_back"/>
+    <View
+        android:id="@id/picker_catalog_mask"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/picker_picsel_catalog_shadow"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/picker_photo_grd"
+        app:layout_constraintTop_toTopOf="@id/picker_photo_grd"/>
 
-        <LinearLayout
-            android:id="@id/picker_photo_load"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
+    <ListView
+        android:id="@id/picker_catalog_lst"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:visibility="visible"
+        app:layout_constraintDimensionRatio="h,10:14"
+        app:layout_constraintTop_toBottomOf="@id/picker_photo_grd"/>
 
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminateBehavior="repeat"
-                android:indeterminateDrawable="@drawable/picker_progress_bar"/>
-        </LinearLayout>
+    <View
+        android:id="@id/picker_bottom_bg"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <RelativeLayout
-            android:id="@id/picker_catalog_window"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="48dp">
+    <TextView
+        android:id="@id/picker_type_text"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:gravity="center_vertical"
+        android:text="@string/picker_picsel_pictype"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-            <View
-                android:id="@id/picker_catalog_mask"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/picker_picsel_catalog_shadow"
-                android:visibility="gone"/>
+    <ImageView
+        android:id="@id/picker_preview_type"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:paddingStart="4dp"
+        android:paddingTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/picker_type_text"
+        app:layout_constraintTop_toTopOf="@+id/picker_type_text"
+        tools:ignore="ContentDescription,RtlSymmetry"/>
 
-            <ListView
-                android:id="@id/picker_catalog_lst"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginTop="48dp"
-                android:background="@android:color/white"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:visibility="gone"/>
+    <View
+        android:id="@+id/line1"
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_vertical"
+        android:background="#2A2A2A"
+        app:layout_constraintBottom_toBottomOf="@+id/picker_preview_text"
+        app:layout_constraintEnd_toStartOf="@+id/picker_preview_text"
+        app:layout_constraintTop_toTopOf="@+id/picker_preview_text"/>
 
-        </RelativeLayout>
+    <TextView
+        android:id="@id/picker_preview_text"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="@string/picker_picsel_toolbar_preview"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom"
-            android:background="?attr/picker_bottom_color"
-            android:clickable="true"
-            tools:ignore="KeyboardInaccessibleWidget">
 
-
-            <view
-                android:id="@id/picker_pic_type"
-                class="com.hy.picker.PictureSelectorActivity$PicTypeBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="16dp">
-
-                <TextView
-                    android:id="@id/picker_type_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/picker_picsel_pictype"
-                    android:textSize="16sp"/>
-
-                <ImageView
-                    android:id="@id/picker_preview_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingStart="4dp"
-                    android:paddingTop="8dp"
-                    tools:ignore="ContentDescription,RtlSymmetry"/>
-
-            </view>
-
-            <view
-                android:id="@id/picker_preview"
-                class="com.hy.picker.PictureSelectorActivity$PreviewBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                tools:ignore="RelativeOverlap">
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="#2A2A2A"/>
-
-                <TextView
-                    android:id="@id/picker_preview_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:text="@string/picker_picsel_toolbar_preview"
-                    android:textSize="16sp"/>
-            </view>
-
-            <View
-                android:id="@id/picker_bottom_mask"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:visibility="gone"/>
-        </RelativeLayout>
-    </FrameLayout>
-</LinearLayout>
+    <View
+        android:id="@id/picker_bottom_mask"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

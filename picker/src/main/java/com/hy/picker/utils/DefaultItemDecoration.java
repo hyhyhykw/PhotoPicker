@@ -99,7 +99,7 @@ public class DefaultItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    private int getSpanCount(RecyclerView parent) {
+    private int getSpanCount(@NonNull RecyclerView parent) {
         RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
             return ((GridLayoutManager) layoutManager).getSpanCount();
@@ -149,7 +149,7 @@ public class DefaultItemDecoration extends RecyclerView.ItemDecoration {
         drawVertical(c, parent);
     }
 
-    public void drawHorizontal(Canvas c, RecyclerView parent) {
+    public void drawHorizontal(@NonNull Canvas c,@NonNull RecyclerView parent) {
         c.save();
         RecyclerView.Adapter adapter = parent.getAdapter();
         if (null == adapter) return;
@@ -171,7 +171,7 @@ public class DefaultItemDecoration extends RecyclerView.ItemDecoration {
         c.restore();
     }
 
-    public void drawVertical(Canvas c, RecyclerView parent) {
+    public void drawVertical(@NonNull Canvas c,@NonNull RecyclerView parent) {
         c.save();
         RecyclerView.Adapter adapter = parent.getAdapter();
         if (null == adapter) return;

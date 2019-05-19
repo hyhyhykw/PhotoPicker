@@ -65,8 +65,8 @@ public class Photo implements Parcelable, Comparable<Photo> {
 
                 }
             } else {
-                width = PhotoContext.getScreenWidth();
-                height = PhotoContext.getScreenHeight();
+                width = PhotoContext.INSTANCE.getScreenWidth();
+                height = PhotoContext.INSTANCE.getScreenHeight();
             }
     }
 

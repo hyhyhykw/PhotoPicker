@@ -65,11 +65,15 @@
     <item name="picker_take_picture" type="id"/>
     <item name="picker_title" type="id"/>
     <item name="picker_lyt_video" type="id"/>
-    <item name="picker_video_time" type="id"/>
     <item name="picker_item_photo" type="id"/>
     <item name="picker_item_gif" type="id"/>
     <item name="picker_long_photo" type="id"/>
     <item name="picker_video_view" type="id"/>
     <item name="picker_cr_red" type="id"/>
     <item name="picker_item_image" type="id"/>
+    <item name="picker_selector_mask" type="id"/>
+    <item name="picker_selector_root" type="id"/>
+    <item name="picker_group1" type="id"/>
+    <item name="picker_title_bg" type="id"/>
+    <item name="picker_bottom_bg" type="id"/>
 </resources>

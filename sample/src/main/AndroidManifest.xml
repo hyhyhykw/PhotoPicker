@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.hy.photopicker">
 
 
@@ -14,7 +15,8 @@
         android:label="@string/picker_app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -23,27 +25,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.hy.picker.PictureSelectorActivity"
-            android:theme="@style/PickerWhiteTheme"/>
-        <activity
-            android:name="com.hy.picker.PicturePreviewActivity"
-            android:theme="@style/PickerWhiteTheme"/>
-        <activity
-            android:name="com.hy.picker.PictureEditPreviewActivity"
-            android:theme="@style/PickerWhiteTheme"/>
-        <activity
-            android:name="com.hy.picker.PickerCrystalCategoryActivity"
-            android:theme="@style/PickerWhiteTheme"/>
-        <activity
-            android:name="com.hy.picker.PickerCrystalActivity"
-            android:theme="@style/PickerWhiteTheme"/>
-
-
-
-        <activity
-            android:name="com.hy.picker.IMGEditActivity"
-            android:theme="@style/PickerEditTheme"/>
 
         <provider
             android:name="com.hy.picker.utils.MyFileProvider"
@@ -56,10 +37,7 @@
                 android:resource="@xml/file_paths"/>
         </provider>
 
-        <activity
-            android:name="com.hy.picker.SelectedPicturePreviewActivity"
-            android:theme="@style/PickerWhiteTheme"
-            />
+
         <activity
             android:name="com.hy.crash.CrashErrorActivity"
             android:theme="@style/CrashWhiteTheme"/>

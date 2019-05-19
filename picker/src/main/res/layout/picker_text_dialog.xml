@@ -47,7 +47,7 @@
         android:inputType="textMultiLine"
         android:textColor="@color/picker_color_primary"
         android:textSize="24sp"
-        tools:ignore="LabelFor"
+        tools:ignore="Autofill,LabelFor"
         tools:text="这里添加文字"/>
 
     <include layout="@layout/picker_color_layout"/>

@@ -3,6 +3,8 @@ package com.hy.picker.core.util;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.hy.picker.BuildConfig;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -80,15 +82,21 @@ public class CrystalDownloadUtils {
             if (utils == null) return null;
             if (!utils.file.getParentFile().exists()) {
                 boolean mkdirs = utils.file.getParentFile().mkdirs();
-                Log.d("TAG", "文件夹创建" + (mkdirs ? "成功" : "失败"));
+                if (BuildConfig.DEBUG) {
+                    Log.d("TAG", "文件夹创建" + (mkdirs ? "成功" : "失败"));
+                }
             }
 
             if (!utils.file.exists()) {
                 try {
                     boolean newFile = utils.file.createNewFile();
-                    Log.d("TAG", "文件" + utils.file + "创建" + (newFile ? "成功" : "失败"));
+                    if (BuildConfig.DEBUG) {
+                        Log.d("TAG", "文件" + utils.file + "创建" + (newFile ? "成功" : "失败"));
+                    }
                 } catch (IOException e) {
-                    Log.d("TAG", "文件创建失败");
+                    if (BuildConfig.DEBUG) {
+                        Log.d("TAG", "文件创建失败");
+                    }
                     return null;
                 }
             }
@@ -139,12 +147,16 @@ public class CrystalDownloadUtils {
             try {
                 fos.close();
             } catch (IOException e) {
-                Log.d("TAG", "fos close error");
+                if (BuildConfig.DEBUG) {
+                    Log.d("TAG", "fos close error");
+                }
             }
             try {
                 input.close();
             } catch (IOException e) {
-                Log.d("TAG", "input close error");
+                if (BuildConfig.DEBUG) {
+                    Log.d("TAG", "input close error");
+                }
             }
             conn.disconnect();
 
@@ -159,7 +171,9 @@ public class CrystalDownloadUtils {
             if (utils == null) return;
             if (null == file) {
                 boolean delete = utils.file.delete();
-                Log.d("TAG", "文件删除" + (delete ? "成功" : "失败"));
+                if (BuildConfig.DEBUG) {
+                    Log.d("TAG", "文件删除" + (delete ? "成功" : "失败"));
+                }
                 utils.mDownloadListener.onFailed();
             } else {
                 utils.mDownloadListener.onSuccess();

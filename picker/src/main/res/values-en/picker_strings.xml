@@ -47,7 +47,7 @@
     <string name="picker_picsel_catalog_all_video">All Videos</string>
     <string name="picker_all_video">All Videos</string>
     <string name="picker_picsel_catalog_number">%d</string>
-
+    <string name="picker_str_click_too_fast">Don\'t frequent operation</string>
     <string name="picker_all_image">All pictures</string>
     <!-- PicturePreviewActivity -->
     <!--<string name="picker_picprev_origin">Full Image</string>-->

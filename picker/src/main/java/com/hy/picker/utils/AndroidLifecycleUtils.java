@@ -6,7 +6,6 @@ import android.content.Context;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-@SuppressWarnings("ALL")
 public class AndroidLifecycleUtils {
     public static boolean canLoadImage(Fragment fragment) {
         if (fragment == null) {

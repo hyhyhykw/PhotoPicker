@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.hy.picker.view.IMGColorGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                                  xmlns:app="http://schemas.android.com/apk/res-auto"
-                                  android:id="@id/picker_cg_colors"
-                                  android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:layout_gravity="center_horizontal"
-                                  android:checkedButton="@+id/cr_white"
-                                  android:gravity="center"
-                                  android:orientation="horizontal"
-                                  android:padding="4dp">
+<com.hy.picker.view.IMGColorGroup
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/picker_cg_colors"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:checkedButton="@+id/cr_white"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="4dp">
 
     <com.hy.picker.view.IMGColorRadio
         android:id="@id/cr_white"

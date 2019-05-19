@@ -328,20 +328,6 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
         addStickerView(imageView, layoutParams);
     }
 
-//    public void addStickerImageTest(){
-//        IMGStickerImageView imageView=new IMGStickerImageView(getContext());
-//        imageView.setImageResource(R.mipmap.ic_launcher);
-//        LayoutParams layoutParams = new LayoutParams(
-//                LayoutParams.WRAP_CONTENT,
-//                LayoutParams.WRAP_CONTENT
-//        );
-//
-//        // Center of the drawing window.
-//        layoutParams.gravity = Gravity.CENTER;
-//        imageView.setX(getScrollX());
-//        imageView.setY(getScrollY());
-//        addStickerView(imageView, layoutParams);
-//    }
 
     public void addStickerText(IMGText text) {
         IMGStickerTextView textView = new IMGStickerTextView(getContext());

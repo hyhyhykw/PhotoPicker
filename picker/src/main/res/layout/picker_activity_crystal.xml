@@ -8,7 +8,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/picker_title_bg"
+        android:background="@color/picker_color_white"
         android:fitsSystemWindows="true"
         android:minHeight="48dp">
 
@@ -19,7 +19,7 @@
             android:contentDescription="@string/picker_app_name"
             android:foreground="@drawable/picker_foreground"
             android:src="@drawable/picker_picsel_back_normal"
-            android:tint="?attr/picker_back_color"
+            android:tint="#333333"
             tools:targetApi="m"
             tools:ignore="UnusedAttribute"/>
 
@@ -31,7 +31,7 @@
             android:layout_toEndOf="@id/picker_back"
             android:gravity="center_vertical"
             android:text="@string/picker_crystal"
-            android:textColor="?attr/picker_title_color"
+            android:textColor="#333333"
             android:textSize="18sp"/>
 
     </RelativeLayout>

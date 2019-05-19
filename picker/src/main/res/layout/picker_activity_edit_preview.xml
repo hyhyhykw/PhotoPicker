@@ -1,72 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/picker_whole_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
-    <!--<com.github.chrisbanes.photoview.PhotoView-->
-        <!--android:id="@id/picker_photo_preview"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"/>-->
-
-    <RelativeLayout
-        android:id="@id/picker_preview_toolbar"
+    <View
+        android:id="@id/picker_title_bg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/picker_title_bg"
+        android:layout_height="48dp"
         android:clickable="true"
-        android:minHeight="48dp"
-        tools:ignore="KeyboardInaccessibleWidget">
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <ImageView
-            android:id="@id/picker_back"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:foreground="@drawable/picker_foreground"
-            android:src="@drawable/picker_picsel_back_normal"
-            android:tint="?attr/picker_back_color"
-            tools:ignore="ContentDescription,UnusedAttribute"/>
+    <ImageView
+        android:id="@id/picker_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:foreground="@drawable/picker_foreground"
+        android:src="@drawable/picker_picsel_back_normal"
+        app:layout_constraintBottom_toBottomOf="@id/picker_title_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="ContentDescription,UnusedAttribute"/>
 
-        <TextView
-            android:id="@id/picker_index_total"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginBottom="1dp"
-            android:layout_toEndOf="@id/picker_back"
-            android:gravity="center_vertical"
-            android:textColor="?attr/picker_title_color"
-            android:textSize="18sp"/>
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            tools:ignore="RelativeOverlap">
-
-            <TextView
-                android:id="@id/picker_sure"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:background="@drawable/picker_send_bg"
-                android:enabled="true"
-                android:foreground="@drawable/picker_send_foreground"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="@string/picker_picsel_toolbar_sure"
-                android:textAllCaps="true"
-                android:textSize="14sp"
-                tools:targetApi="m"
-                tools:ignore="UnusedAttribute"/>
-        </FrameLayout>
-
-    </RelativeLayout>
+    <TextView
+        android:id="@id/picker_index_total"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="1dp"
+        android:layout_toEndOf="@id/picker_back"
+        android:gravity="center_vertical"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@id/picker_back"
+        app:layout_constraintTop_toTopOf="@id/picker_back"/>
 
 
-</RelativeLayout>
+    <TextView
+        android:id="@id/picker_sure"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp"
+        android:enabled="true"
+        android:foreground="@drawable/picker_send_foreground"
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/picker_picsel_toolbar_sure"
+        android:textAllCaps="true"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/picker_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/picker_back"
+        tools:ignore="UnusedAttribute"
+        tools:targetApi="m"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
