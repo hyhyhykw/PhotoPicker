@@ -11,7 +11,7 @@ import java.util.*
  */
 object MediaListHolder {
 
-    val selectPhotos = SetList<Photo>()
+    val selectPhotos = ArrayList<Photo>()
     val currentPhotos = ArrayList<Photo>()
     val allDirectories = ArrayList<PhotoDirectory>()
 }

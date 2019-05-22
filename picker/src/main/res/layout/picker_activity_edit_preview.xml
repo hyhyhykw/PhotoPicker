@@ -45,7 +45,6 @@
         android:layout_gravity="center"
         android:layout_marginEnd="8dp"
         android:enabled="true"
-        android:foreground="@drawable/picker_send_foreground"
         android:gravity="center"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"

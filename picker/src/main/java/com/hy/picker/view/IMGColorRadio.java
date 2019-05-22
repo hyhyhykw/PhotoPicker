@@ -19,7 +19,6 @@ import androidx.appcompat.widget.AppCompatRadioButton;
 
 public class IMGColorRadio extends AppCompatRadioButton implements ValueAnimator.AnimatorUpdateListener {
 
-    private static final String TAG = "IMGColorRadio";
 
     private int mColor = Color.WHITE;
 
@@ -38,20 +37,19 @@ public class IMGColorRadio extends AppCompatRadioButton implements ValueAnimator
     private static final float RADIUS_BALL = 0.72f;
 
     public IMGColorRadio(Context context) {
-        this(context, null, 0);
+        this(context, null);
     }
 
     public IMGColorRadio(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initialize(context, attrs, 0);
+        this(context, attrs, 0);
     }
 
     public IMGColorRadio(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initialize(context, attrs, defStyleAttr);
+        initialize(context, attrs);
     }
 
-    private void initialize(Context context, AttributeSet attrs, int defStyleAttr) {
+    private void initialize(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IMGColorRadio);
 
         mColor = a.getColor(R.styleable.IMGColorRadio_image_color, Color.WHITE);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.hy.photopicker.SquareLayout
+<com.hy.picker.view.SquareLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,4 +22,4 @@
         android:src="@drawable/btn_del_photo_select"
         android:visibility="visible"
         tools:ignore="ContentDescription"/>
-</com.hy.photopicker.SquareLayout>
+</com.hy.picker.view.SquareLayout>

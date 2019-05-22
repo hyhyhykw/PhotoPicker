@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:drawable="@drawable/picker_picsel_pictype_normal_graya" android:state_pressed="true"/>
-    <item android:drawable="@drawable/picker_picsel_pictype_normal_blue"/>
-</selector>

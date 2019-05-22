@@ -208,7 +208,7 @@ class MediaScannerUtils {
                 val height = cursor.getInt(cursor.getColumnIndexOrThrow(heightColumn))
                 val duration: Long
 
-                val resolution: String
+                val resolution: String?
                 if (mBuilder.video) {
                     if (path.length < 4) continue
                     val suffix = path.substring(path.length - 4)

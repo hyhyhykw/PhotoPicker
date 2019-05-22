@@ -76,4 +76,5 @@
     <item name="picker_group1" type="id"/>
     <item name="picker_title_bg" type="id"/>
     <item name="picker_bottom_bg" type="id"/>
+    <item name="picker_video_time" type="id"/>
 </resources>

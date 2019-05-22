@@ -6,7 +6,8 @@
     android:id="@id/picker_selector_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:layout_optimizationLevel="standard|dimensions">
 
     <View
         android:id="@id/picker_title_bg"
@@ -14,7 +15,8 @@
         android:layout_height="0dp"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="@id/picker_back"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_optimizationLevel="dimensions"/>
 
     <ImageView
         android:id="@id/picker_back"
@@ -47,7 +49,6 @@
         android:layout_gravity="center"
         android:layout_marginEnd="8dp"
         android:enabled="false"
-        android:foreground="@drawable/picker_send_foreground"
         android:gravity="center"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -63,13 +64,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@id/picker_photo_grd"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="1dp"
-        app:layout_constraintBottom_toTopOf="@id/picker_preview_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/picker_back"/>
+        app:layout_constraintBottom_toTopOf="@id/picker_bottom_bg"
+        app:layout_constraintTop_toBottomOf="@id/picker_back"
+        app:layout_optimizationLevel="dimensions"/>
 
 
     <ProgressBar
@@ -109,8 +109,7 @@
         android:paddingTop="6dp"
         android:paddingBottom="6dp"
         android:visibility="visible"
-        app:layout_constraintDimensionRatio="h,10:14"
-        app:layout_constraintTop_toBottomOf="@id/picker_photo_grd"/>
+        app:layout_constraintBottom_toBottomOf="@id/picker_photo_grd"/>
 
     <View
         android:id="@id/picker_bottom_bg"

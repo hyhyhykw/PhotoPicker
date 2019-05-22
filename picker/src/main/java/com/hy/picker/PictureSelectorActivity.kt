@@ -1,6 +1,9 @@
 package com.hy.picker
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -9,28 +12,21 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
-import android.transition.AutoTransition
-import android.transition.Transition
-import android.transition.TransitionManager
-import android.view.MotionEvent
 import android.view.View
 import android.view.Window
-import android.widget.AbsListView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.DraweeView
@@ -47,6 +43,7 @@ import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.util.*
+import kotlin.concurrent.thread
 
 class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
 
@@ -65,16 +62,6 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
     private lateinit var mDefaultDrawable: Drawable
 
     private lateinit var mCateDlgAdapter: CateDlgAdapter
-    private var mSize = 0
-    private var mCount = 0
-
-    private val mConstraintSet1 = ConstraintSet()
-    private val mConstraintSet2 = ConstraintSet()
-
-
-    private var listLastY = 0f
-    private var mScrollState = 0
-    private var canDown = false
 
     private var isAnimating = false
     private var isShowing = false
@@ -86,6 +73,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
     private var selectCateIndex = 0
 
+    private var cateHeight = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -103,13 +91,13 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         initTheme()
 
 
-        mDefaultDrawable = ContextCompat.getDrawable(this,PhotoPicker.mDefaultDrawable)!!
+        mDefaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.mDefaultDrawable)!!
 
-        val screenHeight = screenHeight()
+//        val screenHeight = screenHeight()
         val statusBarHeight = getStatusBarHeight()
-        val gridHeight = screenHeight - statusBarHeight - dp(96f)
+//        val gridHeight = screenHeight - statusBarHeight - dp(96f)
 
-        mCount = Math.ceil(gridHeight * 1.0 / mSize).toInt()
+//        mCount = Math.ceil(gridHeight * 1.0 / mSize).toInt()
 
         val intent = intent
         max = intent.getIntExtra(EXTRA_MAX, 9)
@@ -121,24 +109,6 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
         mSelectItems = intent.getParcelableArrayListExtra(EXTRA_ITEMS)
 
-        mConstraintSet1.clone(picker_selector_root)
-        mConstraintSet1.setMargin(R.id.picker_back, ConstraintSet.TOP, statusBarHeight)
-        mConstraintSet1.applyTo(picker_selector_root)
-
-        mConstraintSet2.clone(picker_selector_root)
-        mConstraintSet2.setMargin(R.id.picker_back, ConstraintSet.TOP, statusBarHeight)
-        mConstraintSet2.setVisibility(R.id.picker_photo_load, ConstraintSet.GONE)
-        mConstraintSet2.clear(R.id.picker_catalog_lst, ConstraintSet.TOP)
-
-        mConstraintSet2.connect(
-                R.id.picker_catalog_lst,
-                ConstraintSet.BOTTOM,
-                R.id.picker_photo_grd,
-                ConstraintSet.BOTTOM)
-        mConstraintSet2.setVisibility(R.id.picker_selector_mask, ConstraintSet.VISIBLE)
-        mConstraintSet2.setVisibility(R.id.picker_catalog_mask, ConstraintSet.VISIBLE)
-        mConstraintSet2.setVisibility(R.id.picker_bottom_mask, ConstraintSet.VISIBLE)
-
         picker_back.setOnClickListener { onBackPressed() }
 
         picker_type_text.isEnabled = false
@@ -148,7 +118,16 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
         picker_title.setText(if (video) R.string.picker_picsel_videotype else R.string.picker_picsel_pictype)
 
-//        picker_preview_type.setImageDrawable(typeDrawable)
+        cateHeight = (screenWidth() * 1.3f).toInt()
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(picker_selector_root)
+        constraintSet.setMargin(R.id.picker_back, ConstraintSet.TOP, statusBarHeight)
+        constraintSet.constrainHeight(R.id.picker_catalog_lst, cateHeight)
+        constraintSet.applyTo(picker_selector_root)
+
+        picker_catalog_lst.translationY = cateHeight.toFloat()
+
         if (video) {
             picker_preview_text.visibility = View.GONE
             picker_send.visibility = View.GONE
@@ -168,10 +147,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             }
         }
 
-//        val spanCount = AttrsUtils.getTypeValueInt(this, R.attr.picker_grid_span)
-
-        mSize = (PhotoContext.screenWidth - dp(4f) * 3) / 4
-        mGridViewAdapter = PictureAdapter(max, preview, isShowCamera, video, mDefaultDrawable, mSize)
+        mGridViewAdapter = PictureAdapter(max, preview, isShowCamera, video, mDefaultDrawable)
 
         mGridViewAdapter.setOnItemClickListener { which, photo ->
             when (which) {
@@ -208,6 +184,9 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                 }
             }
         }
+
+        (picker_photo_grd.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        picker_photo_grd.setHasFixedSize(true)
         picker_photo_grd.adapter = mGridViewAdapter
         val gridLayoutManager = GridLayoutManager(this, 4)
         picker_photo_grd.layoutManager = gridLayoutManager
@@ -232,32 +211,34 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             if (isChange) {
                 val item = mCateDlgAdapter.getItem(position)
                 picker_type_text.text = item.name
-                MediaListHolder.currentPhotos.clear()
-                MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories[position].photos)
 
-                mGridViewAdapter.reset(MediaListHolder.currentPhotos)
-                val layoutManager = picker_photo_grd.layoutManager as GridLayoutManager?
-                if (layoutManager != null && layoutManager.findFirstVisibleItemPosition() != 0) {
-                    if (MediaListHolder.currentPhotos.size > mCount) {
-                        Fresco.getImagePipeline().pause()
+                postDelay(Runnable {
+                    thread {
+                        MediaListHolder.currentPhotos.clear()
+                        MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories[position].photos)
+                        runOnUiThread {
+
+                            mGridViewAdapter.reset(MediaListHolder.currentPhotos)
+                        }
                     }
-                    postDelay(Runnable { picker_photo_grd.smoothScrollToPosition(0) }, 350)
-                }
+                }, 350)
             }
         }
         picker_catalog_lst.adapter = mCateDlgAdapter
         //        mCatalogListView.setTranslationY(catalogHeight);
 
-        Looper.myQueue().addIdleHandler {
-            val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            val permissionNames = Permission.transformText(this, *perms)
-            val message = getString(R.string.picker_message_permission_rationale, TextUtils.join("\n", permissionNames))
-            EasyPermissions.requestPermissions(
-                    this,
-                    message,
-                    RC_WRITE_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            false
-        }
+
+        val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val permissionNames = Permission.transformText(this, *perms)
+        val message = getString(R.string.picker_message_permission_rationale, TextUtils.join("\n", permissionNames))
+        EasyPermissions.requestPermissions(
+                this,
+                message,
+                RC_WRITE_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//        Looper.myQueue().addIdleHandler {
+//
+//            false
+//        }
     }
 
     private fun initTheme() {
@@ -270,11 +251,22 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         val drawable = GradientDrawable()
         drawable.setColor(theme.sendBgColor)
         drawable.cornerRadius = dp(5f).toFloat()
-        picker_send.background = drawable
 
+
+        val colorDrawable = GradientDrawable()
+        colorDrawable.setColor(0x4f000000)
+        colorDrawable.cornerRadius= dp(5f).toFloat()
+
+        val layerDrawable = LayerDrawable(arrayOf(drawable, colorDrawable))
+        val sendStates = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled))
+
+        val stateListDrawable = StateListDrawable()
+        stateListDrawable.addState(intArrayOf(-android.R.attr.state_enabled),layerDrawable)
+        stateListDrawable.addState(intArrayOf(android.R.attr.state_enabled),drawable)
+//        val sendBg= stateListDrawable
+        picker_send.background = stateListDrawable
 
         val sendColors = intArrayOf(theme.sendTvColorDisable, theme.sendTvColorEnable)
-        val sendStates = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled))
 
         val sendColorStateList = ColorStateList(sendStates, sendColors)
         picker_send.setTextColor(sendColorStateList)
@@ -299,7 +291,6 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                     R.drawable.picker_type_selector_wechat
                 }
         picker_preview_type.setImageResource(typeDrawable)
-
 
 
     }
@@ -329,14 +320,17 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                 .video(video)
                 .build()
                 .scanner { success ->
-                    if (success)
-                        runOnUiThread {
+                    if (success) {
+
+                        picker_photo_load.visibility = View.GONE
+                        mGridViewAdapter.reset(MediaListHolder.currentPhotos)
+                        updateToolbar()
+
+                        postDelay(Runnable {
                             mCateDlgAdapter.reset(MediaListHolder.allDirectories)
-                            mGridViewAdapter.reset(MediaListHolder.currentPhotos)
-                            updateToolbar()
-                            mConstraintSet1.setVisibility(R.id.picker_photo_load, ConstraintSet.GONE)
-                            mConstraintSet1.applyTo(picker_selector_root)
-                        }
+                        }, 350)
+                    }
+
 
                 }
 
@@ -375,32 +369,6 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         picker_bottom_mask.setOnClickListener(MaskClickListener())
         picker_catalog_mask.setOnClickListener(MaskClickListener())
 
-        picker_catalog_lst.setOnScrollListener(object : AbsListView.OnScrollListener {
-            override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
-                mScrollState = scrollState
-            }
-
-            override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-                canDown = if (firstVisibleItem == 0) {
-                    val view1 = picker_catalog_lst.getChildAt(0)
-                    view1 != null && view1.top == 0
-                } else {
-                    false
-                }
-            }
-        })
-        picker_catalog_lst.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> listLastY = event.y
-                MotionEvent.ACTION_UP -> if (mScrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {//判断是否在滑动
-                    if (canDown && event.y - listLastY >= 20) {//判断到达顶部后是否又向下滑动了20像素 可以修改
-                        hideCatalog()
-                        return@setOnTouchListener true
-                    }
-                }
-            }
-            false
-        }
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
@@ -448,42 +416,49 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
     private fun showCatalog() {
         if (isAnimating) return
-        val autoTransition = AutoTransition()
-        autoTransition.duration = 300
-        autoTransition.addListener(object : MyTransitionListener() {
-            override fun onTransitionStart(transition: Transition) {
+
+        picker_catalog_mask.visibility = View.VISIBLE
+        val translationY = ObjectAnimator.ofFloat(picker_catalog_lst, "translationY", cateHeight.toFloat(), 0f)
+        translationY.duration = 300
+        translationY.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                isAnimating = false
+                translationY.removeAllListeners()
+            }
+
+            override fun onAnimationStart(animation: Animator) {
+                super.onAnimationStart(animation)
+                picker_selector_mask.visibility = View.VISIBLE
+                picker_bottom_mask.visibility = View.VISIBLE
                 isAnimating = true
                 isShowing = true
             }
-
-            override fun onTransitionEnd(transition: Transition) {
-                isAnimating = false
-                transition.removeListener(this)
-            }
         })
-        TransitionManager.beginDelayedTransition(picker_selector_root, autoTransition)
-        mConstraintSet2.applyTo(picker_selector_root)
+        translationY.start()
     }
 
     private fun hideCatalog() {
         if (isAnimating) return
-
-        val autoTransition = AutoTransition()
-        autoTransition.duration = 300
-        autoTransition.addListener(object : MyTransitionListener() {
-            override fun onTransitionStart(transition: Transition) {
-                isAnimating = true
-            }
-
-            override fun onTransitionEnd(transition: Transition) {
+        val translationY = ObjectAnimator.ofFloat(picker_catalog_lst, "translationY", 0f, cateHeight.toFloat())
+        translationY.duration = 300
+        translationY.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                picker_selector_mask.visibility = View.GONE
+                picker_bottom_mask.visibility = View.GONE
+                picker_catalog_mask.visibility = View.GONE
                 isAnimating = false
                 isShowing = false
-                transition.removeListener(this)
+                translationY.removeAllListeners()
+            }
+
+            override fun onAnimationStart(animation: Animator) {
+                super.onAnimationStart(animation)
+                isAnimating = true
             }
         })
-        TransitionManager.beginDelayedTransition(picker_selector_root, autoTransition)
-        mConstraintSet1.applyTo(picker_selector_root)
-
+        translationY.start()
     }
 
 
@@ -599,8 +574,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                         }
                     }
 
-                    postDelay(Runnable { picker_photo_grd.smoothScrollToPosition(0) }, 50)
-                    mCateDlgAdapter.reset(MediaListHolder.allDirectories)
+//                    mCateDlgAdapter.reset(MediaListHolder.allDirectories)
                     updateToolbar()
                 }
 
@@ -691,12 +665,12 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                         }
                     }
 
-                    if (mGridViewAdapter.itemCount > mCount) {
-                        Fresco.getImagePipeline().pause()
-                    }
-                    postDelay(Runnable { picker_photo_grd.smoothScrollToPosition(0) }, 50)
+//                    if (mGridViewAdapter.itemCount > mCount) {
+//                        Fresco.getImagePipeline().pause()
+//                    }
+//                    postDelay(Runnable { picker_photo_grd.smoothScrollToPosition(0) }, 50)
 
-                    mCateDlgAdapter.reset(MediaListHolder.allDirectories)
+//                    mCateDlgAdapter.reset(MediaListHolder.allDirectories)
                     updateToolbar()
 
                 }

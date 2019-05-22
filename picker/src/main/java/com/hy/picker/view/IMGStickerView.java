@@ -27,7 +27,6 @@ import com.hy.picker.core.sticker.IMGStickerMoveHelper;
 
 public abstract class IMGStickerView extends ViewGroup implements IMGSticker, View.OnClickListener {
 
-    private static final String TAG = "IMGStickerView";
 
     private View mContentView;
 

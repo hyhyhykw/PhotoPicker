@@ -29,7 +29,4 @@ class IMGColorGroup @JvmOverloads constructor(context: Context, attrs: Attribute
             }
         }
 
-//    constructor(context: Context) : super(context)
-
-//    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 }

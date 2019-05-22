@@ -19,10 +19,10 @@ class MyGridItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
         val position = parent.getChildAdapterPosition(view)
         if (position < 0) return
         when (position % 4) {
-            0 -> outRect.set(0, 0, dp1 * 3, dp1)
-            1 -> outRect.set(dp1, 0, dp1 * 2, dp1 * 3)
-            2 -> outRect.set(dp1 * 2, 0, dp1, dp1 * 3)
-            3 -> outRect.set(dp1 * 3, 0, 0, dp1 * 3)
+            0 -> outRect.set(0, 0, dp1 * 3, dp1 * 4)
+            1 -> outRect.set(dp1, 0, dp1 * 2, dp1 * 4)
+            2 -> outRect.set(dp1 * 2, 0, dp1, dp1 * 4)
+            3 -> outRect.set(dp1 * 3, 0, 0, dp1 * 4)
         }
 
     }

@@ -12,8 +12,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatCheckBox
-import androidx.constraintlayout.widget.Group
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.drawable.ScalingUtils
 import com.facebook.drawee.view.SimpleDraweeView
@@ -31,7 +29,11 @@ import java.util.*
  *
  * @author HY
  */
-class PictureAdapter(private val max: Int, private val preview: Boolean, private val camera: Boolean, private val video: Boolean, private val mDefaultDrawable: Drawable, private val size: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PictureAdapter(private val max: Int,
+                     private val preview: Boolean,
+                     private val camera: Boolean,
+                     private val video: Boolean,
+                     private val mDefaultDrawable: Drawable) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val mPhotos = ArrayList<Photo>()
 
@@ -92,12 +94,11 @@ class PictureAdapter(private val max: Int, private val preview: Boolean, private
         private val checkBox: AppCompatCheckBox = view.picker_item_checkbox
         private val ivGif: ImageView = view.picker_iv_gif
         private val tvTime: TextView = view.picker_video_time
-        private val mGroup: Group = view.picker_group1
 
         init {
             if (video) {
                 checkBox.visibility = View.GONE
-                mGroup.visibility = View.VISIBLE
+                itemView.picker_lyt_video.visibility = View.VISIBLE
             } else {
                 val states = arrayOf(intArrayOf(-android.R.attr.state_checked), intArrayOf(android.R.attr.state_checked))
                 val colors = intArrayOf(PhotoPicker.theme.sendBgColor, PhotoPicker.theme.sendBgColor)
@@ -121,18 +122,18 @@ class PictureAdapter(private val max: Int, private val preview: Boolean, private
             }
 
 
-            val params = image.layoutParams
-            if (params.height != size || params.width != size) {
-                params.width = size
-                params.height = size
-                image.layoutParams = params
-            }
+//            val params = image.layoutParams
+//            if (params.height != PhotoContext.imageItemSize || params.width != PhotoContext.imageItemSize) {
+//                params.width = PhotoContext.imageItemSize
+//                params.height = PhotoContext.imageItemSize
+//                image.layoutParams = params
+//            }
 
 
             val hierarchy = image.hierarchy
             hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
             hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
-            image.controller = PictureSelectorActivity.getDraweeController(image, Uri.fromFile(File(item.uri)), size, size)
+            image.controller = PictureSelectorActivity.getDraweeController(image, Uri.fromFile(File(item.uri)), PhotoContext.imageItemSize, PhotoContext.imageItemSize)
             checkBox.isChecked = MediaListHolder.selectPhotos.contains(item)
 
             checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -148,11 +149,11 @@ class PictureAdapter(private val max: Int, private val preview: Boolean, private
                         if (isChecked) {
                             item.isSelected = true
                             MediaListHolder.selectPhotos.add(item)
-                            mask.setBackgroundColor(ContextCompat.getColor(PhotoContext.context, R.color.picker_picsel_grid_mask_pressed))
+                            mask.setBackgroundResource(R.drawable.picker_item_bg_selected)
                         } else {
                             item.isSelected = false
                             MediaListHolder.selectPhotos.remove(item)
-                            mask.setBackgroundResource(R.drawable.picker_sp_grid_mask)
+                            mask.setBackgroundResource(R.drawable.picker_item_bg_normal)
                         }
                     }
                     _listener?.invoke(2, item)
@@ -161,10 +162,9 @@ class PictureAdapter(private val max: Int, private val preview: Boolean, private
 
 
             if (MediaListHolder.selectPhotos.contains(item)) {
-
-                mask.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.picker_picsel_grid_mask_pressed))
+                mask.setBackgroundResource(R.drawable.picker_item_bg_selected)
             } else {
-                mask.setBackgroundResource(R.drawable.picker_sp_grid_mask)
+                mask.setBackgroundResource(R.drawable.picker_item_bg_normal)
             }
 
 
@@ -207,10 +207,9 @@ class PictureAdapter(private val max: Int, private val preview: Boolean, private
                             }
                         }
                         if (MediaListHolder.selectPhotos.contains(item)) {
-
-                            mask.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.picker_picsel_grid_mask_pressed))
+                            mask.setBackgroundResource(R.drawable.picker_item_bg_selected)
                         } else {
-                            mask.setBackgroundResource(R.drawable.picker_sp_grid_mask)
+                            mask.setBackgroundResource(R.drawable.picker_item_bg_normal)
                         }
                         _listener?.invoke(2, item)
 //                        if (null != mOnItemListener) {

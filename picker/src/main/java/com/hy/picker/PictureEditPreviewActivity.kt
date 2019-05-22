@@ -3,6 +3,8 @@ package com.hy.picker
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.StateListDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
@@ -161,10 +163,21 @@ class PictureEditPreviewActivity : BaseActivity() {
         val drawable = GradientDrawable()
         drawable.setColor(theme.sendBgColor)
         drawable.cornerRadius = dp(5f).toFloat()
-        picker_sure.background = drawable
+//        picker_sure.background = drawable
+        val sendStates = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled))
+
+        val colorDrawable = GradientDrawable()
+        colorDrawable.setColor(0x4f000000)
+        colorDrawable.cornerRadius= dp(5f).toFloat()
+
+        val layerDrawable = LayerDrawable(arrayOf(drawable, colorDrawable))
+
+        val stateListDrawable = StateListDrawable()
+        stateListDrawable.addState(intArrayOf(-android.R.attr.state_enabled),layerDrawable)
+        stateListDrawable.addState(intArrayOf(android.R.attr.state_enabled),drawable)
+        picker_sure.background = stateListDrawable
 
         val sendColors = intArrayOf(theme.sendTvColorDisable, theme.sendTvColorEnable)
-        val sendStates = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled))
 
         val sendColorStateList = ColorStateList(sendStates, sendColors)
         picker_sure.setTextColor(sendColorStateList)
