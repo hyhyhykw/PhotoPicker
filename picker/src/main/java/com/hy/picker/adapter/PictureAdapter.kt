@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -67,15 +66,17 @@ class PictureAdapter(private val max: Int,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val context = parent.context
 
-        val inflater = LayoutInflater.from(context)
+//        val inflater = LayoutInflater.from(context)
         val holder: RecyclerView.ViewHolder
 
         if (viewType == 0) {
-            val cameraView = inflater.inflate(R.layout.picker_grid_camera, parent, false)
+
+            val cameraView =View.inflate(context,R.layout.picker_grid_camera,null)
 
             holder = CameraHolder(cameraView)
         } else {
-            val convertView = inflater.inflate(R.layout.picker_grid_item, parent, false)
+
+            val convertView = View.inflate(context,R.layout.picker_grid_item,null)
             holder = ItemHolder(convertView)
         }
 
@@ -122,14 +123,6 @@ class PictureAdapter(private val max: Int,
             }
 
 
-//            val params = image.layoutParams
-//            if (params.height != PhotoContext.imageItemSize || params.width != PhotoContext.imageItemSize) {
-//                params.width = PhotoContext.imageItemSize
-//                params.height = PhotoContext.imageItemSize
-//                image.layoutParams = params
-//            }
-
-
             val hierarchy = image.hierarchy
             hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
             hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
@@ -161,7 +154,7 @@ class PictureAdapter(private val max: Int,
             }
 
 
-            if (MediaListHolder.selectPhotos.contains(item)) {
+            if (item.isSelected) {
                 mask.setBackgroundResource(R.drawable.picker_item_bg_selected)
             } else {
                 mask.setBackgroundResource(R.drawable.picker_item_bg_normal)
@@ -206,7 +199,7 @@ class PictureAdapter(private val max: Int,
                                 MediaListHolder.selectPhotos.remove(item)
                             }
                         }
-                        if (MediaListHolder.selectPhotos.contains(item)) {
+                        if (item.isSelected) {
                             mask.setBackgroundResource(R.drawable.picker_item_bg_selected)
                         } else {
                             mask.setBackgroundResource(R.drawable.picker_item_bg_normal)

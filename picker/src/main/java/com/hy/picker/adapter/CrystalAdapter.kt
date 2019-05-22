@@ -25,7 +25,8 @@ import kotlinx.android.synthetic.main.picker_item_crystal.view.*
  *
  * @author HY
  */
-class CrystalAdapter(private val cate: String, private val mDefaultDrawable: Drawable) : BaseRecyclerAdapter<Crystal, CrystalAdapter.ViewHolder>() {
+class CrystalAdapter(private val cate: String, private val mDefaultDrawable: Drawable) :
+        BaseRecyclerAdapter<Crystal, CrystalAdapter.ViewHolder>() {
 
 
     private var imageSize = 0

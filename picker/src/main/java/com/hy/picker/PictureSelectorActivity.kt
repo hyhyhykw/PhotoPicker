@@ -26,7 +26,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.DraweeView
@@ -185,7 +184,6 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             }
         }
 
-        (picker_photo_grd.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         picker_photo_grd.setHasFixedSize(true)
         picker_photo_grd.adapter = mGridViewAdapter
         val gridLayoutManager = GridLayoutManager(this, 4)
@@ -197,8 +195,10 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                 if (!canLoadImage()) return
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Fresco.getImagePipeline().resume()
+//                    Glide.with(recyclerView).resumeRequests()
                 } else {
                     Fresco.getImagePipeline().pause()
+//                    Glide.with(recyclerView).pauseRequests()
 
                 }
             }
@@ -221,7 +221,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                             mGridViewAdapter.reset(MediaListHolder.currentPhotos)
                         }
                     }
-                }, 350)
+                }, 320)
             }
         }
         picker_catalog_lst.adapter = mCateDlgAdapter
@@ -255,14 +255,14 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
         val colorDrawable = GradientDrawable()
         colorDrawable.setColor(0x4f000000)
-        colorDrawable.cornerRadius= dp(5f).toFloat()
+        colorDrawable.cornerRadius = dp(5f).toFloat()
 
         val layerDrawable = LayerDrawable(arrayOf(drawable, colorDrawable))
         val sendStates = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled))
 
         val stateListDrawable = StateListDrawable()
-        stateListDrawable.addState(intArrayOf(-android.R.attr.state_enabled),layerDrawable)
-        stateListDrawable.addState(intArrayOf(android.R.attr.state_enabled),drawable)
+        stateListDrawable.addState(intArrayOf(-android.R.attr.state_enabled), layerDrawable)
+        stateListDrawable.addState(intArrayOf(android.R.attr.state_enabled), drawable)
 //        val sendBg= stateListDrawable
         picker_send.background = stateListDrawable
 
@@ -313,7 +313,6 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             MediaListHolder.selectPhotos.addAll(mSelectItems!!)
         }
 
-
         MediaScannerUtils.Builder(this)
                 .gif(gif)
                 .gifOnly(gifOnly)
@@ -323,12 +322,10 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                     if (success) {
 
                         picker_photo_load.visibility = View.GONE
-                        mGridViewAdapter.reset(MediaListHolder.currentPhotos)
+//                        mGridViewAdapter.reset(MediaListHolder.currentPhotos)
                         updateToolbar()
-
-                        postDelay(Runnable {
-                            mCateDlgAdapter.reset(MediaListHolder.allDirectories)
-                        }, 350)
+//
+                        mCateDlgAdapter.reset(MediaListHolder.allDirectories)
                     }
 
 

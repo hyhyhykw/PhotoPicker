@@ -2,7 +2,6 @@ package com.hy.picker.adapter
 
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -64,7 +63,7 @@ class CateDlgAdapter(private val mDefaultDrawable: Drawable) : BaseAdapter() {
         val view: View
         val holder: ViewHolder
         if (convertView == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.picker_item_lst_catalog, parent, false)
+            view = View.inflate(context, R.layout.picker_item_lst_catalog, null)
             holder = ViewHolder(view)
             view.tag = holder
         } else {
@@ -95,14 +94,24 @@ class CateDlgAdapter(private val mDefaultDrawable: Drawable) : BaseAdapter() {
 
             val item = getItem(position)
 
-            val hierarchy = image.hierarchy
-            hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
-            hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
             if (null != item.coverPath) {
+                val hierarchy = image.hierarchy
+                hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
+                hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
                 image.controller = PictureSelectorActivity.getDraweeController(image,
                         Uri.fromFile(File(item.coverPath)),
                         dp75, dp75)
+
+//                Glide.with(itemView)
+//                        .load(File(item.coverPath))
+//                        .thumbnail(0.3f)
+//                        .error(mDefaultDrawable)
+//                        .placeholder(mDefaultDrawable)
+//                        .override(dp75)
+//                        .into(image)
             }
+
+
             tvNumber.text = String.format(
                     PhotoContext.context.resources
                             .getString(R.string.picker_picsel_catalog_number),

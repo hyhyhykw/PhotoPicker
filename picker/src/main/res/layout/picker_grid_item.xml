@@ -13,6 +13,13 @@
         app:actualImageScaleType="centerCrop"
         app:fadeDuration="300"/>
 
+
+    <!--<ImageView-->
+    <!--android:id="@id/picker_photo_image"-->
+    <!--android:scaleType="centerCrop"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"/>-->
+
     <ImageView
         android:id="@id/picker_iv_gif"
         android:layout_width="28dp"

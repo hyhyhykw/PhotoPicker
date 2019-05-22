@@ -32,6 +32,12 @@
         app:fadeDuration="300"
         app:layout_constraintStart_toStartOf="@id/iv"
         app:layout_constraintTop_toTopOf="@id/iv"/>
+    <!--<ImageView-->
+        <!--android:id="@id/picker_catalog_image"-->
+        <!--android:layout_width="75dp"-->
+        <!--android:layout_height="75dp"-->
+        <!--app:layout_constraintStart_toStartOf="@id/iv"-->
+        <!--app:layout_constraintTop_toTopOf="@id/iv"/>-->
 
 
     <androidx.constraintlayout.widget.Guideline
