@@ -322,7 +322,8 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                     if (success) {
 
                         picker_photo_load.visibility = View.GONE
-//                        mGridViewAdapter.reset(MediaListHolder.currentPhotos)
+                        postDelay(Runnable { mGridViewAdapter.reset(MediaListHolder.currentPhotos) }, 10)
+
                         updateToolbar()
 //
                         mCateDlgAdapter.reset(MediaListHolder.allDirectories)
