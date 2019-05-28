@@ -7,7 +7,7 @@
     android:layout_height="127dip">
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@id/picker_photo_image"
+        android:id="@id/pickerPhotoImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:actualImageScaleType="centerCrop"
@@ -15,13 +15,13 @@
 
 
     <!--<ImageView-->
-    <!--android:id="@id/picker_photo_image"-->
+    <!--android:id="@id/pickerPhotoImage"-->
     <!--android:scaleType="centerCrop"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="match_parent"/>-->
 
     <ImageView
-        android:id="@id/picker_iv_gif"
+        android:id="@id/pickerIvGif"
         android:layout_width="28dp"
         android:layout_height="15dp"
         android:layout_gravity="bottom"
@@ -32,13 +32,13 @@
         android:visibility="gone"/>
 
     <RelativeLayout
-        android:id="@id/picker_item_mask"
+        android:id="@id/pickerItemMask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/picker_item_bg_normal">
 
         <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@id/picker_item_checkbox"
+            android:id="@id/pickerItemCheckBox"
             style="@style/Widget.AppCompat.CompoundButton.CheckBox"
             android:layout_width="32dp"
             android:layout_height="32dp"
@@ -48,7 +48,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@id/picker_lyt_video"
+        android:id="@id/pickerLytVideo"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_gravity="bottom"
@@ -68,7 +68,7 @@
             android:src="@drawable/picker_video"/>
 
         <TextView
-            android:id="@id/picker_video_time"
+            android:id="@id/pickerVideoTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

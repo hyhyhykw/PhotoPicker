@@ -24,7 +24,7 @@
     <string name="picker_no">No</string>
 
     <string name="picker_failure">Failure</string>
-    <string name="picker_title_dialog">Reminder</string>
+    <string name="pickerTitle_dialog">Reminder</string>
     <string name="picker_message_permission_rationale">With the image selection function, the app requires the following permissions, please allow: \n\n%1$s</string>
     <string name="picker_message_permission_always_failed">With the image selection function, the app requires the following permissions, please open it in the settings: \n\n%1$s</string>
     <!-- PictureSelectorActivity -->
@@ -63,7 +63,7 @@
     <string name="picker_crystal">Crystal</string>
     <string name="picker_waiting">Waiting&#8230;</string>
     <string name="picker_sticker_not_download">The sticker is not downloaded, is it downloaded?</string>
-    <string name="picker_load_error">Load failed, click reload</string>
+    <string name="pickerLoadError">Load failed, click reload</string>
     <string name="picker_child_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-en/child-category.json</string>
     <string name="picker_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json-en/Category.json</string>
     <string name="picker_video_play_error">Video Play error</string>

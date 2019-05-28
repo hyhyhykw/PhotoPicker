@@ -1,38 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="picker_preview_type" type="id"/>
+    <item name="pickerCateIv" type="id"/>
     <item name="picker_tag_glide" type="id"/>
     <item name="picker_whole_layout" type="id"/>
-    <item name="picker_vpg_preview" type="id"/>
-    <item name="picker_preview_toolbar" type="id"/>
-    <item name="picker_back" type="id"/>
-    <item name="picker_index_total" type="id"/>
-    <item name="picker_send" type="id"/>
-    <item name="picker_bottom_bar" type="id"/>
-    <item name="picker_select_check" type="id"/>
-    <item name="picker_photo_grd" type="id"/>
-    <item name="picker_photo_load" type="id"/>
+    <item name="pickerVpgPreview" type="id"/>
+    <item name="pickerTitleBg" type="id"/>
+    <item name="pickerBackIv" type="id"/>
+    <item name="pickerIndexTotalTv" type="id"/>
+    <item name="pickerSend" type="id"/>
+    <item name="pickerSelectorCheck" type="id"/>
+    <item name="pickerPhotoGrd" type="id"/>
+    <item name="pickerPhotoLoad" type="id"/>
     <item name="picker_catalog_window" type="id"/>
-    <item name="picker_catalog_lst" type="id"/>
+    <item name="pickerCateDlgLst" type="id"/>
     <item name="picker_pic_type" type="id"/>
-    <item name="picker_type_text" type="id"/>
+    <item name="pickerCateTv" type="id"/>
     <item name="picker_preview" type="id"/>
-    <item name="picker_preview_text" type="id"/>
-    <item name="picker_camera_mask" type="id"/>
-    <item name="picker_photo_image" type="id"/>
-    <item name="picker_catalog_image" type="id"/>
-    <item name="picker_catalog_photo_number" type="id"/>
-    <item name="picker_catalog_selected" type="id"/>
-    <item name="picker_catalog_name" type="id"/>
+    <item name="pickerPreviewTv" type="id"/>
+    <item name="pickerCameraMask" type="id"/>
+    <item name="pickerPhotoImage" type="id"/>
+    <item name="pickerCateLogImage" type="id"/>
+    <item name="pickerCatePhotoNum" type="id"/>
+    <item name="pickerCatalogSelected" type="id"/>
+    <item name="pickerCateName" type="id"/>
     <item name="picker_image_layout" type="id"/>
-    <item name="picker_catalog_mask" type="id"/>
-    <item name="picker_bottom_mask" type="id"/>
+    <item name="pickerCateDlgMask" type="id"/>
+    <item name="pickerBottomTask" type="id"/>
     <item name="picker_toolbar_mask" type="id"/>
     <item name="picker_photo_preview" type="id"/>
-    <item name="picker_sure" type="id"/>
-    <item name="picker_rcy_crystal" type="id"/>
-    <item name="picker_iv_crystal" type="id"/>
-    <item name="picker_tv_name" type="id"/>
+    <item name="pickerSure" type="id"/>
+    <item name="pickerRcy" type="id"/>
+    <item name="pickerIvCrystal" type="id"/>
+    <item name="pickerTvName" type="id"/>
     <item name="picker_tv_size" type="id"/>
     <item name="picker_tv_wait" type="id"/>
     <item name="picker_iv_download" type="id"/>
@@ -46,9 +45,9 @@
     <item name="picker_ib_clip_cancel" type="id"/>
     <item name="picker_tv_clip_reset" type="id"/>
     <item name="picker_ib_clip_done" type="id"/>
-    <item name="picker_iv_gif" type="id"/>
-    <item name="picker_item_mask" type="id"/>
-    <item name="picker_item_checkbox" type="id"/>
+    <item name="pickerIvGif" type="id"/>
+    <item name="pickerItemMask" type="id"/>
+    <item name="pickerItemCheckBox" type="id"/>
 
     <item name="picker_rg_modes" type="id"/>
     <item name="picker_vs_op_sub" type="id"/>
@@ -60,21 +59,20 @@
     <item name="picker_btn_image" type="id"/>
     <item name="picker_rb_mosaic" type="id"/>
     <item name="picker_btn_undo" type="id"/>
-    <item name="picker_load_error" type="id"/>
+    <item name="pickerLoadError" type="id"/>
 
-    <item name="picker_take_picture" type="id"/>
-    <item name="picker_title" type="id"/>
-    <item name="picker_lyt_video" type="id"/>
+    <item name="pickerTakePicTv" type="id"/>
+    <item name="pickerTitle" type="id"/>
+    <item name="pickerLytVideo" type="id"/>
     <item name="picker_item_photo" type="id"/>
     <item name="picker_item_gif" type="id"/>
     <item name="picker_long_photo" type="id"/>
     <item name="picker_video_view" type="id"/>
     <item name="picker_cr_red" type="id"/>
-    <item name="picker_item_image" type="id"/>
-    <item name="picker_selector_mask" type="id"/>
-    <item name="picker_selector_root" type="id"/>
+    <item name="pickerItemImage" type="id"/>
+    <item name="pickerSelectorMask" type="id"/>
+    <item name="pickerSelectorRoot" type="id"/>
     <item name="picker_group1" type="id"/>
-    <item name="picker_title_bg" type="id"/>
-    <item name="picker_bottom_bg" type="id"/>
-    <item name="picker_video_time" type="id"/>
+    <item name="pickerBottomBg" type="id"/>
+    <item name="pickerVideoTime" type="id"/>
 </resources>

@@ -2,7 +2,7 @@ package com.hy.picker
 
 import android.os.Bundle
 import android.view.View
-import kotlinx.android.synthetic.main.picker_activity_crystal.*
+import kotlinx.android.synthetic.main.picker_activity_list.*
 
 /**
  * Created time : 2018/8/28 9:58.
@@ -14,18 +14,21 @@ abstract class BaseListActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.picker_activity_crystal)
-        picker_back.setOnClickListener { onBackPressed() }
+        setContentView(R.layout.picker_activity_list)
+        val layoutParams = pickerTitleBg.layoutParams
+        layoutParams.height=dp(48f)+getStatusBarHeight()
+        pickerTitleBg.layoutParams=layoutParams
+        pickerBackIv.setOnClickListener { onBackPressed() }
 
-        picker_load_error.setOnClickListener { reload() }
+        pickerLoadError.setOnClickListener { reload() }
         initView()
     }
 
     protected abstract fun initView()
 
     private fun reload() {
-        picker_photo_load.visibility = View.VISIBLE
-        picker_load_error.visibility = View.GONE
+        pickerPhotoLoad.visibility = View.VISIBLE
+        pickerLoadError.visibility = View.GONE
         initData()
     }
 
@@ -33,13 +36,13 @@ abstract class BaseListActivity : BaseActivity() {
 
     fun loadSuccess() {
         if (!canLoadImage()) return
-        picker_photo_load.visibility = View.GONE
-        picker_load_error.visibility = View.GONE
+        pickerPhotoLoad.visibility = View.GONE
+        pickerLoadError.visibility = View.GONE
     }
 
     fun loadFailed() {
         if (!canLoadImage()) return
-        picker_photo_load.visibility = View.GONE
-        picker_load_error.visibility = View.VISIBLE
+        pickerPhotoLoad.visibility = View.GONE
+        pickerLoadError.visibility = View.VISIBLE
     }
 }

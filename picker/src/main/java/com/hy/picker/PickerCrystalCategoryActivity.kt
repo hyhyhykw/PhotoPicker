@@ -10,7 +10,7 @@ import com.hy.picker.adapter.CrystalCategoryAdapter
 import com.hy.picker.core.CrystalCategory
 import com.hy.picker.utils.DefaultItemDecoration
 import com.hy.picker.utils.NetworkUtils
-import kotlinx.android.synthetic.main.picker_activity_crystal.*
+import kotlinx.android.synthetic.main.picker_activity_list.*
 
 /**
  * Created time : 2018/8/27 16:42.
@@ -24,7 +24,7 @@ class PickerCrystalCategoryActivity : BaseListActivity() {
     private var isOther: Boolean = false
 
     override fun initView() {
-        picker_rcy_crystal.addItemDecoration(DefaultItemDecoration(Color.parseColor("#f5f5f5")))
+        pickerRcy.addItemDecoration(DefaultItemDecoration(Color.parseColor("#f5f5f5")))
 
 
         val mDefaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.mDefaultDrawable)!!
@@ -39,8 +39,8 @@ class PickerCrystalCategoryActivity : BaseListActivity() {
             }
         }
 
-        picker_rcy_crystal.adapter = mCrystalCategoryAdapter
-        picker_rcy_crystal.layoutManager = LinearLayoutManager(this)
+        pickerRcy.adapter = mCrystalCategoryAdapter
+        pickerRcy.layoutManager = LinearLayoutManager(this)
 
         isOther = intent.getBooleanExtra(EXTRA_OTHER, false)
         Looper.myQueue().addIdleHandler {

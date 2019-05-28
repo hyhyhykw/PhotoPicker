@@ -78,45 +78,45 @@ class PicturePreviewActivity : BaseActivity() {
         val height = statusBarHeight + dp(48f)
 
         mConstraintSet1.clone(picker_whole_layout)
-        mConstraintSet1.constrainHeight(R.id.picker_preview_toolbar, height)
+        mConstraintSet1.constrainHeight(R.id.pickerTitleBg, height)
         mConstraintSet1.applyTo(picker_whole_layout)
 
         mConstraintSet2.clone(picker_whole_layout)
-        mConstraintSet2.constrainHeight(R.id.picker_preview_toolbar, height)
-        mConstraintSet2.clear(R.id.picker_preview_toolbar, ConstraintSet.TOP)
-        mConstraintSet2.connect(R.id.picker_preview_toolbar, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        mConstraintSet2.clear(R.id.picker_bottom_bar, ConstraintSet.BOTTOM)
-        mConstraintSet2.connect(R.id.picker_bottom_bar, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-        mConstraintSet2.setMargin(R.id.picker_preview_toolbar, ConstraintSet.BOTTOM, 2)
+        mConstraintSet2.constrainHeight(R.id.pickerTitleBg, height)
+        mConstraintSet2.clear(R.id.pickerTitleBg, ConstraintSet.TOP)
+        mConstraintSet2.connect(R.id.pickerTitleBg, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        mConstraintSet2.clear(R.id.pickerBottomBg, ConstraintSet.BOTTOM)
+        mConstraintSet2.connect(R.id.pickerBottomBg, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        mConstraintSet2.setMargin(R.id.pickerTitleBg, ConstraintSet.BOTTOM, 2)
 
         val intent = intent
         max = intent.getIntExtra(EXTRA_MAX, 9)
         val isGif = intent.getBooleanExtra(EXTRA_IS_GIF, false)
-        picker_tv_edit.visibility = if (isGif) View.GONE else View.VISIBLE
+        pickerEditTv.visibility = if (isGif) View.GONE else View.VISIBLE
         mIsPreview = intent.getBooleanExtra(EXTRA_IS_PREVIEW, false)
         mCurrentIndex = intent.getIntExtra(EXTRA_INDEX, 0)
 
         mItemList = if (mIsPreview) MediaListHolder.selectPhotos else MediaListHolder.currentPhotos
 
-        picker_index_total.text = String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size)
+        pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size)
 
 //        picker_whole_layout.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
-        picker_back.setOnClickListener { onBackPressed() }
+        pickerBackIv.setOnClickListener { onBackPressed() }
 
-        picker_send.setOnClickListener {
+        pickerSend.setOnClickListener {
             sendBroadcast(Intent(PICKER_ACTION_MEDIA_SEND))
             finish()
         }
 
 
-        picker_select_check.setText(R.string.picker_picprev_select)
+        pickerSelectorCheck.setText(R.string.picker_picprev_select)
 
-        picker_select_check.isChecked = mItemList[mCurrentIndex].isSelected
-        picker_select_check.setOnCheckedChangeListener { buttonView, isChecked ->
+        pickerSelectorCheck.isChecked = mItemList[mCurrentIndex].isSelected
+        pickerSelectorCheck.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
                 if (isChecked && selNum == max) {
-                    picker_select_check.isChecked = false
+                    pickerSelectorCheck.isChecked = false
 
 
                     Toast.makeText(this@PicturePreviewActivity,
@@ -157,26 +157,26 @@ class PicturePreviewActivity : BaseActivity() {
             }
         }
 
-        picker_vpg_preview.adapter = mPreviewAdapter
+        pickerVpgPreview.adapter = mPreviewAdapter
 
         //        mViewPager.setOffscreenPageLimit(1);
 
         mPreviewAdapter.reset(mItemList)
-        picker_vpg_preview.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        pickerVpgPreview.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 mCurrentIndex = position
-                picker_index_total.text = String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size)
+                pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size)
 
                 val photo = mItemList[position]
-                picker_select_check.isChecked = photo.isSelected
-                picker_tv_edit.visibility = if (photo.isGif) View.GONE else View.VISIBLE
+                pickerSelectorCheck.isChecked = photo.isSelected
+                pickerEditTv.visibility = if (photo.isGif) View.GONE else View.VISIBLE
             }
         })
-        picker_vpg_preview.setCurrentItem(mCurrentIndex, false)
+        pickerVpgPreview.setCurrentItem(mCurrentIndex, false)
 
 
-        picker_tv_edit.setOnClickListener {
-            val photo = mItemList[picker_vpg_preview.currentItem]
+        pickerEditTv.setOnClickListener {
+            val photo = mItemList[pickerVpgPreview.currentItem]
             toEdit(Uri.fromFile(File(photo.uri)))
         }
         updateToolbar()
@@ -225,9 +225,9 @@ class PicturePreviewActivity : BaseActivity() {
     private fun initView() {
         val theme = PhotoPicker.theme
 
-        picker_preview_toolbar.setBackgroundColor(theme.titleBgColor)
-        picker_back.setColorFilter(theme.backIvColor)
-        picker_index_total.setTextColor(theme.titleTvColor)
+        pickerTitleBg.setBackgroundColor(theme.titleBgColor)
+        pickerBackIv.setColorFilter(theme.backIvColor)
+        pickerIndexTotalTv.setTextColor(theme.titleTvColor)
 
         val drawable = GradientDrawable()
         drawable.setColor(theme.sendBgColor)
@@ -243,16 +243,16 @@ class PicturePreviewActivity : BaseActivity() {
         val stateListDrawable = StateListDrawable()
         stateListDrawable.addState(intArrayOf(-android.R.attr.state_enabled),layerDrawable)
         stateListDrawable.addState(intArrayOf(android.R.attr.state_enabled),drawable)
-        picker_send.background = stateListDrawable
+        pickerSend.background = stateListDrawable
 
 
         val sendColors = intArrayOf(theme.sendTvColorDisable, theme.sendTvColorEnable)
 
         val sendColorStateList = ColorStateList(sendStates, sendColors)
-        picker_send.setTextColor(sendColorStateList)
+        pickerSend.setTextColor(sendColorStateList)
 
 
-        picker_bottom_bar.setBackgroundColor(theme.titleBgColor)
+        pickerBottomBg.setBackgroundColor(theme.titleBgColor)
 
         val previewColors = intArrayOf(theme.previewTvColorDisable, theme.previewTvColorEnable)
         val previewStates = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled))
@@ -260,33 +260,33 @@ class PicturePreviewActivity : BaseActivity() {
         val previewColorStateList = ColorStateList(previewStates, previewColors)
 
 
-        picker_tv_edit.setTextColor(previewColorStateList)
+        pickerEditTv.setTextColor(previewColorStateList)
 
 
-        picker_select_check.setTextColor(theme.titleTvColor)
+        pickerSelectorCheck.setTextColor(theme.titleTvColor)
 
         val states = arrayOf(intArrayOf(-android.R.attr.state_checked), intArrayOf(android.R.attr.state_checked))
         val colors = intArrayOf(PhotoPicker.theme.sendBgColor, PhotoPicker.theme.sendBgColor)
-        picker_select_check.supportButtonTintList = ColorStateList(states, colors)
+        pickerSelectorCheck.supportButtonTintList = ColorStateList(states, colors)
     }
 
     private fun updateToolbar() {
 
         val selNum = selNum
 
-        picker_index_total.text = String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size)
+        pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size)
 
-        picker_select_check.isChecked = mItemList[mCurrentIndex].isSelected
+        pickerSelectorCheck.isChecked = mItemList[mCurrentIndex].isSelected
         if (mItemList.size == 1 && selNum == 0) {
-            picker_send.setText(R.string.picker_picsel_toolbar_send)
-            picker_send.isEnabled = false
+            pickerSend.setText(R.string.picker_picsel_toolbar_send)
+            pickerSend.isEnabled = false
         } else {
             if (selNum == 0) {
-                picker_send.setText(R.string.picker_picsel_toolbar_send)
-                picker_send.isEnabled = false
+                pickerSend.setText(R.string.picker_picsel_toolbar_send)
+                pickerSend.isEnabled = false
             } else if (selNum <= max) {
-                picker_send.isEnabled = true
-                picker_send.text = resources.getString(R.string.picker_picsel_toolbar_send_num, selNum, max)
+                pickerSend.isEnabled = true
+                pickerSend.text = resources.getString(R.string.picker_picsel_toolbar_send_num, selNum, max)
             }
         }
     }

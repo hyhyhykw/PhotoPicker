@@ -90,16 +90,16 @@ class PictureAdapter(private val max: Int,
     }
 
     private inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val image: SimpleDraweeView = view.picker_photo_image
-        private val mask: View = view.picker_item_mask
-        private val checkBox: AppCompatCheckBox = view.picker_item_checkbox
-        private val ivGif: ImageView = view.picker_iv_gif
-        private val tvTime: TextView = view.picker_video_time
+        private val image: SimpleDraweeView = view.pickerPhotoImage
+        private val mask: View = view.pickerItemMask
+        private val checkBox: AppCompatCheckBox = view.pickerItemCheckBox
+        private val ivGif: ImageView = view.pickerIvGif
+        private val tvTime: TextView = view.pickerVideoTime
 
         init {
             if (video) {
                 checkBox.visibility = View.GONE
-                itemView.picker_lyt_video.visibility = View.VISIBLE
+                itemView.pickerLytVideo.visibility = View.VISIBLE
             } else {
                 val states = arrayOf(intArrayOf(-android.R.attr.state_checked), intArrayOf(android.R.attr.state_checked))
                 val colors = intArrayOf(PhotoPicker.theme.sendBgColor, PhotoPicker.theme.sendBgColor)
@@ -220,8 +220,8 @@ class PictureAdapter(private val max: Int,
 
     internal inner class CameraHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val mMask: ImageButton = itemView.picker_camera_mask
-        private val mTvTitle: TextView = itemView.picker_take_picture
+        private val mMask: ImageButton = itemView.pickerCameraMask
+        private val mTvTitle: TextView = itemView.pickerTakePicTv
 
         fun bind() {
             mTvTitle.setText(if (video)

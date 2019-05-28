@@ -67,10 +67,10 @@ class PictureEditPreviewActivity : BaseActivity() {
                     constraintSet1.applyTo(picker_whole_layout)
                 }
 //                if (mFullScreen) {
-//                    picker_preview_toolbar.visibility = View.INVISIBLE
+//                    pickerTitleBg.visibility = View.INVISIBLE
 //                } else {
 //
-//                    picker_preview_toolbar.visibility = View.VISIBLE
+//                    pickerTitleBg.visibility = View.VISIBLE
 //                }
             }
         } else {
@@ -82,10 +82,10 @@ class PictureEditPreviewActivity : BaseActivity() {
             mView.setOnViewTapListener { _, _, _ ->
                 mFullScreen = !mFullScreen
 //                if (mFullScreen) {
-//                    picker_preview_toolbar.visibility = View.INVISIBLE
+//                    pickerTitleBg.visibility = View.INVISIBLE
 //                } else {
 //
-//                    picker_preview_toolbar.visibility = View.VISIBLE
+//                    pickerTitleBg.visibility = View.VISIBLE
 //                }
                 val autoTransition = AutoTransition()
                 autoTransition.duration = 200
@@ -97,27 +97,27 @@ class PictureEditPreviewActivity : BaseActivity() {
                 }
             }
         }
-        mView.id = R.id.picker_photo_image
+        mView.id = R.id.pickerPhotoImage
 
 
         picker_whole_layout.addView(mView)
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(picker_whole_layout)
-        constraintSet.constrainHeight(R.id.picker_photo_image, 0)
-        constraintSet.constrainWidth(R.id.picker_photo_image, 0)
-        constraintSet.connect(R.id.picker_photo_image, ConstraintSet.TOP, R.id.picker_back, ConstraintSet.BOTTOM)
-        constraintSet.connect(R.id.picker_photo_image, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-        constraintSet.connect(R.id.picker_photo_image, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-        constraintSet.connect(R.id.picker_photo_image, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+        constraintSet.constrainHeight(R.id.pickerPhotoImage, 0)
+        constraintSet.constrainWidth(R.id.pickerPhotoImage, 0)
+        constraintSet.connect(R.id.pickerPhotoImage, ConstraintSet.TOP, R.id.pickerBackIv, ConstraintSet.BOTTOM)
+        constraintSet.connect(R.id.pickerPhotoImage, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        constraintSet.connect(R.id.pickerPhotoImage, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+        constraintSet.connect(R.id.pickerPhotoImage, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
         constraintSet.applyTo(picker_whole_layout)
 
         constraintSet1.clone(constraintSet)
 
         constraintSet2.clone(constraintSet)
-        constraintSet2.clear(R.id.picker_title_bg)
-        constraintSet2.connect(R.id.picker_title_bg, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        constraintSet2.setMargin(R.id.picker_title_bg, ConstraintSet.BOTTOM, 2)
+        constraintSet2.clear(R.id.pickerTitleBg)
+        constraintSet2.connect(R.id.pickerTitleBg, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        constraintSet2.setMargin(R.id.pickerTitleBg, ConstraintSet.BOTTOM, 2)
 
         Looper.myQueue().addIdleHandler {
             if (canLoadImage()) {
@@ -136,9 +136,9 @@ class PictureEditPreviewActivity : BaseActivity() {
         }
 
 
-        picker_back.setOnClickListener { onBackPressed() }
+        pickerBackIv.setOnClickListener { onBackPressed() }
 
-        picker_sure.setOnClickListener {
+        pickerSure.setOnClickListener {
             val broadcast = Intent()
             broadcast.action = PICKER_ACTION_MEDIA_SURE
             broadcast.putExtra(PICKER_EXTRA_PHOTO, mPicItem)
@@ -149,21 +149,21 @@ class PictureEditPreviewActivity : BaseActivity() {
 
 
     private fun initView() {
-        val layoutParams = picker_title_bg.layoutParams
+        val layoutParams = pickerTitleBg.layoutParams
 
         layoutParams.height = getStatusBarHeight() + dp(48f)
-        picker_title_bg.layoutParams = layoutParams
+        pickerTitleBg.layoutParams = layoutParams
 
         val theme = PhotoPicker.theme
 
-        picker_title_bg.setBackgroundColor(theme.titleBgColor)
-        picker_back.setColorFilter(theme.backIvColor)
-        picker_index_total.setTextColor(theme.titleTvColor)
+        pickerTitleBg.setBackgroundColor(theme.titleBgColor)
+        pickerBackIv.setColorFilter(theme.backIvColor)
+        pickerIndexTotalTv.setTextColor(theme.titleTvColor)
 
         val drawable = GradientDrawable()
         drawable.setColor(theme.sendBgColor)
         drawable.cornerRadius = dp(5f).toFloat()
-//        picker_sure.background = drawable
+//        pickerSure.background = drawable
         val sendStates = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_enabled))
 
         val colorDrawable = GradientDrawable()
@@ -175,12 +175,12 @@ class PictureEditPreviewActivity : BaseActivity() {
         val stateListDrawable = StateListDrawable()
         stateListDrawable.addState(intArrayOf(-android.R.attr.state_enabled),layerDrawable)
         stateListDrawable.addState(intArrayOf(android.R.attr.state_enabled),drawable)
-        picker_sure.background = stateListDrawable
+        pickerSure.background = stateListDrawable
 
         val sendColors = intArrayOf(theme.sendTvColorDisable, theme.sendTvColorEnable)
 
         val sendColorStateList = ColorStateList(sendStates, sendColors)
-        picker_sure.setTextColor(sendColorStateList)
+        pickerSure.setTextColor(sendColorStateList)
 
     }
 

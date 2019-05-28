@@ -108,41 +108,41 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
         mSelectItems = intent.getParcelableArrayListExtra(EXTRA_ITEMS)
 
-        picker_back.setOnClickListener { onBackPressed() }
+        pickerBackIv.setOnClickListener { onBackPressed() }
 
-        picker_type_text.isEnabled = false
-        picker_type_text.setText(if (video) R.string.picker_all_video else R.string.picker_all_image)
+        pickerCateTv.isEnabled = false
+        pickerCateTv.setText(if (video) R.string.picker_all_video else R.string.picker_all_image)
 
-        picker_preview_text.isEnabled = !mSelectItems.isNullOrEmpty()
+        pickerPreviewTv.isEnabled = !mSelectItems.isNullOrEmpty()
 
-        picker_title.setText(if (video) R.string.picker_picsel_videotype else R.string.picker_picsel_pictype)
+        pickerTitle.setText(if (video) R.string.picker_picsel_videotype else R.string.picker_picsel_pictype)
 
         cateHeight = (screenWidth() * 1.3f).toInt()
 
         val constraintSet = ConstraintSet()
-        constraintSet.clone(picker_selector_root)
-        constraintSet.setMargin(R.id.picker_back, ConstraintSet.TOP, statusBarHeight)
-        constraintSet.constrainHeight(R.id.picker_catalog_lst, cateHeight)
-        constraintSet.applyTo(picker_selector_root)
+        constraintSet.clone(pickerSelectorRoot)
+        constraintSet.setMargin(R.id.pickerBackIv, ConstraintSet.TOP, statusBarHeight)
+        constraintSet.constrainHeight(R.id.pickerCateDlgLst, cateHeight)
+        constraintSet.applyTo(pickerSelectorRoot)
 
-        picker_catalog_lst.translationY = cateHeight.toFloat()
+        pickerCateDlgLst.translationY = cateHeight.toFloat()
 
         if (video) {
-            picker_preview_text.visibility = View.GONE
-            picker_send.visibility = View.GONE
+            pickerPreviewTv.visibility = View.GONE
+            pickerSend.visibility = View.GONE
         }
         if (null != mSelectItems) {
             val size = mSelectItems!!.size
             if (size == 0) {
-                picker_send.isEnabled = false
-                picker_send.setText(R.string.picker_picsel_toolbar_send)
-                picker_preview_text.isEnabled = false
-                picker_preview_text.setText(R.string.picker_picsel_toolbar_preview)
+                pickerSend.isEnabled = false
+                pickerSend.setText(R.string.picker_picsel_toolbar_send)
+                pickerPreviewTv.isEnabled = false
+                pickerPreviewTv.setText(R.string.picker_picsel_toolbar_preview)
             } else if (size <= max) {
-                picker_send.isEnabled = true
-                picker_send.text = resources.getString(R.string.picker_picsel_toolbar_send_num, size, max)
-                picker_preview_text.isEnabled = true
-                picker_preview_text.text = String.format(resources.getString(R.string.picker_picsel_toolbar_preview_num), size)
+                pickerSend.isEnabled = true
+                pickerSend.text = resources.getString(R.string.picker_picsel_toolbar_send_num, size, max)
+                pickerPreviewTv.isEnabled = true
+                pickerPreviewTv.text = String.format(resources.getString(R.string.picker_picsel_toolbar_preview_num), size)
             }
         }
 
@@ -184,12 +184,12 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             }
         }
 
-        picker_photo_grd.setHasFixedSize(true)
-        picker_photo_grd.adapter = mGridViewAdapter
+        pickerPhotoGrd.setHasFixedSize(true)
+        pickerPhotoGrd.adapter = mGridViewAdapter
         val gridLayoutManager = GridLayoutManager(this, 4)
-        picker_photo_grd.layoutManager = gridLayoutManager
-        picker_photo_grd.addItemDecoration(MyGridItemDecoration(this))
-        picker_photo_grd.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        pickerPhotoGrd.layoutManager = gridLayoutManager
+        pickerPhotoGrd.addItemDecoration(MyGridItemDecoration(this))
+        pickerPhotoGrd.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!canLoadImage()) return
@@ -210,7 +210,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             selectCateIndex = position
             if (isChange) {
                 val item = mCateDlgAdapter.getItem(position)
-                picker_type_text.text = item.name
+                pickerCateTv.text = item.name
 
                 postDelay(Runnable {
                     thread {
@@ -221,10 +221,10 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                             mGridViewAdapter.reset(MediaListHolder.currentPhotos)
                         }
                     }
-                }, 320)
+                }, 302)
             }
         }
-        picker_catalog_lst.adapter = mCateDlgAdapter
+        pickerCateDlgLst.adapter = mCateDlgAdapter
         //        mCatalogListView.setTranslationY(catalogHeight);
 
 
@@ -244,9 +244,9 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
     private fun initTheme() {
         val theme = PhotoPicker.theme
 
-        picker_title_bg.setBackgroundColor(theme.titleBgColor)
-        picker_back.setColorFilter(theme.backIvColor)
-        picker_title.setTextColor(theme.titleTvColor)
+        pickerTitleBg.setBackgroundColor(theme.titleBgColor)
+        pickerBackIv.setColorFilter(theme.backIvColor)
+        pickerTitle.setTextColor(theme.titleTvColor)
 
         val drawable = GradientDrawable()
         drawable.setColor(theme.sendBgColor)
@@ -264,12 +264,12 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         stateListDrawable.addState(intArrayOf(-android.R.attr.state_enabled), layerDrawable)
         stateListDrawable.addState(intArrayOf(android.R.attr.state_enabled), drawable)
 //        val sendBg= stateListDrawable
-        picker_send.background = stateListDrawable
+        pickerSend.background = stateListDrawable
 
         val sendColors = intArrayOf(theme.sendTvColorDisable, theme.sendTvColorEnable)
 
         val sendColorStateList = ColorStateList(sendStates, sendColors)
-        picker_send.setTextColor(sendColorStateList)
+        pickerSend.setTextColor(sendColorStateList)
 
 
         val previewColors = intArrayOf(theme.previewTvColorDisable, theme.previewTvColorEnable)
@@ -277,10 +277,10 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
         val previewColorStateList = ColorStateList(previewStates, previewColors)
 
-        picker_type_text.setTextColor(previewColorStateList)
-        picker_preview_text.setTextColor(previewColorStateList)
+        pickerCateTv.setTextColor(previewColorStateList)
+        pickerPreviewTv.setTextColor(previewColorStateList)
 
-        picker_bottom_bg.setBackgroundColor(theme.titleBgColor)
+        pickerBottomBg.setBackgroundColor(theme.titleBgColor)
 
         val typeDrawable: Int =
                 if (PickerTheme.isLightColor(theme.titleBgColor)) {
@@ -290,8 +290,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                     line1.setBackgroundColor(PickerWhiteTheme.color1)
                     R.drawable.picker_type_selector_wechat
                 }
-        picker_preview_type.setImageResource(typeDrawable)
-
+        pickerCateIv.setImageResource(typeDrawable)
 
     }
 
@@ -321,8 +320,8 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                 .scanner { success ->
                     if (success) {
 
-                        picker_photo_load.visibility = View.GONE
-                        postDelay(Runnable { mGridViewAdapter.reset(MediaListHolder.currentPhotos) }, 10)
+                        pickerPhotoLoad.visibility = View.GONE
+                        postDelay(Runnable { mGridViewAdapter.reset(MediaListHolder.currentPhotos) }, 2)
 
                         updateToolbar()
 //
@@ -333,25 +332,25 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                 }
 
 
-        picker_send.setOnClickListener {
+        pickerSend.setOnClickListener {
 
             setResult(Activity.RESULT_OK, Intent()
                     .putParcelableArrayListExtra(EXTRA_ITEMS, ArrayList(MediaListHolder.selectPhotos)))
             finish()
         }
 
-        picker_type_text.setText(if (video) R.string.picker_all_video else R.string.picker_all_image)
+        pickerCateTv.setText(if (video) R.string.picker_all_video else R.string.picker_all_image)
 
-        picker_type_text.isEnabled = true
-        picker_type_text.setOnClickListener { showCatalog() }
+        pickerCateTv.isEnabled = true
+        pickerCateTv.setOnClickListener { showCatalog() }
 
         if (preview && !video) {
-            picker_preview_text.visibility = View.VISIBLE
+            pickerPreviewTv.visibility = View.VISIBLE
         } else {
-            picker_preview_text.visibility = View.GONE
+            pickerPreviewTv.visibility = View.GONE
         }
 
-        picker_preview_text.setOnClickListener {
+        pickerPreviewTv.setOnClickListener {
 
             val item = MediaListHolder.selectPhotos[0]
             val intent = Intent(this@PictureSelectorActivity, PicturePreviewActivity::class.java)
@@ -363,9 +362,9 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         }
 
 
-        picker_selector_mask.setOnClickListener(MaskClickListener())
-        picker_bottom_mask.setOnClickListener(MaskClickListener())
-        picker_catalog_mask.setOnClickListener(MaskClickListener())
+        pickerSelectorMask.setOnClickListener(MaskClickListener())
+        pickerBottomTask.setOnClickListener(MaskClickListener())
+        pickerCateDlgMask.setOnClickListener(MaskClickListener())
 
     }
 
@@ -415,8 +414,8 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
     private fun showCatalog() {
         if (isAnimating) return
 
-        picker_catalog_mask.visibility = View.VISIBLE
-        val translationY = ObjectAnimator.ofFloat(picker_catalog_lst, "translationY", cateHeight.toFloat(), 0f)
+        pickerCateDlgMask.visibility = View.VISIBLE
+        val translationY = ObjectAnimator.ofFloat(pickerCateDlgLst, "translationY", cateHeight.toFloat(), 0f)
         translationY.duration = 300
         translationY.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
@@ -427,8 +426,8 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
             override fun onAnimationStart(animation: Animator) {
                 super.onAnimationStart(animation)
-                picker_selector_mask.visibility = View.VISIBLE
-                picker_bottom_mask.visibility = View.VISIBLE
+                pickerSelectorMask.visibility = View.VISIBLE
+                pickerBottomTask.visibility = View.VISIBLE
                 isAnimating = true
                 isShowing = true
             }
@@ -438,14 +437,14 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
     private fun hideCatalog() {
         if (isAnimating) return
-        val translationY = ObjectAnimator.ofFloat(picker_catalog_lst, "translationY", 0f, cateHeight.toFloat())
+        val translationY = ObjectAnimator.ofFloat(pickerCateDlgLst, "translationY", 0f, cateHeight.toFloat())
         translationY.duration = 300
         translationY.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
-                picker_selector_mask.visibility = View.GONE
-                picker_bottom_mask.visibility = View.GONE
-                picker_catalog_mask.visibility = View.GONE
+                pickerSelectorMask.visibility = View.GONE
+                pickerBottomTask.visibility = View.GONE
+                pickerCateDlgMask.visibility = View.GONE
                 isAnimating = false
                 isShowing = false
                 translationY.removeAllListeners()
@@ -666,7 +665,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 //                    if (mGridViewAdapter.itemCount > mCount) {
 //                        Fresco.getImagePipeline().pause()
 //                    }
-//                    postDelay(Runnable { picker_photo_grd.smoothScrollToPosition(0) }, 50)
+//                    postDelay(Runnable { pickerPhotoGrd.smoothScrollToPosition(0) }, 50)
 
 //                    mCateDlgAdapter.reset(MediaListHolder.allDirectories)
                     updateToolbar()
@@ -687,15 +686,15 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
     private fun updateToolbar() {
         val sum = totalSelectedNum
         if (sum == 0) {
-            picker_send.isEnabled = false
-            picker_send.setText(R.string.picker_picsel_toolbar_send)
-            picker_preview_text.isEnabled = false
-            picker_preview_text.setText(R.string.picker_picsel_toolbar_preview)
+            pickerSend.isEnabled = false
+            pickerSend.setText(R.string.picker_picsel_toolbar_send)
+            pickerPreviewTv.isEnabled = false
+            pickerPreviewTv.setText(R.string.picker_picsel_toolbar_preview)
         } else if (sum <= max) {
-            picker_send.isEnabled = true
-            picker_send.text = resources.getString(R.string.picker_picsel_toolbar_send_num, sum, max)
-            picker_preview_text.isEnabled = true
-            picker_preview_text.text = String.format(resources.getString(R.string.picker_picsel_toolbar_preview_num), sum)
+            pickerSend.isEnabled = true
+            pickerSend.text = resources.getString(R.string.picker_picsel_toolbar_send_num, sum, max)
+            pickerPreviewTv.isEnabled = true
+            pickerPreviewTv.text = String.format(resources.getString(R.string.picker_picsel_toolbar_preview_num), sum)
         }
 
     }

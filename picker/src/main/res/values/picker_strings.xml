@@ -41,7 +41,7 @@
 
     <string name="picker_failure">失败</string>
 
-    <string name="picker_title_dialog">提示</string>
+    <string name="pickerTitle_dialog">提示</string>
     <string name="picker_message_permission_rationale">使用图片选择功能，App需要以下权限，请允许：\n\n%1$s</string>
     <string name="picker_message_permission_always_failed">使用图片选择功能，App需要以下权限，请在设置中开启：\n\n%1$s</string>
     <string name="picker_photo_failure">拍照失败</string>
@@ -66,7 +66,7 @@
     <string name="picker_original">原图</string>
     <string name="picker_preview">预览</string>
     <string name="picker_sticker_not_download">贴纸没有下载，是否下载？</string>
-    <string name="picker_load_error">加载失败，点击重新加载</string>
+    <string name="pickerLoadError">加载失败，点击重新加载</string>
     <string name="picker_child_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json/child-category.json</string>
     <string name="picker_category">https://gitee.com/hyhyhykw/Sucai/raw/master/json/Category.json</string>
     <string name="picker_video_play_error">文件播放错误</string>

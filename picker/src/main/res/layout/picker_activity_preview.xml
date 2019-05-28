@@ -8,45 +8,45 @@
     android:layout_height="match_parent">
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@id/picker_vpg_preview"
+        android:id="@id/pickerVpgPreview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@android:color/black"
-        app:layout_constraintBottom_toTopOf="@id/picker_bottom_bar"
-        app:layout_constraintTop_toBottomOf="@id/picker_preview_toolbar"/>
+        app:layout_constraintBottom_toTopOf="@id/pickerBottomBg"
+        app:layout_constraintTop_toBottomOf="@id/pickerTitleBg"/>
 
 
     <View
-        android:id="@id/picker_preview_toolbar"
+        android:id="@id/pickerTitleBg"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:clickable="true"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
-        android:id="@id/picker_back"
+        android:id="@id/pickerBackIv"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:foreground="@drawable/picker_foreground"
         android:src="@drawable/picker_picsel_back_normal"
-        app:layout_constraintBottom_toBottomOf="@id/picker_preview_toolbar"
-        app:layout_constraintStart_toStartOf="@id/picker_preview_toolbar"
+        app:layout_constraintBottom_toBottomOf="@id/pickerTitleBg"
+        app:layout_constraintStart_toStartOf="@id/pickerTitleBg"
         tools:ignore="ContentDescription,UnusedAttribute"
         tools:targetApi="m"/>
 
     <TextView
-        android:id="@id/picker_index_total"
+        android:id="@id/pickerIndexTotalTv"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="12dp"
-        android:layout_toEndOf="@id/picker_back"
+        android:layout_toEndOf="@id/pickerBackIv"
         android:gravity="center_vertical"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@id/picker_preview_toolbar"
-        app:layout_constraintStart_toEndOf="@id/picker_back"/>
+        app:layout_constraintBottom_toBottomOf="@id/pickerTitleBg"
+        app:layout_constraintStart_toEndOf="@id/pickerBackIv"/>
 
     <TextView
-        android:id="@id/picker_send"
+        android:id="@id/pickerSend"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_gravity="center"
@@ -59,21 +59,21 @@
         android:text="@string/picker_picsel_toolbar_send"
         android:textAllCaps="true"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@id/picker_preview_toolbar"
-        app:layout_constraintEnd_toEndOf="@id/picker_preview_toolbar"
+        app:layout_constraintBottom_toBottomOf="@id/pickerTitleBg"
+        app:layout_constraintEnd_toEndOf="@id/pickerTitleBg"
         tools:ignore="UnusedAttribute"
         tools:targetApi="m"/>
 
 
     <View
-        android:id="@id/picker_bottom_bar"
+        android:id="@id/pickerBottomBg"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
-        android:id="@+id/picker_tv_edit"
+        android:id="@+id/pickerEditTv"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -82,21 +82,21 @@
         android:paddingEnd="5dp"
         android:text="@string/picker_photo_edit"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@id/picker_bottom_bar"
-        app:layout_constraintStart_toStartOf="@id/picker_bottom_bar"
-        app:layout_constraintTop_toTopOf="@id/picker_bottom_bar"
+        app:layout_constraintBottom_toBottomOf="@id/pickerBottomBg"
+        app:layout_constraintStart_toStartOf="@id/pickerBottomBg"
+        app:layout_constraintTop_toTopOf="@id/pickerBottomBg"
         tools:ignore="RelativeOverlap"/>
 
     <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@id/picker_select_check"
+        android:id="@id/pickerSelectorCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="16dp"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/picker_bottom_bar"
-        app:layout_constraintEnd_toEndOf="@id/picker_bottom_bar"
-        app:layout_constraintTop_toTopOf="@id/picker_bottom_bar"/>
+        app:layout_constraintBottom_toBottomOf="@id/pickerBottomBg"
+        app:layout_constraintEnd_toEndOf="@id/pickerBottomBg"
+        app:layout_constraintTop_toTopOf="@id/pickerBottomBg"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

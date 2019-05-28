@@ -15,19 +15,19 @@
               tools:ignore="UnusedAttribute">
 
     <!--<ImageView-->
-        <!--android:id="@id/picker_iv_crystal"-->
+        <!--android:id="@id/pickerIvCrystal"-->
         <!--android:layout_width="50dp"-->
         <!--android:layout_height="50dp"-->
         <!--android:contentDescription="@string/picker_app_name"-->
         <!--android:scaleType="centerCrop"/>-->
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@id/picker_iv_crystal"
+        android:id="@id/pickerIvCrystal"
         android:layout_width="50dp"
         android:layout_height="50dp"
         app:fadeDuration="300"/>
     <TextView
-        android:id="@id/picker_tv_name"
+        android:id="@id/pickerTvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"

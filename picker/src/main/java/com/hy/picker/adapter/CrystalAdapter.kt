@@ -42,7 +42,7 @@ class CrystalAdapter(private val cate: String, private val mDefaultDrawable: Dra
 
     inner class ViewHolder constructor(itemView: View) :
             BaseRecyclerAdapter.BaseViewHolder(itemView) {
-        private val mIvCrystal: SimpleDraweeView = itemView.picker_iv_crystal
+        private val mIvCrystal: SimpleDraweeView = itemView.pickerIvCrystal
         private val mIvDownload: ImageView = itemView.findViewById(R.id.picker_iv_download)
         private val mTvSize: TextView = itemView.findViewById(R.id.picker_tv_size)
         private val mTvWait: TextView = itemView.findViewById(R.id.picker_tv_wait)
@@ -97,7 +97,7 @@ class CrystalAdapter(private val cate: String, private val mDefaultDrawable: Dra
 
         private fun showDownloadDialog(context: Context,position: Int, exist: ExistBean) {
             MaterialDialog(context)
-                    .title(R.string.picker_title_dialog)
+                    .title(R.string.pickerTitle_dialog)
                     .message(R.string.picker_sticker_not_download)
                     .positiveButton(android.R.string.ok,click = {
                         download(position, exist)

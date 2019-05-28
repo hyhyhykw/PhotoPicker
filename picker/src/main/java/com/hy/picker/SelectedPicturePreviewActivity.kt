@@ -21,37 +21,37 @@ class SelectedPicturePreviewActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.picker_activity_selected_preview)
-        val layoutParams = picker_back.layoutParams as ViewGroup.MarginLayoutParams
+        val layoutParams = pickerBackIv.layoutParams as ViewGroup.MarginLayoutParams
 
         layoutParams.topMargin = getStatusBarHeight()
-        picker_back.layoutParams = layoutParams
+        pickerBackIv.layoutParams = layoutParams
 
         val theme = PhotoPicker.theme
 
-        picker_title_bg.setBackgroundColor(theme.titleBgColor)
-        picker_back.setColorFilter(theme.backIvColor)
-        picker_index_total.setTextColor(theme.titleTvColor)
+        pickerTitleBg.setBackgroundColor(theme.titleBgColor)
+        pickerBackIv.setColorFilter(theme.backIvColor)
+        pickerIndexTotalTv.setTextColor(theme.titleTvColor)
 
         val intent = intent
         mCurrentIndex = intent.getIntExtra(EXTRA_INDEX, 0)
         val mItemList: ArrayList<Photo> = intent.getParcelableArrayListExtra(EXTRA_ITEMS)
 
-        picker_index_total.text = String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size)
+        pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size)
 
-        picker_back.setOnClickListener { onBackPressed() }
+        pickerBackIv.setOnClickListener { onBackPressed() }
 
         val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.mDefaultDrawable)!!
         val adapter2 = PreviewAdapter(defaultDrawable)
-        picker_vpg_preview.adapter = adapter2
+        pickerVpgPreview.adapter = adapter2
 
         adapter2.setOnItemClickListener { finish() }
         adapter2.reset(mItemList)
 
-        picker_vpg_preview.setCurrentItem(mCurrentIndex, false)
-        picker_vpg_preview.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        pickerVpgPreview.setCurrentItem(mCurrentIndex, false)
+        pickerVpgPreview.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 mCurrentIndex = position
-                picker_index_total.text = String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size)
+                pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size)
 
             }
         })

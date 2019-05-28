@@ -9,7 +9,7 @@
 
 
     <ImageButton
-        android:id="@id/picker_camera_mask"
+        android:id="@id/pickerCameraMask"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/picker_selector_grid_camera_mask"
@@ -18,7 +18,7 @@
         tools:ignore="ContentDescription"/>
 
     <TextView
-        android:id="@id/picker_take_picture"
+        android:id="@id/pickerTakePicTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -28,8 +28,8 @@
         android:text="@string/picker_picsel_take_picture"
         android:textColor="@android:color/white"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@id/picker_camera_mask"
+        app:layout_constraintBottom_toBottomOf="@id/pickerCameraMask"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/picker_camera_mask"/>
+        app:layout_constraintTop_toTopOf="@id/pickerCameraMask"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

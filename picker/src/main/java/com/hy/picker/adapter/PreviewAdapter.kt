@@ -73,7 +73,7 @@ class PreviewAdapter(private val mDefaultDrawable: Drawable) : BaseRecyclerAdapt
 
 
     internal inner class LongHolder(itemView: View) : BaseViewHolder(itemView) {
-        private val mImageView: PickerScaleImageView = itemView.findViewById(R.id.picker_item_image)
+        private val mImageView: PickerScaleImageView = itemView.findViewById(R.id.pickerItemImage)
 
         override fun bind() {
             val position = adapterPosition
@@ -91,7 +91,7 @@ class PreviewAdapter(private val mDefaultDrawable: Drawable) : BaseRecyclerAdapt
     }
 
     internal inner class NormalHolder(itemView: View) : BaseViewHolder(itemView) {
-        private val mDraweeView: PhotoDraweeView = itemView.findViewById(R.id.picker_item_image)
+        private val mDraweeView: PhotoDraweeView = itemView.findViewById(R.id.pickerItemImage)
 
         override fun bind() {
             val position = adapterPosition
@@ -104,7 +104,7 @@ class PreviewAdapter(private val mDefaultDrawable: Drawable) : BaseRecyclerAdapt
     }
 
     internal inner class GifHolder(itemView: View) : BaseViewHolder(itemView) {
-        private val mDraweeView: SimpleDraweeView = itemView.findViewById(R.id.picker_item_image)
+        private val mDraweeView: SimpleDraweeView = itemView.findViewById(R.id.pickerItemImage)
 
         override fun bind() {
             val position = adapterPosition

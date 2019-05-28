@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!--<attr name="picker_back_color" format="color"/>-->
-    <!--<attr name="picker_title_bg" format="color"/>-->
-    <!--<attr name="picker_send_color" format="color"/>-->
-    <!--<attr name="picker_title_color" format="color"/>-->
+    <!--<attr name="pickerBackIv_color" format="color"/>-->
+    <!--<attr name="pickerTitleBg" format="color"/>-->
+    <!--<attr name="pickerSend_color" format="color"/>-->
+    <!--<attr name="pickerTitle_color" format="color"/>-->
     <!--<attr name="picker_bottom_color" format="color"/>-->
 
-    <!--<attr name="picker_send_color_enable" format="color"/>-->
-    <!--<attr name="picker_send_color_disable" format="color"/>-->
+    <!--<attr name="pickerSend_color_enable" format="color"/>-->
+    <!--<attr name="pickerSend_color_disable" format="color"/>-->
 
     <!--<attr name="picker_preview_color_disable" format="color"/>-->
     <!--<attr name="picker_preview_color_enable" format="color"/>-->

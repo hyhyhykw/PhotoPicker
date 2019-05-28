@@ -10,7 +10,7 @@ import com.hy.picker.adapter.CrystalAdapter
 import com.hy.picker.core.CrystalResult
 import com.hy.picker.utils.DefaultItemDecoration
 import com.hy.picker.utils.NetworkUtils
-import kotlinx.android.synthetic.main.picker_activity_crystal.*
+import kotlinx.android.synthetic.main.picker_activity_list.*
 
 /**
  * Created time : 2018/8/27 16:42.
@@ -24,7 +24,7 @@ class PickerCrystalActivity : BaseListActivity() {
     private var cate = "ali"
 
     override fun initView() {
-        picker_rcy_crystal.addItemDecoration(DefaultItemDecoration(Color.parseColor("#f5f5f5")))
+        pickerRcy.addItemDecoration(DefaultItemDecoration(Color.parseColor("#f5f5f5")))
         val id = intent.getIntExtra(EXTRA_ID, 1)
         cate = getCateFromId(id)
 
@@ -38,8 +38,8 @@ class PickerCrystalActivity : BaseListActivity() {
             finish()
         }
 
-        picker_rcy_crystal.adapter = mCrystalAdapter
-        picker_rcy_crystal.layoutManager = GridLayoutManager(this, 3)
+        pickerRcy.adapter = mCrystalAdapter
+        pickerRcy.layoutManager = GridLayoutManager(this, 3)
 
         Looper.myQueue().addIdleHandler {
             initData()

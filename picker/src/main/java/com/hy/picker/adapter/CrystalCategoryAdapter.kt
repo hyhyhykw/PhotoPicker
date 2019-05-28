@@ -32,8 +32,8 @@ class CrystalCategoryAdapter(private val mDefaultDrawable: Drawable) : BaseRecyc
     }
 
     inner class ViewHolder internal constructor(itemView: View) : BaseRecyclerAdapter.BaseViewHolder(itemView) {
-        private val mIvCrystal: SimpleDraweeView = itemView.picker_iv_crystal
-        private val mTvName: TextView = itemView.picker_tv_name
+        private val mIvCrystal: SimpleDraweeView = itemView.pickerIvCrystal
+        private val mTvName: TextView = itemView.pickerTvName
 
         override fun bind() {
             val item = getItem(adapterPosition)

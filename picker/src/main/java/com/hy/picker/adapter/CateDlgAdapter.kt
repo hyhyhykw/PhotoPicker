@@ -79,10 +79,10 @@ class CateDlgAdapter(private val mDefaultDrawable: Drawable) : BaseAdapter() {
 
     private inner class ViewHolder
     constructor(internal val itemView: View) {
-        internal val image: SimpleDraweeView = itemView.picker_catalog_image
-        internal val tvName: TextView = itemView.picker_catalog_name
-        internal val tvNumber: TextView = itemView.findViewById(R.id.picker_catalog_photo_number)
-        internal val selected: ImageView = itemView.findViewById(R.id.picker_catalog_selected)
+        internal val image: SimpleDraweeView = itemView.pickerCateLogImage
+        internal val tvName: TextView = itemView.pickerCateName
+        internal val tvNumber: TextView = itemView.findViewById(R.id.pickerCatePhotoNum)
+        internal val selected: ImageView = itemView.findViewById(R.id.pickerCatalogSelected)
 
         init {
             selected.setColorFilter(PhotoPicker.theme.sendBgColor)
