@@ -212,7 +212,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                 val item = mCateDlgAdapter.getItem(position)
                 pickerCateTv.text = item.name
 
-                postDelay(Runnable {
+                postDelay({
                     thread {
                         MediaListHolder.currentPhotos.clear()
                         MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories[position].photos)
@@ -321,7 +321,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                     if (success) {
 
                         pickerPhotoLoad.visibility = View.GONE
-                        postDelay(Runnable { mGridViewAdapter.reset(MediaListHolder.currentPhotos) }, 2)
+                        postDelay({ mGridViewAdapter.reset(MediaListHolder.currentPhotos) }, 2)
 
                         updateToolbar()
 //

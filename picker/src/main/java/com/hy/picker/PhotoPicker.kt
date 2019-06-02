@@ -21,10 +21,10 @@ import kotlin.properties.Delegates
 class PhotoPicker {
 
 
-    private var isEdit: Boolean = false
+    private var isEdit = false
 
 
-    private var isVideo: Boolean = false
+    private var isVideo = false
 
     private var max = 1
 

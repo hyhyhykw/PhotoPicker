@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.hy.picker.ActivityUtilsKt;
 import com.hy.picker.PhotoContext;
 
 import java.util.Objects;
@@ -65,8 +66,8 @@ public class Photo implements Parcelable, Comparable<Photo> {
 
                 }
             } else {
-                width = PhotoContext.INSTANCE.getScreenWidth();
-                height = PhotoContext.INSTANCE.getScreenHeight();
+                width = ActivityUtilsKt.screenWidth(PhotoContext.INSTANCE.getContext());
+                height = ActivityUtilsKt.screenHeight(PhotoContext.INSTANCE.getContext());
             }
     }
 

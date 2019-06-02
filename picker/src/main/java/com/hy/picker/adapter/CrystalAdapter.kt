@@ -9,13 +9,13 @@ import android.widget.TextView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.facebook.drawee.drawable.ScalingUtils
 import com.facebook.drawee.view.SimpleDraweeView
-import com.hy.picker.PhotoContext
 import com.hy.picker.PictureSelectorActivity
 import com.hy.picker.R
 import com.hy.picker.core.Crystal
 import com.hy.picker.core.ExistBean
 import com.hy.picker.core.util.CrystalDownloadUtils
 import com.hy.picker.dp
+import com.hy.picker.screenWidth
 import com.hy.picker.utils.FileUtils
 import com.hy.picker.view.CompletedView
 import kotlinx.android.synthetic.main.picker_item_crystal.view.*
@@ -53,7 +53,7 @@ class CrystalAdapter(private val cate: String, private val mDefaultDrawable: Dra
             val item = getItem(position)
 
             if (imageSize == 0) {
-                imageSize = (PhotoContext.screenWidth - 4) / 4 - itemView.context.dp(20f)
+                imageSize = (itemView.context.screenWidth() - 4) / 4 - itemView.context.dp(20f)
             }
 
             val layoutParams = mIvCrystal.layoutParams

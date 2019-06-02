@@ -168,12 +168,13 @@ fun Fragment.dp(dpValue: Float): Int = resources.dp(dpValue)
 
 val MAIN_HANDLER = Handler(Looper.getMainLooper())
 
-fun postDelay(action: Runnable, delay: Long) {
-    MAIN_HANDLER.postDelayed(action, delay)
+fun postDelay(block: () -> Unit, delay: Long) {
+
+    MAIN_HANDLER.postDelayed({ block() }, delay)
 }
 
-fun post(action: Runnable) {
-    postDelay(action, 0)
+fun post(block: () -> Unit) {
+    postDelay(block, 0)
 }
 
 
@@ -234,7 +235,7 @@ fun isFastDoubleClick(isShow: Boolean = true): Boolean {
  * @param view     视图
  * @param listener 点击事件
  */
-fun setViewClick(view: View, listener: View.OnClickListener) {
+fun setViewClick(view: View, listener: (View)->Unit) {
     setViewClick(view, listener, true)
 }
 
@@ -245,10 +246,10 @@ fun setViewClick(view: View, listener: View.OnClickListener) {
  * @param view     视图
  * @param listener 点击事件
  */
-fun setViewClick(view: View, listener: View.OnClickListener, isShow: Boolean) {
+fun setViewClick(view: View, listener: (View)->Unit, isShow: Boolean) {
     view.setOnClickListener { v ->
         if (isFastDoubleClick(isShow)) return@setOnClickListener
-        listener.onClick(v)
+        listener(v)
     }
 }
 
