@@ -26,8 +26,14 @@ import org.jetbrains.anko.toast
 private const val EXTRA_KEY_STRING = "bundle"
 
 @JvmOverloads
-fun Fragment.toActivity(cla: Class<out Activity>, bundle: Bundle? = null, data: Uri? = null) =
-        context?.toActivity(cla, bundle, data)
+fun Fragment.toActivity(cla: Class<out Activity>, bundle: Bundle? = null, data: Uri? = null){
+
+    val intent = Intent(context, cla)
+    if (null != bundle) intent.putExtra(EXTRA_KEY_STRING, bundle)
+    if (null != data) intent.data = data
+
+    startActivity(intent)
+}
 
 
 /**
