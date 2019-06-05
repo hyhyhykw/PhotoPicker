@@ -75,7 +75,10 @@ fun Fragment.toActivityForResult(
         requestCode: Int,
         bundle: Bundle? = null
 ) {
-    activity?.toActivityForResult(cla, requestCode, bundle)
+
+    val intent = Intent(context, cla)
+    if (null != bundle) intent.putExtra(EXTRA_KEY_STRING, bundle)
+    startActivityForResult(intent, requestCode)
 }
 
 @JvmOverloads
