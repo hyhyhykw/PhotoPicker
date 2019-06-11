@@ -19,17 +19,22 @@ import kotlinx.android.synthetic.main.picker_activity_list.*
  */
 class PickerCrystalCategoryActivity : BaseListActivity() {
 
-    private lateinit var mCrystalCategoryAdapter: CrystalCategoryAdapter
+    private val crystalCategoryAdapter by lazy {
+        val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!
+        CrystalCategoryAdapter(defaultDrawable)
+    }
 
-    private var isOther: Boolean = false
+    private val isOther by lazy {
+        intent.getBooleanExtra(EXTRA_OTHER, false)
+    }
 
     override fun initView() {
         pickerRcy.addItemDecoration(DefaultItemDecoration(Color.parseColor("#f5f5f5")))
 
 
-        val mDefaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.mDefaultDrawable)!!
-        mCrystalCategoryAdapter = CrystalCategoryAdapter(mDefaultDrawable)
-        mCrystalCategoryAdapter.setOnItemClickListener { item ->
+//        val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!
+//        crystalCategoryAdapter = CrystalCategoryAdapter(defaultDrawable)
+        crystalCategoryAdapter.setOnItemClickListener { item ->
             if (item.id == 11) {
                 startActivityForResult(Intent(this, PickerCrystalCategoryActivity::class.java)
                         .putExtra(EXTRA_OTHER, true), 666)
@@ -39,10 +44,9 @@ class PickerCrystalCategoryActivity : BaseListActivity() {
             }
         }
 
-        pickerRcy.adapter = mCrystalCategoryAdapter
+        pickerRcy.adapter = crystalCategoryAdapter
         pickerRcy.layoutManager = LinearLayoutManager(this)
 
-        isOther = intent.getBooleanExtra(EXTRA_OTHER, false)
         Looper.myQueue().addIdleHandler {
             initData()
             false
@@ -55,13 +59,13 @@ class PickerCrystalCategoryActivity : BaseListActivity() {
         } else {
             getString(CATEGORY)
         }
-        NetworkUtils.getInstance()
+        NetworkUtils.instance
                 .url(url)
                 .start(object : NetworkUtils.TaskListener {
                     override fun onSuccess(json: String) {
                         loadSuccess()
                         val category = Gson().fromJson(json, CrystalCategory::class.java)
-                        mCrystalCategoryAdapter.reset(category.category)
+                        crystalCategoryAdapter.reset(category.category)
                     }
 
                     override fun onFailed() {

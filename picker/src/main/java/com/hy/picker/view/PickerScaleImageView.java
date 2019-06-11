@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;
 
+import com.hy.picker.BuildConfig;
 import com.hy.picker.view.decoder.CompatDecoderFactory;
 import com.hy.picker.view.decoder.DecoderFactory;
 import com.hy.picker.view.decoder.ImageDecoder;
@@ -715,7 +716,9 @@ public class PickerScaleImageView extends View {
                 try {
                     anim.listener.onInterruptedByUser();
                 } catch (Exception e) {
-                    Log.w(TAG, "Error thrown by animation listener", e);
+                    if (BuildConfig.DEBUG) {
+                        Log.w(TAG, "Error thrown by animation listener", e);
+                    }
                 }
             }
             anim = null;
@@ -1079,6 +1082,7 @@ public class PickerScaleImageView extends View {
                     try {
                         anim.listener.onComplete();
                     } catch (Exception e) {
+                        if (BuildConfig.DEBUG)
                         Log.w(TAG, "Error thrown by animation listener", e);
                     }
                 }
@@ -1644,7 +1648,9 @@ public class PickerScaleImageView extends View {
                     return new int[]{sWidth, sHeight, exifOrientation};
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Failed to initialise bitmap decoder", e);
+                if (BuildConfig.DEBUG) {
+                    Log.e(TAG, "Failed to initialise bitmap decoder", e);
+                }
                 this.exception = e;
             }
             return null;
@@ -1738,10 +1744,12 @@ public class PickerScaleImageView extends View {
                     tile.loading = false;
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Failed to decode tile", e);
+                if (BuildConfig.DEBUG) {
+                    Log.e(TAG, "Failed to decode tile", e);
+                }
                 this.exception = e;
             } catch (OutOfMemoryError e) {
-                Log.e(TAG, "Failed to decode tile - OutOfMemoryError", e);
+                if (BuildConfig.DEBUG)  Log.e(TAG, "Failed to decode tile - OutOfMemoryError", e);
                 this.exception = new RuntimeException(e);
             }
             return null;
@@ -1817,10 +1825,10 @@ public class PickerScaleImageView extends View {
                     return view.getExifOrientation(context, sourceUri);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Failed to load bitmap", e);
+                if (BuildConfig.DEBUG) Log.e(TAG, "Failed to load bitmap", e);
                 this.exception = e;
             } catch (OutOfMemoryError e) {
-                Log.e(TAG, "Failed to load bitmap - OutOfMemoryError", e);
+                if (BuildConfig.DEBUG)  Log.e(TAG, "Failed to load bitmap - OutOfMemoryError", e);
                 this.exception = new RuntimeException(e);
             }
             return null;
@@ -1917,12 +1925,12 @@ public class PickerScaleImageView extends View {
                         if (VALID_ORIENTATIONS.contains(orientation) && orientation != ORIENTATION_USE_EXIF) {
                             exifOrientation = orientation;
                         } else {
-                            Log.w(TAG, "Unsupported orientation: " + orientation);
+                            if (BuildConfig.DEBUG)    Log.w(TAG, "Unsupported orientation: " + orientation);
                         }
                     }
                 }
             } catch (Exception e) {
-                Log.w(TAG, "Could not get orientation of image from media store");
+                if (BuildConfig.DEBUG)  Log.w(TAG, "Could not get orientation of image from media store");
             } finally {
                 if (cursor != null) {
                     cursor.close();
@@ -1946,11 +1954,11 @@ public class PickerScaleImageView extends View {
                         exifOrientation = ORIENTATION_270;
                         break;
                     default:
-                        Log.w(TAG, "Unsupported EXIF orientation: " + orientationAttr);
+                        if (BuildConfig.DEBUG)   Log.w(TAG, "Unsupported EXIF orientation: " + orientationAttr);
                         break;
                 }
             } catch (Exception e) {
-                Log.w(TAG, "Could not get EXIF orientation of image");
+                if (BuildConfig.DEBUG)   Log.w(TAG, "Could not get EXIF orientation of image");
             }
         }
         return exifOrientation;
@@ -2444,7 +2452,7 @@ public class PickerScaleImageView extends View {
     @AnyThread
     private void debug(String message, Object... args) {
         if (debug) {
-            Log.d(TAG, String.format(message, args));
+            if (BuildConfig.DEBUG)  Log.d(TAG, String.format(message, args));
         }
     }
 
@@ -3196,7 +3204,7 @@ public class PickerScaleImageView extends View {
                 try {
                     anim.listener.onInterruptedByNewAnim();
                 } catch (Exception e) {
-                    Log.w(TAG, "Error thrown by animation listener", e);
+                    if (BuildConfig.DEBUG)   Log.w(TAG, "Error thrown by animation listener", e);
                 }
             }
 

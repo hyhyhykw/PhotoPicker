@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 
+import com.hy.picker.BuildConfig;
 import com.hy.picker.core.IMGImage;
 import com.hy.picker.core.IMGMode;
 import com.hy.picker.core.IMGPath;
@@ -34,7 +35,6 @@ import com.hy.picker.core.sticker.IMGStickerPortrait;
 /**
  * Created by felix on 2017/11/14 下午6:43.
  */
-// TODO clip外不加入path
 public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetector.OnScaleGestureListener,
         ValueAnimator.AnimatorUpdateListener, IMGStickerPortrait.Callback, Animator.AnimatorListener {
 
@@ -58,7 +58,6 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     private final Paint mMosaicPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private static final boolean DEBUG = true;
 
     {
         // 涂鸦画刷
@@ -471,7 +470,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
     }
 
     boolean onSteady() {
-        if (DEBUG) {
+        if (BuildConfig.DEBUG) {
             Log.d(TAG, "onSteady: isHoming=" + isHoming());
         }
         if (!isHoming()) {
@@ -523,9 +522,9 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
 
     private void toApplyHoming(IMGHoming homing) {
-        mImage.setScale(homing.scale);
-        mImage.setRotate(homing.rotate);
-        if (!onScrollTo(Math.round(homing.x), Math.round(homing.y))) {
+        mImage.setScale(homing.getScale());
+        mImage.setRotate(homing.getRotate());
+        if (!onScrollTo(Math.round(homing.getX()), Math.round(homing.getY()))) {
             invalidate();
         }
     }
@@ -563,7 +562,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public void onAnimationStart(Animator animation) {
-        if (DEBUG) {
+        if (BuildConfig.DEBUG) {
             Log.d(TAG, "onAnimationStart");
         }
         mImage.onHomingStart(mHomingAnimator.isRotate());
@@ -571,7 +570,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        if (DEBUG) {
+        if (BuildConfig.DEBUG) {
             Log.d(TAG, "onAnimationEnd");
         }
         if (mImage.onHomingEnd(getScrollX(), getScrollY(), mHomingAnimator.isRotate())) {
@@ -581,7 +580,7 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     @Override
     public void onAnimationCancel(Animator animation) {
-        if (DEBUG) {
+        if (BuildConfig.DEBUG) {
             Log.d(TAG, "onAnimationCancel");
         }
         mImage.onHomingCancel(mHomingAnimator.isRotate());

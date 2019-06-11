@@ -31,21 +31,28 @@ import java.util.*
  */
 class OpenCameraResultActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
     //    public static final int REQUEST_EDIT = 0x753;
-    private var video = false
+    private val video by lazy {
+        intent.getBooleanExtra(EXTRA_PICK_VIDEO, false)
+    }
 
-    private val mSureReceiver = SureReceiver()
-    private var isEdit = false
+    private val sureReceiver by lazy {
+        SureReceiver()
+    }
 
-    private var mTakePictureUri: Uri? = null
+    private val isEdit by lazy {
+        intent.getBooleanExtra(EXTRA_EDIT, false)
+    }
+
+    private var takePictureUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         super.onCreate(savedInstanceState)
         val intentFilter = IntentFilter()
         intentFilter.addAction(PICKER_ACTION_MEDIA_SURE)
-        registerReceiver(mSureReceiver, intentFilter)
-        video = intent.getBooleanExtra(EXTRA_PICK_VIDEO, false)
-        isEdit = intent.getBooleanExtra(EXTRA_EDIT, false)
+        registerReceiver(sureReceiver, intentFilter)
+//        video = intent.getBooleanExtra(EXTRA_PICK_VIDEO, false)
+//        isEdit = intent.getBooleanExtra(EXTRA_EDIT, false)
 
         if (EasyPermissions.hasPermissions(this, *CAMERA_PERMISSION)) {
             requestCamera()
@@ -67,7 +74,7 @@ class OpenCameraResultActivity : AppCompatActivity(), EasyPermissions.Permission
 
 
     override fun onDestroy() {
-        unregisterReceiver(mSureReceiver)
+        unregisterReceiver(sureReceiver)
         super.onDestroy()
     }
 
@@ -103,15 +110,15 @@ class OpenCameraResultActivity : AppCompatActivity(), EasyPermissions.Permission
         }
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CAMERA) {
-                if (mTakePictureUri != null) {
-                    var path = mTakePictureUri!!.encodedPath// getPathFromUri(this, mTakePhotoUri);
+                if (takePictureUri != null) {
+                    var path = takePictureUri!!.encodedPath// getPathFromUri(this, mTakePhotoUri);
 
                     if (path == null) {
                         Toast.makeText(this, if (video) R.string.picker_video_failure else R.string.picker_photo_failure, Toast.LENGTH_SHORT).show()
                         finish()
                         return
                     }
-                    if (mTakePictureUri!!.toString().startsWith("content")) {
+                    if (takePictureUri!!.toString().startsWith("content")) {
                         path = path.replace("/external_storage_root".toRegex(), "")
 
                         path = Environment.getExternalStorageDirectory().toString() + path
@@ -205,7 +212,7 @@ class OpenCameraResultActivity : AppCompatActivity(), EasyPermissions.Permission
 
 
     private fun getPhoto(path: String, file: File) {
-        MediaScannerUtils.Builder(this@OpenCameraResultActivity)
+        MediaScannerUtils.Builder()
                 .path(path)
                 .video(video)
                 .add(false)
@@ -258,14 +265,14 @@ class OpenCameraResultActivity : AppCompatActivity(), EasyPermissions.Permission
             Toast.makeText(this, resources.getString(R.string.picker_voip_cpu_error), Toast.LENGTH_SHORT).show()
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mTakePictureUri = MyFileProvider.getUriForFile(this, applicationContext.packageName + ".demo.file_provider", file)
+                takePictureUri = MyFileProvider.getUriForFile(this, applicationContext.packageName + ".demo.file_provider", file)
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             } else {
-                mTakePictureUri = Uri.fromFile(file)
+                takePictureUri = Uri.fromFile(file)
             }
 
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mTakePictureUri)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, takePictureUri)
             startActivityForResult(intent, REQUEST_CAMERA)
         }
     }

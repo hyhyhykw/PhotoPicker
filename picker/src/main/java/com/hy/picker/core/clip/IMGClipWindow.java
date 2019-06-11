@@ -84,7 +84,7 @@ public class IMGClipWindow implements IMGClip {
         mWinFrame.set(0, 0, width, height * VERTICAL_RATIO);
 
         if (!mFrame.isEmpty()) {
-            IMGUtils.center(mWinFrame, mFrame);
+            IMGUtils.INSTANCE.center(mWinFrame, mFrame);
             mTargetFrame.set(mFrame);
         }
     }
@@ -102,14 +102,14 @@ public class IMGClipWindow implements IMGClip {
     private void reset(float clipWidth, float clipHeight) {
         setResetting(true);
         mFrame.set(0, 0, clipWidth, clipHeight);
-        IMGUtils.fitCenter(mWinFrame, mFrame, CLIP_MARGIN);
+        IMGUtils.INSTANCE.fitCenter(mWinFrame, mFrame, CLIP_MARGIN);
         mTargetFrame.set(mFrame);
     }
 
     public boolean homing() {
         mBaseFrame.set(mFrame);
         mTargetFrame.set(mFrame);
-        IMGUtils.fitCenter(mWinFrame, mTargetFrame, CLIP_MARGIN);
+        IMGUtils.INSTANCE.fitCenter(mWinFrame, mTargetFrame, CLIP_MARGIN);
         return isHoming = !mTargetFrame.equals(mBaseFrame);
     }
 

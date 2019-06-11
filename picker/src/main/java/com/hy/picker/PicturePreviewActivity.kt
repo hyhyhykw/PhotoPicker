@@ -34,21 +34,31 @@ import java.util.*
  * @author HY
  */
 class PicturePreviewActivity : BaseActivity() {
-    private lateinit var mItemList: ArrayList<Photo>
+    private lateinit var itemList: ArrayList<Photo>
 
-    private var mCurrentIndex = 0
-    private var mFullScreen = false
+    private var currentIndex = 0
+    private var fullScreen = false
 
-    private var max = 9
+    private val max by lazy{
+        intent.getIntExtra(EXTRA_MAX, 9)
+    }
 
-    private val mPreviewReceiver = PreviewReceiver()
-    private var mIsPreview = false
+    private val previewReceiver by lazy{
+        PreviewReceiver()
+    }
 
-    private lateinit var mPreviewAdapter: PreviewAdapter
+    private val isPreview by lazy{
+        intent.getBooleanExtra(EXTRA_IS_PREVIEW, false)
+    }
+
+    private val previewAdapter: PreviewAdapter by lazy{
+        val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!
+        PreviewAdapter(defaultDrawable)
+    }
 
 
-    private val mConstraintSet1 = ConstraintSet()
-    private val mConstraintSet2 = ConstraintSet()
+    private val constraintSet1 = ConstraintSet()
+    private val constraintSet2 = ConstraintSet()
 
 
     private val selNum: Int
@@ -68,39 +78,36 @@ class PicturePreviewActivity : BaseActivity() {
         setContentView(R.layout.picker_activity_preview)
         val intentFilter = IntentFilter()
         intentFilter.addAction(PICKER_ACTION_MEDIA_ADD)
-        registerReceiver(mPreviewReceiver, intentFilter)
+        registerReceiver(previewReceiver, intentFilter)
 
         initView()
         //    private int mStartIndex;
-        val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.mDefaultDrawable)!!
+
 
         val statusBarHeight = getStatusBarHeight()
         val height = statusBarHeight + dp(48f)
 
-        mConstraintSet1.clone(picker_whole_layout)
-        mConstraintSet1.constrainHeight(R.id.pickerTitleBg, height)
-        mConstraintSet1.applyTo(picker_whole_layout)
+        constraintSet1.clone(picker_whole_layout)
+        constraintSet1.constrainHeight(R.id.pickerTitleBg, height)
+        constraintSet1.applyTo(picker_whole_layout)
 
-        mConstraintSet2.clone(picker_whole_layout)
-        mConstraintSet2.constrainHeight(R.id.pickerTitleBg, height)
-        mConstraintSet2.clear(R.id.pickerTitleBg, ConstraintSet.TOP)
-        mConstraintSet2.connect(R.id.pickerTitleBg, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        mConstraintSet2.clear(R.id.pickerBottomBg, ConstraintSet.BOTTOM)
-        mConstraintSet2.connect(R.id.pickerBottomBg, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-        mConstraintSet2.setMargin(R.id.pickerTitleBg, ConstraintSet.BOTTOM, 2)
+        constraintSet2.clone(picker_whole_layout)
+        constraintSet2.constrainHeight(R.id.pickerTitleBg, height)
+        constraintSet2.clear(R.id.pickerTitleBg, ConstraintSet.TOP)
+        constraintSet2.connect(R.id.pickerTitleBg, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+        constraintSet2.clear(R.id.pickerBottomBg, ConstraintSet.BOTTOM)
+        constraintSet2.connect(R.id.pickerBottomBg, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        constraintSet2.setMargin(R.id.pickerTitleBg, ConstraintSet.BOTTOM, 2)
 
-        val intent = intent
-        max = intent.getIntExtra(EXTRA_MAX, 9)
+//        max = intent.getIntExtra(EXTRA_MAX, 9)
         val isGif = intent.getBooleanExtra(EXTRA_IS_GIF, false)
         pickerEditTv.visibility = if (isGif) View.GONE else View.VISIBLE
-        mIsPreview = intent.getBooleanExtra(EXTRA_IS_PREVIEW, false)
-        mCurrentIndex = intent.getIntExtra(EXTRA_INDEX, 0)
+//        isPreview = intent.getBooleanExtra(EXTRA_IS_PREVIEW, false)
+        currentIndex = intent.getIntExtra(EXTRA_INDEX, 0)
 
-        mItemList = if (mIsPreview) MediaListHolder.selectPhotos else MediaListHolder.currentPhotos
+        itemList = if (isPreview) MediaListHolder.selectPhotos else MediaListHolder.currentPhotos
 
-        pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size)
-
-//        picker_whole_layout.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", currentIndex + 1, itemList.size)
 
         pickerBackIv.setOnClickListener { onBackPressed() }
 
@@ -112,7 +119,7 @@ class PicturePreviewActivity : BaseActivity() {
 
         pickerSelectorCheck.setText(R.string.picker_picprev_select)
 
-        pickerSelectorCheck.isChecked = mItemList[mCurrentIndex].isSelected
+        pickerSelectorCheck.isChecked = itemList[currentIndex].isSelected
         pickerSelectorCheck.setOnCheckedChangeListener { buttonView, isChecked ->
             if (buttonView.isPressed) {
                 if (isChecked && selNum == max) {
@@ -123,9 +130,9 @@ class PicturePreviewActivity : BaseActivity() {
                             resources.getQuantityString(R.plurals.picker_picsel_selected_max, 1, max), Toast.LENGTH_SHORT).show()
                 } else {
 
-                    if (mItemList.isEmpty()) return@setOnCheckedChangeListener
+                    if (itemList.isEmpty()) return@setOnCheckedChangeListener
 
-                    val photo = mItemList[mCurrentIndex]
+                    val photo = itemList[currentIndex]
                     sendBroadcast(Intent(PICKER_ACTION_MEDIA_SELECT)
                             .putExtra(PICKER_EXTRA_PHOTO, photo))
 
@@ -134,7 +141,7 @@ class PicturePreviewActivity : BaseActivity() {
                         MediaListHolder.selectPhotos.add(photo)
                     } else {
                         photo.isSelected = false
-                        if (!mIsPreview) {
+                        if (!isPreview) {
                             MediaListHolder.selectPhotos.remove(photo)
                         }
                     }
@@ -142,41 +149,40 @@ class PicturePreviewActivity : BaseActivity() {
                 }
             }
         }
-        mPreviewAdapter = PreviewAdapter(defaultDrawable)
-        mPreviewAdapter.setOnItemClickListener {
+//        previewAdapter = PreviewAdapter(defaultDrawable)
+        previewAdapter.setOnItemClickListener {
             if (!canLoadImage()) return@setOnItemClickListener
 
-            mFullScreen = !mFullScreen
+            fullScreen = !fullScreen
             val autoTransition = AutoTransition()
             autoTransition.duration = 200
             TransitionManager.beginDelayedTransition(picker_whole_layout, autoTransition)
-            if (mFullScreen) {
-                mConstraintSet2.applyTo(picker_whole_layout)
+            if (fullScreen) {
+                constraintSet2.applyTo(picker_whole_layout)
             } else {
-                mConstraintSet1.applyTo(picker_whole_layout)
+                constraintSet1.applyTo(picker_whole_layout)
             }
         }
 
-        pickerVpgPreview.adapter = mPreviewAdapter
+        pickerVpgPreview.adapter = previewAdapter
 
-        //        mViewPager.setOffscreenPageLimit(1);
 
-        mPreviewAdapter.reset(mItemList)
+        previewAdapter.reset(itemList)
         pickerVpgPreview.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                mCurrentIndex = position
-                pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size)
+                currentIndex = position
+                pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", position + 1, itemList.size)
 
-                val photo = mItemList[position]
+                val photo = itemList[position]
                 pickerSelectorCheck.isChecked = photo.isSelected
                 pickerEditTv.visibility = if (photo.isGif) View.GONE else View.VISIBLE
             }
         })
-        pickerVpgPreview.setCurrentItem(mCurrentIndex, false)
+        pickerVpgPreview.setCurrentItem(currentIndex, false)
 
 
         pickerEditTv.setOnClickListener {
-            val photo = mItemList[pickerVpgPreview.currentItem]
+            val photo = itemList[pickerVpgPreview.currentItem]
             toEdit(Uri.fromFile(File(photo.uri)))
         }
         updateToolbar()
@@ -202,7 +208,7 @@ class PicturePreviewActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if (mIsPreview) {
+        if (isPreview) {
             setResult(RESULT_OK)
         }
         super.onBackPressed()
@@ -210,7 +216,7 @@ class PicturePreviewActivity : BaseActivity() {
     }
 
     override fun finish() {
-        if (mIsPreview) {
+        if (isPreview) {
             setResult(RESULT_OK)
         }
         super.finish()
@@ -218,7 +224,7 @@ class PicturePreviewActivity : BaseActivity() {
     }
 
     override fun onDestroy() {
-        unregisterReceiver(mPreviewReceiver)
+        unregisterReceiver(previewReceiver)
         super.onDestroy()
     }
 
@@ -274,10 +280,10 @@ class PicturePreviewActivity : BaseActivity() {
 
         val selNum = selNum
 
-        pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size)
+        pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", currentIndex + 1, itemList.size)
 
-        pickerSelectorCheck.isChecked = mItemList[mCurrentIndex].isSelected
-        if (mItemList.size == 1 && selNum == 0) {
+        pickerSelectorCheck.isChecked = itemList[currentIndex].isSelected
+        if (itemList.size == 1 && selNum == 0) {
             pickerSend.setText(R.string.picker_picsel_toolbar_send)
             pickerSend.isEnabled = false
         } else {
@@ -300,7 +306,7 @@ class PicturePreviewActivity : BaseActivity() {
             when (action) {
                 PICKER_ACTION_MEDIA_ADD -> {
                     runOnUiThread {
-                        mPreviewAdapter.add(0, photo)
+                        previewAdapter.add(0, photo)
 
                         updateToolbar()
                     }

@@ -16,15 +16,14 @@ import kotlinx.android.synthetic.main.picker_text_dialog.*
  * Created by felix on 2017/12/1 上午11:21.
  */
 
-class IMGTextEditDialog(context: Context, private val mCallback: Callback?) : Dialog(context, R.style.PickerTextDialog), View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+class IMGTextEditDialog(context: Context, private val callback: Callback?) : Dialog(context, R.style.PickerTextDialog), View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
 
-    private var mDefaultText: IMGText? = null
+    private var defaultText: IMGText? = null
 
 
     init {
         setContentView(R.layout.picker_text_dialog)
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,27 +31,27 @@ class IMGTextEditDialog(context: Context, private val mCallback: Callback?) : Di
 
         window?.setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
 
-        picker_cg_colors.setOnCheckedChangeListener(this)
-        picker_tv_cancel.setOnClickListener(this)
-        picker_tv_done.setOnClickListener(this)
+        pickerCgColors.setOnCheckedChangeListener(this)
+        pickerDlgCancel.setOnClickListener(this)
+        pickerDlgCancel.setOnClickListener(this)
     }
 
     override fun onStart() {
         super.onStart()
-        if (mDefaultText != null) {
-            picker_et_text.setText(mDefaultText!!.text)
-            picker_et_text.setTextColor(mDefaultText!!.color)
-            if (!mDefaultText!!.isEmpty) {
-                picker_et_text.setSelection(picker_et_text.length())
+        if (defaultText != null) {
+            pickerEtText.setText(defaultText?.text)
+            pickerEtText.setTextColor(defaultText!!.color)
+            if (!defaultText!!.isEmpty) {
+                pickerEtText.setSelection(pickerEtText.length())
             }
-            mDefaultText = null
+            defaultText = null
         } else
-            picker_et_text!!.setText("")
-        picker_cg_colors.checkColor = picker_et_text.currentTextColor
+            pickerEtText?.setText("")
+        pickerCgColors.checkColor = pickerEtText.currentTextColor
     }
 
     fun setText(text: IMGText) {
-        mDefaultText = text
+        defaultText = text
     }
 
     fun reset() {
@@ -61,27 +60,27 @@ class IMGTextEditDialog(context: Context, private val mCallback: Callback?) : Di
 
     override fun onClick(v: View?) {
         val vid = v?.id
-        if (vid == R.id.picker_tv_done) {
+        if (vid == R.id.pickerDlgDone) {
             onDone()
-        } else if (vid == R.id.picker_tv_cancel) {
+        } else if (vid == R.id.pickerDlgCancel) {
             dismiss()
         }
     }
 
     private fun onDone() {
-        val text = picker_et_text.text.toString()
-        if (!TextUtils.isEmpty(text) && mCallback != null) {
-            mCallback.onText(IMGText(text, picker_et_text.currentTextColor))
+        val text = pickerEtText.text.toString()
+        if (!TextUtils.isEmpty(text)) {
+            callback?.onText(IMGText(text, pickerEtText.currentTextColor))
         }
         dismiss()
     }
 
 //    override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
-//        picker_et_text.setTextColor(picker_cg_colors.checkColor)
+//        pickerEtText.setTextColor(pickerCgColors.checkColor)
 //    }
 
     override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
-        picker_et_text.setTextColor(picker_cg_colors.checkColor)
+        pickerEtText.setTextColor(pickerCgColors.checkColor)
     }
 
     interface Callback {

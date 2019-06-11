@@ -6,7 +6,7 @@
               android:orientation="vertical">
 
     <me.relex.photodraweeview.PhotoDraweeView
-        android:id="@id/pickerItemImage"
+        android:id="@id/pickerItemImageNormal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"/>

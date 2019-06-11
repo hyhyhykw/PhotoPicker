@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.hy.picker.R;
-
 import com.hy.picker.core.sticker.IMGSticker;
 import com.hy.picker.core.sticker.IMGStickerAdjustHelper;
 import com.hy.picker.core.sticker.IMGStickerHelper;
@@ -35,7 +34,7 @@ public abstract class IMGStickerView extends ViewGroup implements IMGSticker, Vi
     // TODO
     private int mDownShowing = 0;
 
-    private IMGStickerMoveHelper mMoveHelper;
+    private IMGStickerMoveHelper mMoveHelper = new IMGStickerMoveHelper();
 
     private IMGStickerHelper<IMGStickerView> mStickerHelper;
 
@@ -43,7 +42,7 @@ public abstract class IMGStickerView extends ViewGroup implements IMGSticker, Vi
 
     private float mMaxScaleValue = MAX_SCALE_VALUE;
 
-    private final Paint PAINT;
+    private final Paint PAINT=new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private final Matrix mMatrix = new Matrix();
 
@@ -60,7 +59,6 @@ public abstract class IMGStickerView extends ViewGroup implements IMGSticker, Vi
     private static final float STROKE_WIDTH = 3f;
 
     {
-        PAINT = new Paint(Paint.ANTI_ALIAS_FLAG);
         PAINT.setColor(Color.WHITE);
         PAINT.setStyle(Paint.Style.STROKE);
         PAINT.setStrokeWidth(STROKE_WIDTH);
@@ -99,7 +97,7 @@ public abstract class IMGStickerView extends ViewGroup implements IMGSticker, Vi
         new IMGStickerAdjustHelper(this, mAdjustView);
 
         mStickerHelper = new IMGStickerHelper<>(this);
-        mMoveHelper = new IMGStickerMoveHelper(this);
+//        mMoveHelper = new IMGStickerMoveHelper();
     }
 
     public abstract View onCreateContentView(Context context);

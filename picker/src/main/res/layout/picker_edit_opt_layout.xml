@@ -14,7 +14,7 @@
         android:padding="12dp">
 
         <TextView
-            android:id="@id/picker_tv_cancel"
+            android:id="@id/pickerDlgCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
@@ -27,7 +27,7 @@
             android:textSize="16sp"/>
 
         <TextView
-            android:id="@id/picker_tv_done"
+            android:id="@id/pickerDlgDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|end"
@@ -62,7 +62,7 @@
             android:measureAllChildren="true">
 
             <com.hy.picker.view.IMGColorGroup
-                android:id="@id/picker_cg_colors"
+                android:id="@id/pickerCgColors"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -71,7 +71,7 @@
                 android:orientation="horizontal">
 
                 <com.hy.picker.view.IMGColorRadio
-                    android:id="@id/picker_cr_red"
+                    android:id="@+id/picker_cr_red"
                     android:layout_width="@dimen/picker_image_color_radio_size"
                     android:layout_height="@dimen/picker_image_color_radio_size"
                     android:layout_margin="@dimen/picker_image_color_margin"
@@ -88,7 +88,6 @@
                     android:layout_width="@dimen/picker_image_color_radio_size"
                     android:layout_height="@dimen/picker_image_color_radio_size"
                     android:layout_margin="@dimen/picker_image_color_margin"
-
                     app:image_color="@color/picker_color_white"/>
 
                 <com.hy.picker.view.IMGColorRadio

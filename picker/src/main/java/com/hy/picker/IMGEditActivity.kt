@@ -11,7 +11,6 @@ import android.widget.Toast
 import com.hy.picker.core.IMGMode
 import com.hy.picker.core.IMGText
 import com.hy.picker.core.file.IMGAssetFileDecoder
-import com.hy.picker.core.file.IMGDecoder
 import com.hy.picker.core.file.IMGFileDecoder
 import com.hy.picker.core.util.IMGUtils
 import com.hy.picker.utils.ImgScanListener
@@ -33,10 +32,11 @@ class IMGEditActivity : IMGEditBaseActivity() {
 
     private var max = 0
 
-    private var dp100 = 0
+    private val dp100 by lazy {
+        dp(100f)
+    }
 
     override fun onCreated() {
-        dp100 = dp(100f)
         max = intent.getIntExtra(EXTRA_MAX, 1)
     }
 
@@ -46,21 +46,15 @@ class IMGEditActivity : IMGEditBaseActivity() {
 
         val uri = intent.getParcelableExtra<Uri>(EXTRA_IMAGE_URI) ?: return null
 
-        var decoder: IMGDecoder? = null
 
         val path = uri.path
+        if (path.isNullOrEmpty()) return null
 
-        var degree = 0
-        if (!TextUtils.isEmpty(path)) {
-            degree = readPictureDegree(path!!)
-            when (uri.scheme) {
-                "asset" -> decoder = IMGAssetFileDecoder(this, uri)
-                "file" -> decoder = IMGFileDecoder(uri)
-            }
-        }
+        val degree = readPictureDegree(path)
 
-        if (decoder == null) {
-            return null
+        val decoder = when (uri.scheme) {
+            "asset" -> IMGAssetFileDecoder(this, uri)
+            else -> IMGFileDecoder(uri)
         }
 
         val options = BitmapFactory.Options()
@@ -240,7 +234,7 @@ class IMGEditActivity : IMGEditBaseActivity() {
 
 
     private fun getPhoto(path: String) {
-        MediaScannerUtils.Builder(this@IMGEditActivity)
+        MediaScannerUtils.Builder()
                 .video(false)
                 .path(path)
                 .max(max)

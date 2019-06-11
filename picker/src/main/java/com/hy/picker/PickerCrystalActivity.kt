@@ -20,35 +20,9 @@ import kotlinx.android.synthetic.main.picker_activity_list.*
 class PickerCrystalActivity : BaseListActivity() {
 
 
-    private lateinit var mCrystalAdapter: CrystalAdapter
-    private var cate = "ali"
-
-    override fun initView() {
-        pickerRcy.addItemDecoration(DefaultItemDecoration(Color.parseColor("#f5f5f5")))
-        val id = intent.getIntExtra(EXTRA_ID, 1)
-        cate = getCateFromId(id)
-
-        val defaultDrawable = ContextCompat.getDrawable(this,PhotoPicker.mDefaultDrawable)!!
-
-        mCrystalAdapter = CrystalAdapter(cate, defaultDrawable)
-        mCrystalAdapter.setOnItemClickListener { exist->
-            val intent = Intent()
-            intent.putExtra(EXTRA_PATH, exist.file.absolutePath)
-            setResult(RESULT_OK, intent)
-            finish()
-        }
-
-        pickerRcy.adapter = mCrystalAdapter
-        pickerRcy.layoutManager = GridLayoutManager(this, 3)
-
-        Looper.myQueue().addIdleHandler {
-            initData()
-            false
-        }
-    }
-
-    private fun getCateFromId(id: Int): String {
-        return when (id) {
+    private lateinit var crystalAdapter: CrystalAdapter
+    private val cate by lazy {
+        when (intent.getIntExtra(EXTRA_ID, 1)) {
             1 -> "ali"
             2 -> "ice"
             3 -> "dadatu"
@@ -70,14 +44,38 @@ class PickerCrystalActivity : BaseListActivity() {
         }
     }
 
+    override fun initView() {
+        pickerRcy.addItemDecoration(DefaultItemDecoration(Color.parseColor("#f5f5f5")))
+//        val id = intent.getIntExtra(EXTRA_ID, 1)
+//        cate = getCateFromId(id)
+
+        val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!
+
+        crystalAdapter = CrystalAdapter(cate, defaultDrawable)
+        crystalAdapter.setOnItemClickListener { exist ->
+            val intent = Intent()
+            intent.putExtra(EXTRA_PATH, exist.file.absolutePath)
+            setResult(RESULT_OK, intent)
+            finish()
+        }
+
+        pickerRcy.adapter = crystalAdapter
+        pickerRcy.layoutManager = GridLayoutManager(this, 3)
+
+        Looper.myQueue().addIdleHandler {
+            initData()
+            false
+        }
+    }
+
     override fun initData() {
-        NetworkUtils.getInstance()
+        NetworkUtils.instance
                 .url("$JSON_BASE$cate.json")
                 .start(object : NetworkUtils.TaskListener {
                     override fun onSuccess(json: String) {
                         loadSuccess()
                         val result = Gson().fromJson(json, CrystalResult::class.java)
-                        mCrystalAdapter.reset(result.data)
+                        crystalAdapter.reset(result.data)
                     }
 
                     override fun onFailed() {

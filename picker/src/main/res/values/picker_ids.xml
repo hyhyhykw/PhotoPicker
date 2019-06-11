@@ -32,15 +32,15 @@
     <item name="pickerRcy" type="id"/>
     <item name="pickerIvCrystal" type="id"/>
     <item name="pickerTvName" type="id"/>
-    <item name="picker_tv_size" type="id"/>
-    <item name="picker_tv_wait" type="id"/>
-    <item name="picker_iv_download" type="id"/>
-    <item name="picker_download_progress" type="id"/>
+    <item name="pickerTvSize" type="id"/>
+    <item name="pickerTvWait" type="id"/>
+    <item name="pickerIvDownload" type="id"/>
+    <item name="pickerDownloadProgress" type="id"/>
     <item name="picker_image_canvas" type="id"/>
     <item name="picker_vs_op" type="id"/>
-    <item name="picker_tv_cancel" type="id"/>
-    <item name="picker_tv_done" type="id"/>
-    <item name="picker_et_text" type="id"/>
+    <item name="pickerDlgCancel" type="id"/>
+    <item name="pickerDlgDone" type="id"/>
+    <item name="pickerEtText" type="id"/>
     <item name="picker_ib_clip_rotate" type="id"/>
     <item name="picker_ib_clip_cancel" type="id"/>
     <item name="picker_tv_clip_reset" type="id"/>
@@ -51,7 +51,7 @@
 
     <item name="picker_rg_modes" type="id"/>
     <item name="picker_vs_op_sub" type="id"/>
-    <item name="picker_cg_colors" type="id"/>
+    <item name="pickerCgColors" type="id"/>
     <item name="picker_layout_op_sub" type="id"/>
     <item name="picker_rb_doodle" type="id"/>
     <item name="picker_btn_text" type="id"/>
@@ -75,4 +75,17 @@
     <item name="picker_group1" type="id"/>
     <item name="pickerBottomBg" type="id"/>
     <item name="pickerVideoTime" type="id"/>
+    <item name="pickerItemGif" type="id"/>
+    <item name="pickerItemImageNormal" type="id"/>
+    <item name="pickerCr1" type="id"/>
+    <item name="pickerCr2" type="id"/>
+    <item name="pickerCr3" type="id"/>
+    <item name="pickerCr4" type="id"/>
+    <item name="pickerCr5" type="id"/>
+    <item name="pickerCr6" type="id"/>
+    <item name="picker_cr_black" type="id"/>
+    <item name="picker_cr_white" type="id"/>
+    <item name="picker_cr_green" type="id"/>
+    <item name="picker_cr_yellow" type="id"/>
+    <item name="picker_cr_blue" type="id"/>
 </resources>

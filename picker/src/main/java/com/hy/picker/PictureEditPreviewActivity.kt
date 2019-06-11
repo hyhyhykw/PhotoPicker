@@ -30,7 +30,7 @@ import java.io.File
  */
 class PictureEditPreviewActivity : BaseActivity() {
 
-    private var mFullScreen = false
+    private var fullScreen = false
 
     private val constraintSet1 = ConstraintSet()
     private val constraintSet2 = ConstraintSet()
@@ -38,69 +38,57 @@ class PictureEditPreviewActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.picker_activity_edit_preview)
 
-        val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.mDefaultDrawable)!!
+        val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!
 
         initView()
 
         val intent = intent
-        val mPicItem: Photo? = intent.getParcelableExtra(EXTRA_ITEM)
+        val picItem: Photo? = intent.getParcelableExtra(EXTRA_ITEM)
 
-        if (mPicItem == null) {
+        if (picItem == null) {
             Toast.makeText(this, R.string.picker_file_error, Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
 
-        val mView: View
-        if (mPicItem.isLong) {
-            mView = PickerScaleImageView(this)
-            mView.setOnClickListener {
-                mFullScreen = !mFullScreen
+        val imageView: View
+        if (picItem.isLong) {
+            imageView = PickerScaleImageView(this)
+            imageView.setOnClickListener {
+                fullScreen = !fullScreen
 
                 val autoTransition = AutoTransition()
                 autoTransition.duration = 200
                 TransitionManager.beginDelayedTransition(picker_whole_layout, autoTransition)
-                if (mFullScreen) {
+                if (fullScreen) {
                     constraintSet2.applyTo(picker_whole_layout)
                 } else {
                     constraintSet1.applyTo(picker_whole_layout)
                 }
-//                if (mFullScreen) {
-//                    pickerTitleBg.visibility = View.INVISIBLE
-//                } else {
-//
-//                    pickerTitleBg.visibility = View.VISIBLE
-//                }
             }
         } else {
-            mView = PhotoDraweeView(this)
-            val hierarchy = mView.hierarchy
+            imageView = PhotoDraweeView(this)
+            val hierarchy = imageView.hierarchy
             hierarchy.setFailureImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
             hierarchy.setPlaceholderImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
             hierarchy.actualImageScaleType = ScalingUtils.ScaleType.FIT_CENTER
-            mView.setOnViewTapListener { _, _, _ ->
-                mFullScreen = !mFullScreen
-//                if (mFullScreen) {
-//                    pickerTitleBg.visibility = View.INVISIBLE
-//                } else {
-//
-//                    pickerTitleBg.visibility = View.VISIBLE
-//                }
+            imageView.setOnViewTapListener { _, _, _ ->
+                fullScreen = !fullScreen
                 val autoTransition = AutoTransition()
                 autoTransition.duration = 200
                 TransitionManager.beginDelayedTransition(picker_whole_layout, autoTransition)
-                if (mFullScreen) {
+                if (fullScreen) {
                     constraintSet2.applyTo(picker_whole_layout)
                 } else {
                     constraintSet1.applyTo(picker_whole_layout)
                 }
             }
         }
-        mView.id = R.id.pickerPhotoImage
+        imageView.id = R.id.pickerPhotoImage
 
 
-        picker_whole_layout.addView(mView)
+        picker_whole_layout.addView(imageView)
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(picker_whole_layout)
@@ -121,15 +109,15 @@ class PictureEditPreviewActivity : BaseActivity() {
 
         Looper.myQueue().addIdleHandler {
             if (canLoadImage()) {
-                if (mView is PickerScaleImageView) {
-                    mView.setMinimumTileDpi(160)
+                if (imageView is PickerScaleImageView) {
+                    imageView.setMinimumTileDpi(160)
 
-                    mView.setOnImageEventListener(DisplayOptimizeListener(mView))
-                    mView.setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CENTER_INSIDE)
-                    mView.setImage(ImageSource.uri(Uri.fromFile(File(mPicItem.uri))))
-                } else if (mView is PhotoDraweeView) {
+                    imageView.setOnImageEventListener(DisplayOptimizeListener(imageView))
+                    imageView.setMinimumScaleType(PickerScaleImageView.SCALE_TYPE_CENTER_INSIDE)
+                    imageView.setImage(ImageSource.uri(Uri.fromFile(File(picItem.uri))))
+                } else if (imageView is PhotoDraweeView) {
 
-                    mView.setPhotoUri(Uri.fromFile(File(mPicItem.uri)))
+                    imageView.setPhotoUri(Uri.fromFile(File(picItem.uri)))
                 }
             }
             return@addIdleHandler false
@@ -141,7 +129,7 @@ class PictureEditPreviewActivity : BaseActivity() {
         pickerSure.setOnClickListener {
             val broadcast = Intent()
             broadcast.action = PICKER_ACTION_MEDIA_SURE
-            broadcast.putExtra(PICKER_EXTRA_PHOTO, mPicItem)
+            broadcast.putExtra(PICKER_EXTRA_PHOTO, picItem)
             sendBroadcast(broadcast)
             onBackPressed()
         }

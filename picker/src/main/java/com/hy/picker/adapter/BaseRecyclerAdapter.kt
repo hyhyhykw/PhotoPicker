@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.hy.picker.canLoadImage
+import kotlinx.android.extensions.LayoutContainer
 import java.util.*
 
 
@@ -85,9 +86,11 @@ abstract class BaseRecyclerAdapter<T, V : BaseRecyclerAdapter.BaseViewHolder> : 
     }
 
     abstract class BaseViewHolder(itemView: View) :
-            RecyclerView.ViewHolder(itemView) {
-        var viewType: Int = 0
+            RecyclerView.ViewHolder(itemView),LayoutContainer {
+        var viewType = 0
 
+        override val containerView: View?
+            get() = itemView
 
         abstract fun bind()
     }

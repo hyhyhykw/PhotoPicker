@@ -12,7 +12,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.graphics.drawable.*
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.StateListDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -46,21 +49,38 @@ import kotlin.concurrent.thread
 
 class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
 
-    private var mTakePictureUri: Uri? = null
-    private var max = 0
-    private var mSelectItems: ArrayList<Photo>? = null
+    private var takePictureUri: Uri? = null
+    private val max by lazy{
+        intent.getIntExtra(EXTRA_MAX, 9)
+    }
+    private val selectItems: ArrayList<Photo>? by lazy{
+        intent.getParcelableArrayListExtra<Photo>(EXTRA_ITEMS)
+    }
 
-    private var gif = false
-    private var preview = false
-    private var video = false
-    private var gifOnly = false
-    private lateinit var mGridViewAdapter: PictureAdapter
-    private var isShowCamera = false
+    private val gif by lazy{
+        intent.getBooleanExtra(EXTRA_SHOW_GIF, true)
+    }
+    private val preview by lazy{
+        intent.getBooleanExtra(EXTRA_PREVIEW, true)
+    }
+    private val video by lazy{
+        intent.getBooleanExtra(EXTRA_PICK_VIDEO, false)
+    }
+    private val gifOnly by lazy{
+        intent.getBooleanExtra(EXTRA_ONLY_GIF, false)
+    }
+    private lateinit var gridViewAdapter: PictureAdapter
+
+    private val isShowCamera by lazy{
+        intent.getBooleanExtra(EXTRA_SHOW_CAMERA, false)
+    }
 
     private val mSelectReceiver = SelectReceiver()
-    private lateinit var mDefaultDrawable: Drawable
+    private  val defaultDrawable by lazy{
+        ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!
+    }
 
-    private lateinit var mCateDlgAdapter: CateDlgAdapter
+    private lateinit var cateDlgAdapter: CateDlgAdapter
 
     private var isAnimating = false
     private var isShowing = false
@@ -72,7 +92,9 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
     private var selectCateIndex = 0
 
-    private var cateHeight = 0
+    private val cateHeight by lazy{
+        (screenWidth() * 1.3f).toInt()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -90,7 +112,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         initTheme()
 
 
-        mDefaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.mDefaultDrawable)!!
+//        defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!
 
 //        val screenHeight = screenHeight()
         val statusBarHeight = getStatusBarHeight()
@@ -98,26 +120,26 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
 //        mCount = Math.ceil(gridHeight * 1.0 / mSize).toInt()
 
-        val intent = intent
-        max = intent.getIntExtra(EXTRA_MAX, 9)
-        gif = intent.getBooleanExtra(EXTRA_SHOW_GIF, true)
-        preview = intent.getBooleanExtra(EXTRA_PREVIEW, true)
-        gifOnly = intent.getBooleanExtra(EXTRA_ONLY_GIF, false)
-        video = intent.getBooleanExtra(EXTRA_PICK_VIDEO, false)
-        isShowCamera = intent.getBooleanExtra(EXTRA_SHOW_CAMERA, false)
+//        val intent = intent
+//        max = intent.getIntExtra(EXTRA_MAX, 9)
+//        gif = intent.getBooleanExtra(EXTRA_SHOW_GIF, true)
+//        preview = intent.getBooleanExtra(EXTRA_PREVIEW, true)
+//        gifOnly = intent.getBooleanExtra(EXTRA_ONLY_GIF, false)
+//        video = intent.getBooleanExtra(EXTRA_PICK_VIDEO, false)
+//        isShowCamera = intent.getBooleanExtra(EXTRA_SHOW_CAMERA, false)
 
-        mSelectItems = intent.getParcelableArrayListExtra(EXTRA_ITEMS)
+//        selectItems = intent.getParcelableArrayListExtra(EXTRA_ITEMS)
 
         pickerBackIv.setOnClickListener { onBackPressed() }
 
         pickerCateTv.isEnabled = false
         pickerCateTv.setText(if (video) R.string.picker_all_video else R.string.picker_all_image)
 
-        pickerPreviewTv.isEnabled = !mSelectItems.isNullOrEmpty()
+        pickerPreviewTv.isEnabled = !selectItems.isNullOrEmpty()
 
         pickerTitle.setText(if (video) R.string.picker_picsel_videotype else R.string.picker_picsel_pictype)
 
-        cateHeight = (screenWidth() * 1.3f).toInt()
+//        cateHeight = (screenWidth() * 1.3f).toInt()
 
         val constraintSet = ConstraintSet()
         constraintSet.clone(pickerSelectorRoot)
@@ -131,8 +153,8 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             pickerPreviewTv.visibility = View.GONE
             pickerSend.visibility = View.GONE
         }
-        if (null != mSelectItems) {
-            val size = mSelectItems!!.size
+        if (null != selectItems) {
+            val size = selectItems!!.size
             if (size == 0) {
                 pickerSend.isEnabled = false
                 pickerSend.setText(R.string.picker_picsel_toolbar_send)
@@ -146,9 +168,9 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             }
         }
 
-        mGridViewAdapter = PictureAdapter(max, preview, isShowCamera, video, mDefaultDrawable)
+        gridViewAdapter = PictureAdapter(max, preview, isShowCamera, video, defaultDrawable)
 
-        mGridViewAdapter.setOnItemClickListener { which, photo ->
+        gridViewAdapter.setOnItemClickListener { which, photo ->
             when (which) {
                 1 -> {
                     if (video) {
@@ -185,7 +207,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         }
 
         pickerPhotoGrd.setHasFixedSize(true)
-        pickerPhotoGrd.adapter = mGridViewAdapter
+        pickerPhotoGrd.adapter = gridViewAdapter
         val gridLayoutManager = GridLayoutManager(this, 4)
         pickerPhotoGrd.layoutManager = gridLayoutManager
         pickerPhotoGrd.addItemDecoration(MyGridItemDecoration(this))
@@ -204,12 +226,12 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             }
         })
         //        mCatalogAdapter = new CatalogAdapter();
-        mCateDlgAdapter = CateDlgAdapter(mDefaultDrawable)
-        mCateDlgAdapter.setOnItemClickListener { position, isChange ->
+        cateDlgAdapter = CateDlgAdapter(defaultDrawable)
+        cateDlgAdapter.setOnItemClickListener { position, isChange ->
             hideCatalog()
             selectCateIndex = position
             if (isChange) {
-                val item = mCateDlgAdapter.getItem(position)
+                val item = cateDlgAdapter.getItem(position)
                 pickerCateTv.text = item.name
 
                 postDelay({
@@ -218,13 +240,13 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                         MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories[position].photos)
                         runOnUiThread {
 
-                            mGridViewAdapter.reset(MediaListHolder.currentPhotos)
+                            gridViewAdapter.reset(MediaListHolder.currentPhotos)
                         }
                     }
                 }, 302)
             }
         }
-        pickerCateDlgLst.adapter = mCateDlgAdapter
+        pickerCateDlgLst.adapter = cateDlgAdapter
         //        mCatalogListView.setTranslationY(catalogHeight);
 
 
@@ -305,14 +327,14 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
     @SuppressLint("ClickableViewAccessibility")
     private fun initView() {
         MediaListHolder.selectPhotos.clear()
-        if (!mSelectItems.isNullOrEmpty()) {
-            for (selectItem in mSelectItems!!) {
+        if (!selectItems.isNullOrEmpty()) {
+            for (selectItem in selectItems!!) {
                 selectItem.isSelected = true
             }
-            MediaListHolder.selectPhotos.addAll(mSelectItems!!)
+            MediaListHolder.selectPhotos.addAll(selectItems!!)
         }
 
-        MediaScannerUtils.Builder(this)
+        MediaScannerUtils.Builder()
                 .gif(gif)
                 .gifOnly(gifOnly)
                 .video(video)
@@ -321,11 +343,11 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                     if (success) {
 
                         pickerPhotoLoad.visibility = View.GONE
-                        postDelay({ mGridViewAdapter.reset(MediaListHolder.currentPhotos) }, 2)
+                        postDelay({ gridViewAdapter.reset(MediaListHolder.currentPhotos) }, 2)
 
                         updateToolbar()
 //
-                        mCateDlgAdapter.reset(MediaListHolder.allDirectories)
+                        cateDlgAdapter.reset(MediaListHolder.allDirectories)
                     }
 
 
@@ -491,13 +513,13 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                 }
 
                 if (hasChange) {
-                    mGridViewAdapter.notifyDataSetChanged()
+                    gridViewAdapter.notifyDataSetChanged()
                     updateToolbar()
                 }
 
             } else if (requestCode == REQUEST_CAMERA) {
-                if (mTakePictureUri != null) {
-                    var path = mTakePictureUri!!.encodedPath// getPathFromUri(this, mTakePhotoUri);
+                if (takePictureUri != null) {
+                    var path = takePictureUri!!.encodedPath// getPathFromUri(this, mTakePhotoUri);
 
                     if (path == null) {
                         Toast.makeText(this, if (video)
@@ -507,7 +529,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                                 Toast.LENGTH_SHORT).show()
                         return
                     }
-                    if (mTakePictureUri!!.toString().startsWith("content")) {
+                    if (takePictureUri!!.toString().startsWith("content")) {
                         path = path.replace("/external_storage_root".toRegex(), "")
 
                         path = Environment.getExternalStorageDirectory().toString() + path
@@ -536,7 +558,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
     }
 
     private fun getPhoto(path: String) {
-        MediaScannerUtils.Builder(this@PictureSelectorActivity)
+        MediaScannerUtils.Builder()
                 .path(path)
                 .video(video)
                 .max(max)
@@ -554,24 +576,24 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                     if (selectCateIndex == 0) {
                         if (MediaListHolder.currentPhotos.isEmpty()) {
                             MediaListHolder.currentPhotos.add(photo)
-                            mGridViewAdapter.add(photo)
+                            gridViewAdapter.add(photo)
                         } else {
                             MediaListHolder.currentPhotos.add(0, photo)
-                            mGridViewAdapter.add(0, photo)
+                            gridViewAdapter.add(0, photo)
                         }
                     } else {
                         if (selectCateIndex == updateIndex) {
                             if (MediaListHolder.currentPhotos.isEmpty()) {
                                 MediaListHolder.currentPhotos.add(photo)
-                                mGridViewAdapter.add(photo)
+                                gridViewAdapter.add(photo)
                             } else {
                                 MediaListHolder.currentPhotos.add(0, photo)
-                                mGridViewAdapter.add(0, photo)
+                                gridViewAdapter.add(0, photo)
                             }
                         }
                     }
 
-//                    mCateDlgAdapter.reset(MediaListHolder.allDirectories)
+//                    cateDlgAdapter.reset(MediaListHolder.allDirectories)
                     updateToolbar()
                 }
 
@@ -582,9 +604,9 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             hideCatalog()
             return
         }
-        if (!mSelectItems.isNullOrEmpty()) {
+        if (!selectItems.isNullOrEmpty()) {
             setResult(Activity.RESULT_OK, Intent()
-                    .putParcelableArrayListExtra(EXTRA_ITEMS, mSelectItems))
+                    .putParcelableArrayListExtra(EXTRA_ITEMS, selectItems))
         } else {
             setResult(Activity.RESULT_CANCELED)
         }
@@ -612,14 +634,14 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             Toast.makeText(this, resources.getString(R.string.picker_voip_cpu_error), Toast.LENGTH_SHORT).show()
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mTakePictureUri = MyFileProvider.getUriForFile(this, applicationContext.packageName + ".demo.file_provider", file)
+                takePictureUri = MyFileProvider.getUriForFile(this, applicationContext.packageName + ".demo.file_provider", file)
                 intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             } else {
-                mTakePictureUri = Uri.fromFile(file)
+                takePictureUri = Uri.fromFile(file)
             }
 
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mTakePictureUri)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, takePictureUri)
             startActivityForResult(intent, REQUEST_CAMERA)
         }
     }
@@ -630,10 +652,10 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             when (intent?.action ?: return) {
                 PICKER_ACTION_MEDIA_SELECT -> {
                     val photo = intent.getParcelableExtra<Photo>(PICKER_EXTRA_PHOTO)
-                    if (::mGridViewAdapter.isInitialized) {
+                    if (::gridViewAdapter.isInitialized) {
                         val index = MediaListHolder.currentPhotos.indexOf(photo)
 
-                        mGridViewAdapter.notifyItemChanged(if (isShowCamera) index + 1 else index)
+                        gridViewAdapter.notifyItemChanged(if (isShowCamera) index + 1 else index)
 
                         updateToolbar()
                     }
@@ -645,29 +667,29 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                     if (selectCateIndex == 0) {
                         if (MediaListHolder.currentPhotos.isEmpty()) {
                             MediaListHolder.currentPhotos.add(photo)
-                            mGridViewAdapter.add(photo)
+                            gridViewAdapter.add(photo)
                         } else {
                             MediaListHolder.currentPhotos.add(0, photo)
-                            mGridViewAdapter.add(0, photo)
+                            gridViewAdapter.add(0, photo)
                         }
                     } else {
                         if (selectCateIndex == updateIndex) {
                             if (MediaListHolder.currentPhotos.isEmpty()) {
                                 MediaListHolder.currentPhotos.add(photo)
-                                mGridViewAdapter.add(photo)
+                                gridViewAdapter.add(photo)
                             } else {
                                 MediaListHolder.currentPhotos.add(0, photo)
-                                mGridViewAdapter.add(0, photo)
+                                gridViewAdapter.add(0, photo)
                             }
                         }
                     }
 
-//                    if (mGridViewAdapter.itemCount > mCount) {
+//                    if (gridViewAdapter.itemCount > mCount) {
 //                        Fresco.getImagePipeline().pause()
 //                    }
 //                    postDelay(Runnable { pickerPhotoGrd.smoothScrollToPosition(0) }, 50)
 
-//                    mCateDlgAdapter.reset(MediaListHolder.allDirectories)
+//                    cateDlgAdapter.reset(MediaListHolder.allDirectories)
                     updateToolbar()
 
                 }

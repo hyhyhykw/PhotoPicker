@@ -1,16 +1,15 @@
 package com.hy.picker.utils
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.net.Uri
 import android.os.AsyncTask
 import android.provider.MediaStore
 import android.provider.MediaStore.MediaColumns.DATA
 import android.provider.MediaStore.MediaColumns.MIME_TYPE
+import com.hy.picker.PhotoContext
 import com.hy.picker.R
 import com.hy.picker.model.Photo
 import com.hy.picker.model.PhotoDirectory
-import java.lang.ref.WeakReference
 
 
 //                             _ooOoo_
@@ -45,36 +44,34 @@ import java.lang.ref.WeakReference
 //                   但见满街漂亮妹，哪个归得程序员？
 class MediaScannerUtils {
 
-    private val mBuilder: Builder
+    private val builder: Builder
 
     private constructor(builder: Builder) {
-        mBuilder = builder
+        this.builder = builder
     }
 
-    constructor(context: Context) {
-        mBuilder = Builder(context)
+    constructor() {
+        builder = Builder()
     }
 
 
-
-    fun scanner(resultListener:(Boolean)->Unit) {
-        MultiScannerTask(mBuilder, resultListener).execute()
+    fun scanner(resultListener: (Boolean) -> Unit) {
+        MultiScannerTask(builder, resultListener).execute()
     }
 
-    fun scanner(listener: (Photo?,Int)->Unit) {
-        SingleScannerTask(mBuilder, listener).execute()
+    fun scanner(listener: (Photo?, Int) -> Unit) {
+        SingleScannerTask(builder, listener).execute()
     }
 
-    class Builder(context: Context) {
-        var gif: Boolean = false
-        var gifOnly: Boolean = false
-        var video: Boolean = false
-        val mReference: WeakReference<Context> = WeakReference(context)
+    class Builder {
+        var gif = false
+        var gifOnly = false
+        var video = false
 
         var add = true
         var path: String = ""
 
-        var max: Int = 0
+        var max = 0
 
         fun gif(gif: Boolean): Builder {
             this.gif = gif
@@ -112,7 +109,7 @@ class MediaScannerUtils {
     }
 
 
-    class MultiScannerTask internal constructor(private val mBuilder: Builder, private val mListener: (Boolean)->Unit) : AsyncTask<String, Void, List<PhotoDirectory>>() {
+    class MultiScannerTask internal constructor(private val builder: Builder, private val listener: (Boolean) -> Unit) : AsyncTask<String, Void, List<PhotoDirectory>>() {
 
         @SuppressLint("Recycle")
         override fun doInBackground(vararg strings: String): List<PhotoDirectory>? {
@@ -121,7 +118,7 @@ class MediaScannerUtils {
             val order: String
             val selections: String?
             val selectionArgs: Array<String>?
-            if (mBuilder.video) {
+            if (builder.video) {
                 projection = VIDEO_PROJECTION
                 queryUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 order = MediaStore.Video.Media.DATE_ADDED + " DESC"
@@ -132,11 +129,11 @@ class MediaScannerUtils {
                 projection = IMAGE_PROJECTION
                 queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                 order = MediaStore.Images.Media.DATE_ADDED + " DESC"
-                if (mBuilder.gifOnly) {
+                if (builder.gifOnly) {
                     selections = "$MIME_TYPE=?"
                     selectionArgs = arrayOf("image/gif")
                 } else {
-                    if (mBuilder.gif) {
+                    if (builder.gif) {
                         selections = "$MIME_TYPE=? or $MIME_TYPE=? or $MIME_TYPE=? or $MIME_TYPE=?"
                         selectionArgs = arrayOf("image/jpeg", "image/png", "image/bmp", "image/gif")
                     } else {
@@ -146,8 +143,7 @@ class MediaScannerUtils {
                 }
             }
 
-            val reference = mBuilder.mReference
-            val context = reference.get() ?: return null
+            val context = PhotoContext.context
             val resolver = context.contentResolver
             val cursor = resolver.query(queryUri, projection, selections, selectionArgs, order)
                     ?: return null
@@ -165,7 +161,7 @@ class MediaScannerUtils {
             val dateTakenColumn: String
             val heightColumn: String
             val bucketDisplayNameColumn: String
-            if (mBuilder.video) {
+            if (builder.video) {
                 bucketIdColumn = MediaStore.Video.Media.BUCKET_ID
                 titleColumn = MediaStore.Video.Media.TITLE
                 dataColumn = MediaStore.Video.Media.DATA
@@ -209,7 +205,7 @@ class MediaScannerUtils {
                 val duration: Long
 
                 val resolution: String?
-                if (mBuilder.video) {
+                if (builder.video) {
                     if (path.length < 4) continue
                     val suffix = path.substring(path.length - 4)
                     if (!".mp4".equals(suffix, ignoreCase = true)) {
@@ -255,16 +251,16 @@ class MediaScannerUtils {
         override fun onPostExecute(photoDirectories: List<PhotoDirectory>?) {
             super.onPostExecute(photoDirectories)
             if (null == photoDirectories) {
-                mListener.invoke(false)
+                listener.invoke(false)
             } else {
-                mListener.invoke(true)
+                listener.invoke(true)
             }
         }
     }
 
     private class ResultParams internal constructor(internal val mPhoto: Photo, internal val position: Int)
 
-    private class SingleScannerTask internal constructor(private val mBuilder: Builder, private val mListener: (Photo?,Int)->Unit) : AsyncTask<String, Void, ResultParams>() {
+    private class SingleScannerTask internal constructor(private val builder: Builder, private val listener: (Photo?, Int) -> Unit) : AsyncTask<String, Void, ResultParams>() {
 
         @SuppressLint("Recycle")
         override fun doInBackground(vararg strings: String): ResultParams? {
@@ -273,9 +269,9 @@ class MediaScannerUtils {
             val order: String
 
             val selections = "$DATA=?"
-            val selectionArgs = arrayOf(mBuilder.path)
+            val selectionArgs = arrayOf(builder.path)
 
-            if (mBuilder.video) {
+            if (builder.video) {
                 projection = VIDEO_PROJECTION
                 queryUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 order = MediaStore.Video.Media.DATE_ADDED + " DESC"
@@ -286,8 +282,7 @@ class MediaScannerUtils {
             }
 
 
-            val reference = mBuilder.mReference
-            val context = reference.get() ?: return null
+            val context = PhotoContext.context
 
             val resolver = context.contentResolver
             val cursor = resolver.query(queryUri, projection, selections, selectionArgs, order)
@@ -305,7 +300,7 @@ class MediaScannerUtils {
             val dateTakenColumn: String
             val heightColumn: String
             val bucketNameColumn: String
-            if (mBuilder.video) {
+            if (builder.video) {
                 bucketIdColumn = MediaStore.Video.Media.BUCKET_ID
                 titleColumn = MediaStore.Video.Media.TITLE
                 dataColumn = MediaStore.Video.Media.DATA
@@ -346,7 +341,7 @@ class MediaScannerUtils {
                 val duration: Long
 
                 val resolution: String
-                if (mBuilder.video) {
+                if (builder.video) {
                     duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION))
                     resolution = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.RESOLUTION))
                     if (duration < 1000) return null
@@ -387,7 +382,7 @@ class MediaScannerUtils {
                     updateIndex = index
                 }
 
-                if (mBuilder.add && MediaListHolder.selectPhotos.size != mBuilder.max) {
+                if (builder.add && MediaListHolder.selectPhotos.size != builder.max) {
                     photo.isSelected = true
                     if (MediaListHolder.selectPhotos.isEmpty()) {
                         MediaListHolder.selectPhotos.add(photo)
@@ -415,9 +410,9 @@ class MediaScannerUtils {
         override fun onPostExecute(resultParams: ResultParams?) {
             super.onPostExecute(resultParams)
             if (null == resultParams) {
-                mListener.invoke(null, -1)
+                listener.invoke(null, -1)
             } else {
-                mListener.invoke(resultParams.mPhoto, resultParams.position)
+                listener.invoke(resultParams.mPhoto, resultParams.position)
             }
         }
     }

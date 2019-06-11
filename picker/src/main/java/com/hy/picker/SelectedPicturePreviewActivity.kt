@@ -16,7 +16,7 @@ import java.util.*
  */
 class SelectedPicturePreviewActivity : BaseActivity() {
 
-    private var mCurrentIndex = 0
+    private var currentIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,24 +33,24 @@ class SelectedPicturePreviewActivity : BaseActivity() {
         pickerIndexTotalTv.setTextColor(theme.titleTvColor)
 
         val intent = intent
-        mCurrentIndex = intent.getIntExtra(EXTRA_INDEX, 0)
+        currentIndex = intent.getIntExtra(EXTRA_INDEX, 0)
         val mItemList: ArrayList<Photo> = intent.getParcelableArrayListExtra(EXTRA_ITEMS)
 
-        pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", mCurrentIndex + 1, mItemList.size)
+        pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", currentIndex + 1, mItemList.size)
 
         pickerBackIv.setOnClickListener { onBackPressed() }
 
-        val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.mDefaultDrawable)!!
+        val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!
         val adapter2 = PreviewAdapter(defaultDrawable)
         pickerVpgPreview.adapter = adapter2
 
         adapter2.setOnItemClickListener { finish() }
         adapter2.reset(mItemList)
 
-        pickerVpgPreview.setCurrentItem(mCurrentIndex, false)
+        pickerVpgPreview.setCurrentItem(currentIndex, false)
         pickerVpgPreview.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                mCurrentIndex = position
+                currentIndex = position
                 pickerIndexTotalTv.text = String.format(Locale.getDefault(), "%d/%d", position + 1, mItemList.size)
 
             }

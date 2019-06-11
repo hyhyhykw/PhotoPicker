@@ -20,9 +20,6 @@ public interface IMGStickerPortrait {
 
     RectF getFrame();
 
-//    RectF getAdjustFrame();
-//
-//    RectF getDeleteFrame();
 
     void onSticker(Canvas canvas);
 

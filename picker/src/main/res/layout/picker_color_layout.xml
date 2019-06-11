@@ -2,47 +2,51 @@
 <com.hy.picker.view.IMGColorGroup
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@id/picker_cg_colors"
+    android:id="@id/pickerCgColors"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:checkedButton="@+id/cr_white"
     android:gravity="center"
     android:orientation="horizontal"
     android:padding="4dp">
 
     <com.hy.picker.view.IMGColorRadio
-        android:id="@id/cr_white"
+        android:id="@id/pickerCr1"
         android:layout_width="@dimen/picker_image_color_radio_size"
         android:layout_height="@dimen/picker_image_color_radio_size"
         android:layout_margin="@dimen/picker_image_color_margin"
         app:image_color="@color/picker_color_white"/>
 
     <com.hy.picker.view.IMGColorRadio
+        android:id="@id/pickerCr2"
         android:layout_width="@dimen/picker_image_color_radio_size"
         android:layout_height="@dimen/picker_image_color_radio_size"
         android:layout_margin="@dimen/picker_image_color_margin"
         app:image_color="@color/picker_color_black"/>
 
     <com.hy.picker.view.IMGColorRadio
+        android:id="@id/pickerCr3"
         android:layout_width="@dimen/picker_image_color_radio_size"
         android:layout_height="@dimen/picker_image_color_radio_size"
         android:layout_margin="@dimen/picker_image_color_margin"
         app:image_color="@color/picker_color_red"/>
 
     <com.hy.picker.view.IMGColorRadio
+        android:id="@id/pickerCr4"
         android:layout_width="@dimen/picker_image_color_radio_size"
         android:layout_height="@dimen/picker_image_color_radio_size"
         android:layout_margin="@dimen/picker_image_color_margin"
         app:image_color="@color/picker_color_cyan"/>
 
     <com.hy.picker.view.IMGColorRadio
+        android:id="@id/pickerCr5"
         android:layout_width="@dimen/picker_image_color_radio_size"
         android:layout_height="@dimen/picker_image_color_radio_size"
         android:layout_margin="@dimen/picker_image_color_margin"
         app:image_color="@color/picker_color_yellow"/>
 
     <com.hy.picker.view.IMGColorRadio
+        android:id="@id/pickerCr6"
         android:layout_width="@dimen/picker_image_color_radio_size"
         android:layout_height="@dimen/picker_image_color_radio_size"
         android:layout_margin="@dimen/picker_image_color_margin"

@@ -28,7 +28,7 @@ class PhotoPicker {
 
     private var max = 1
 
-    private var mPicItems: ArrayList<Photo>? = null
+    private var picItems: ArrayList<Photo>? = null
 
     private var gif = true
 
@@ -61,7 +61,7 @@ class PhotoPicker {
     }
 
     fun select(picItems: ArrayList<Photo>): PhotoPicker {
-        mPicItems = picItems
+        this.picItems = picItems
         return this
     }
 
@@ -95,8 +95,8 @@ class PhotoPicker {
         intent.putExtra(EXTRA_SHOW_CAMERA, isShowCamera)
         intent.putExtra(EXTRA_PREVIEW, preview)
         //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (null != mPicItems) {
-            intent.putParcelableArrayListExtra(EXTRA_ITEMS, mPicItems)
+        if (null != picItems) {
+            intent.putParcelableArrayListExtra(EXTRA_ITEMS, picItems)
         }
         activity.startActivityForResult(intent, if (isVideo) PICKER_REQUEST_MULTI_VIDEO else PICKER_REQUEST_MULTI_PICK)
     }
@@ -115,16 +115,16 @@ class PhotoPicker {
             private set
 
         @DrawableRes
-        var mDefaultDrawable = R.drawable.picker_grid_image_default
+        var defaultDrawable = R.drawable.picker_grid_image_default
             private set
 
         @JvmOverloads
         fun init(photoModule: PhotoModule,
-                 defaultDrawable: Int = R.drawable.picker_grid_image_default,
+                 @DrawableRes defaultDrawable: Int = R.drawable.picker_grid_image_default,
                  pickerTheme: PickerTheme = PickerWhiteTheme()) {
             PhotoContext.setPhotoModule(photoModule)
             theme = pickerTheme
-            mDefaultDrawable = defaultDrawable
+            this.defaultDrawable = defaultDrawable
         }
 
 

@@ -1,5 +1,6 @@
 package com.hy.picker.core
 
+import java.io.File
 import java.util.*
 
 /**
@@ -14,5 +15,5 @@ data class CrystalResult(val data: ArrayList<Crystal>)
 data class Category(val id: Int, val name: String, val image: String)
 data class CrystalCategory(val category: ArrayList<Category>)
 
-
+class ExistBean(val file: File, val  exist: Boolean)
 

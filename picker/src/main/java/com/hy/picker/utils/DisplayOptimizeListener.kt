@@ -31,16 +31,16 @@ import com.hy.picker.view.PickerScaleImageView
  * credit: https://github.com/Piasy/BigImageViewer/issues/2
  */
 
-class DisplayOptimizeListener(private val mImageView: PickerScaleImageView) : PickerScaleImageView.OnImageEventListener {
+class DisplayOptimizeListener(private val imageView: PickerScaleImageView) : PickerScaleImageView.OnImageEventListener {
     override fun onPreviewLoadError(e: Exception?) = Unit
     override fun onImageLoadError(e: Exception?) = Unit
     override fun onTileLoadError(e: Exception?) = Unit
     override fun onReady() {
         var result = 0.5f
-        val imageWidth = mImageView.sWidth
-        val imageHeight = mImageView.sHeight
-        val viewWidth = mImageView.width
-        val viewHeight = mImageView.height
+        val imageWidth = imageView.sWidth
+        val imageHeight = imageView.sHeight
+        val viewWidth = imageView.width
+        val viewHeight = imageView.height
 
         var hasZeroValue = false
         if (imageWidth == 0 || imageHeight == 0 || viewWidth == 0 || viewHeight == 0) {
@@ -57,7 +57,7 @@ class DisplayOptimizeListener(private val mImageView: PickerScaleImageView) : Pi
 
         if (!hasZeroValue && imageHeight.toFloat() / imageWidth > LONG_IMAGE_SIZE_RATIO) {
             // scale at top
-            val builder = mImageView
+            val builder = imageView
                     .animateScaleAndCenter(result, PointF(imageWidth / 2f, 0f))!!
             builder.withEasing(PickerScaleImageView.EASE_OUT_QUAD)
                     .start()
@@ -68,17 +68,14 @@ class DisplayOptimizeListener(private val mImageView: PickerScaleImageView) : Pi
             result += 0.2f
         }
 
-        mImageView.setDoubleTapZoomScale(result)
+        imageView.setDoubleTapZoomScale(result)
     }
 
-    override fun onImageLoaded() {
-
-    }
+    override fun onImageLoaded() = Unit
 
 
-    override fun onPreviewReleased() {
+    override fun onPreviewReleased() = Unit
 
-    }
 
     companion object {
         private const val LONG_IMAGE_SIZE_RATIO = 2

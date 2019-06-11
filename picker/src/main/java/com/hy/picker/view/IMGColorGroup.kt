@@ -9,7 +9,8 @@ import android.widget.RadioGroup
  * Created by felix on 2017/12/1 下午3:07.
  */
 
-class IMGColorGroup @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null)
+class IMGColorGroup @JvmOverloads constructor(context: Context,
+                                              attrs: AttributeSet? = null)
     : RadioGroup(context, attrs) {
 
     var checkColor: Int
@@ -21,8 +22,8 @@ class IMGColorGroup @JvmOverloads constructor(context: Context, attrs: Attribute
         set(color) {
             val count = childCount
             for (i in 0 until count) {
-                val radio = getChildAt(i) as IMGColorRadio
-                if (radio.color == color) {
+                val radio = getChildAt(i) as IMGColorRadio?
+                if (radio?.color == color) {
                     radio.isChecked = true
                     break
                 }

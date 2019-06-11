@@ -20,7 +20,7 @@ import java.io.IOException
 
 abstract class IMGEditBaseActivity : BaseActivity(), View.OnClickListener, IMGTextEditDialog.Callback, RadioGroup.OnCheckedChangeListener, DialogInterface.OnShowListener, DialogInterface.OnDismissListener {
 
-    private var mTextDialog: IMGTextEditDialog? = null
+    private var textDialog: IMGTextEditDialog? = null
 
     abstract fun getBitmap(): Bitmap?
 
@@ -30,7 +30,7 @@ abstract class IMGEditBaseActivity : BaseActivity(), View.OnClickListener, IMGTe
         if (bitmap != null) {
             setContentView(R.layout.picker_edit_activity)
             val mTv = findViewById<TextView>(R.id.picker_tv_clip_reset)
-            picker_cg_colors.setOnCheckedChangeListener(this)
+            pickerCgColors.setOnCheckedChangeListener(this)
             val colors = intArrayOf(-0xcccccd, ContextCompat.getColor(this, R.color.picker_color_accent), ContextCompat.getColor(this, R.color.picker_color_white))
             val states = arrayOf(intArrayOf(-android.R.attr.state_enabled), intArrayOf(android.R.attr.state_pressed), intArrayOf())
             val colorStateList = ColorStateList(states, colors)
@@ -56,8 +56,8 @@ abstract class IMGEditBaseActivity : BaseActivity(), View.OnClickListener, IMGTe
             R.id.picker_rb_mosaic -> onModeClick(IMGMode.MOSAIC)
             R.id.picker_btn_clip -> onModeClick(IMGMode.CLIP)
             R.id.picker_btn_undo -> onUndoClick()
-            R.id.picker_tv_done -> onDoneClick()
-            R.id.picker_tv_cancel -> onCancelClick()
+            R.id.pickerDlgDone -> onDoneClick()
+            R.id.pickerDlgCancel -> onCancelClick()
             R.id.picker_ib_clip_cancel -> onCancelClipClick()
             R.id.picker_ib_clip_done -> onDoneClipClick()
             R.id.picker_tv_clip_reset -> onResetClipClick()
@@ -89,16 +89,17 @@ abstract class IMGEditBaseActivity : BaseActivity(), View.OnClickListener, IMGTe
     }
 
     private fun onTextModeClick() {
-        if (mTextDialog == null) {
-            mTextDialog = IMGTextEditDialog(this, this)
-            mTextDialog?.setOnShowListener(this)
-            mTextDialog?.setOnDismissListener(this)
+        if (textDialog == null) {
+            textDialog = IMGTextEditDialog(this, this)
+            textDialog?.setOnShowListener(this)
+            textDialog?.setOnDismissListener(this)
         }
-        mTextDialog?.show()
+        textDialog?.show()
     }
 
     override fun onCheckedChanged(group: RadioGroup, checkedId: Int) {
-        onColorChanged(picker_cg_colors.checkColor)
+        val checkedColor = pickerCgColors.checkColor
+        onColorChanged(checkedColor)
     }
 
     fun setOpDisplay(op: Int) {

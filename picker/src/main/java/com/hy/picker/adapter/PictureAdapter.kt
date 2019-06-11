@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -18,7 +17,8 @@ import com.hy.picker.*
 import com.hy.picker.model.Photo
 import com.hy.picker.utils.CommonUtils
 import com.hy.picker.utils.MediaListHolder
-import kotlinx.android.synthetic.main.picker_grid_camera.view.*
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.picker_grid_camera.*
 import kotlinx.android.synthetic.main.picker_grid_item.view.*
 import java.io.File
 import java.util.*
@@ -32,33 +32,33 @@ class PictureAdapter(private val max: Int,
                      private val preview: Boolean,
                      private val camera: Boolean,
                      private val video: Boolean,
-                     private val mDefaultDrawable: Drawable) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                     private val defaultDrawable: Drawable) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val mPhotos = ArrayList<Photo>()
+    private val photos = ArrayList<Photo>()
 
     private val totalSelectedNum: Int
         get() = MediaListHolder.selectPhotos.size
 
 
     fun reset(photos: List<Photo>) {
-        mPhotos.clear()
-        mPhotos.addAll(photos)
+        this.photos.clear()
+        this.photos.addAll(photos)
         notifyDataSetChanged()
     }
 
     fun add(index: Int, photo: Photo) {
-        mPhotos.add(index, photo)
+        photos.add(index, photo)
         notifyItemInserted(index)
 
     }
 
     fun add(photo: Photo) {
-        if (mPhotos.isEmpty()) {
-            mPhotos.add(photo)
+        if (photos.isEmpty()) {
+            photos.add(photo)
             notifyItemInserted(0)
         } else {
-            mPhotos.add(photo)
-            notifyItemInserted(mPhotos.size - 1)
+            photos.add(photo)
+            notifyItemInserted(photos.size - 1)
         }
     }
 
@@ -71,12 +71,12 @@ class PictureAdapter(private val max: Int,
 
         if (viewType == 0) {
 
-            val cameraView =View.inflate(context,R.layout.picker_grid_camera,null)
+            val cameraView = View.inflate(context, R.layout.picker_grid_camera, null)
 
             holder = CameraHolder(cameraView)
         } else {
 
-            val convertView = View.inflate(context,R.layout.picker_grid_item,null)
+            val convertView = View.inflate(context, R.layout.picker_grid_item, null)
             holder = ItemHolder(convertView)
         }
 
@@ -114,7 +114,7 @@ class PictureAdapter(private val max: Int,
                 adapterPosition
             }
 
-            val item = mPhotos[position]
+            val item = photos[position]
 
             if (item.isGif) {
                 ivGif.visibility = View.VISIBLE
@@ -124,8 +124,8 @@ class PictureAdapter(private val max: Int,
 
 
             val hierarchy = image.hierarchy
-            hierarchy.setPlaceholderImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
-            hierarchy.setFailureImage(mDefaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
+            hierarchy.setPlaceholderImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
+            hierarchy.setFailureImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
             image.controller = PictureSelectorActivity.getDraweeController(image, Uri.fromFile(File(item.uri)), PhotoContext.imageItemSize, PhotoContext.imageItemSize)
             checkBox.isChecked = MediaListHolder.selectPhotos.contains(item)
 
@@ -205,9 +205,6 @@ class PictureAdapter(private val max: Int,
                             mask.setBackgroundResource(R.drawable.picker_item_bg_normal)
                         }
                         _listener?.invoke(2, item)
-//                        if (null != mOnItemListener) {
-//                            mOnItemListener!!.onItemChecked()
-//                        }
                     }
                 }
 
@@ -218,21 +215,17 @@ class PictureAdapter(private val max: Int,
     }
 
 
-    internal inner class CameraHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private val mMask: ImageButton = itemView.pickerCameraMask
-        private val mTvTitle: TextView = itemView.pickerTakePicTv
+    internal inner class CameraHolder(itemView: View) : RecyclerView.ViewHolder(itemView), LayoutContainer {
+        override val containerView: View?
+            get() = itemView
 
         fun bind() {
-            mTvTitle.setText(if (video)
+            pickerTakePicTv.setText(if (video)
                 R.string.picker_picsel_record_video
             else
                 R.string.picker_picsel_take_picture)
-            mMask.setOnClickListener {
+            pickerCameraMask.setOnClickListener {
                 _listener?.invoke(3, Photo())
-//                if (null != mOnItemListener) {
-//                    mOnItemListener!!.onCameraClick()
-//                }
             }
 
         }
@@ -259,6 +252,6 @@ class PictureAdapter(private val max: Int,
 
 
     override fun getItemCount(): Int {
-        return if (camera) mPhotos.size + 1 else mPhotos.size
+        return if (camera) photos.size + 1 else photos.size
     }
 }

@@ -13,7 +13,7 @@
         android:paddingTop="8dp">
 
         <TextView
-            android:id="@id/picker_tv_cancel"
+            android:id="@id/pickerDlgCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -24,7 +24,7 @@
             android:textSize="16sp"/>
 
         <TextView
-            android:id="@id/picker_tv_done"
+            android:id="@id/pickerDlgDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
@@ -37,7 +37,7 @@
     </FrameLayout>
 
     <EditText
-        android:id="@id/picker_et_text"
+        android:id="@id/pickerEtText"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="22dp"

@@ -1,14 +1,12 @@
-package com.hy.picker.core;
+package com.hy.picker.core
 
 /**
  * Created by felix on 2017/11/22 下午6:18.
  */
 
-public enum IMGMode {
-
+enum class IMGMode {
     NONE,
     DOODLE,
     MOSAIC,
     CLIP
-
 }

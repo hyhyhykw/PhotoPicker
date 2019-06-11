@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.hy.picker.BuildConfig;
 import com.hy.picker.view.PickerScaleImageView;
 
 import java.io.File;
@@ -463,7 +464,7 @@ public class SkiaPooledImageRegionDecoder implements ImageRegionDecoder {
 
     private void debug(String message) {
         if (debug) {
-            Log.d(TAG, message);
+            if (BuildConfig.DEBUG)  Log.d(TAG, message);
         }
     }
 

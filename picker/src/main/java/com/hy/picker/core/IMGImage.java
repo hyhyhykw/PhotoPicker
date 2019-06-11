@@ -12,6 +12,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.util.Log;
 
+import com.hy.picker.BuildConfig;
 import com.hy.picker.core.clip.IMGClip;
 import com.hy.picker.core.clip.IMGClipWindow;
 import com.hy.picker.core.homing.IMGHoming;
@@ -77,7 +78,7 @@ public class IMGImage {
      */
     private IMGMode mMode = IMGMode.NONE;
 
-    private boolean isFreezing = mMode == IMGMode.CLIP;
+    private boolean isFreezing = false;
 
     /**
      * 可视区域，无Scroll 偏移区域
@@ -342,7 +343,7 @@ public class IMGImage {
                 M.setRotate(getTargetRotate(), mClipFrame.centerX(), mClipFrame.centerY());
                 M.mapRect(clipFrame, mClipFrame);
 
-                homing.rConcat(IMGUtils.fill(frame, clipFrame));
+                homing.rConcat(IMGUtils.INSTANCE.fill(frame, clipFrame));
             } else {
                 RectF cFrame = new RectF();
 
@@ -357,13 +358,13 @@ public class IMGImage {
                     M.setRotate(getTargetRotate() - getRotate(), mClipFrame.centerX(), mClipFrame.centerY());
                     M.mapRect(cFrame, mClipWin.getOffsetFrame(scrollX, scrollY));
 
-                    homing.rConcat(IMGUtils.fitHoming(frame, cFrame, mClipFrame.centerX(), mClipFrame.centerY()));
+                    homing.rConcat(IMGUtils.INSTANCE.fitHoming(frame, cFrame, mClipFrame.centerX(), mClipFrame.centerY()));
 
 
                 } else {
                     M.setRotate(getTargetRotate(), mClipFrame.centerX(), mClipFrame.centerY());
                     M.mapRect(cFrame, mFrame);
-                    homing.rConcat(IMGUtils.fillHoming(frame, cFrame, mClipFrame.centerX(), mClipFrame.centerY()));
+                    homing.rConcat(IMGUtils.INSTANCE.fillHoming(frame, cFrame, mClipFrame.centerX(), mClipFrame.centerY()));
                 }
 
             }
@@ -374,7 +375,7 @@ public class IMGImage {
 
             RectF win = new RectF(mWindow);
             win.offset(scrollX, scrollY);
-            homing.rConcat(IMGUtils.fitHoming(win, clipFrame, isRequestToBaseFitting));
+            homing.rConcat(IMGUtils.INSTANCE.fitHoming(win, clipFrame, isRequestToBaseFitting));
             isRequestToBaseFitting = false;
         }
 
@@ -647,7 +648,7 @@ public class IMGImage {
 
                 RectF frame = mClipWin.getOffsetFrame(scrollX, scrollY);
                 IMGHoming homing = new IMGHoming(scrollX, scrollY, getScale(), getTargetRotate());
-                homing.rConcat(IMGUtils.fillHoming(frame, clipFrame, mClipFrame.centerX(), mClipFrame.centerY()));
+                homing.rConcat(IMGUtils.INSTANCE.fillHoming(frame, clipFrame, mClipFrame.centerX(), mClipFrame.centerY()));
                 return homing;
             }
         }
@@ -765,7 +766,8 @@ public class IMGImage {
 
     public void onHomingCancel(boolean isRotate) {
         isAnimCanceled = true;
-        Log.d(TAG, "Homing cancel");
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "Homing cancel");
     }
 
     public void release() {

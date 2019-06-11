@@ -244,7 +244,7 @@ fun isFastDoubleClick(isShow: Boolean = true): Boolean {
  * @param view     视图
  * @param listener 点击事件
  */
-fun setViewClick(view: View, listener: (View)->Unit) {
+fun setViewClick(view: View?, listener: (View)->Unit) {
     setViewClick(view, listener, true)
 }
 
@@ -255,8 +255,9 @@ fun setViewClick(view: View, listener: (View)->Unit) {
  * @param view     视图
  * @param listener 点击事件
  */
-fun setViewClick(view: View, listener: (View)->Unit, isShow: Boolean) {
-    view.setOnClickListener { v ->
+fun setViewClick(view: View?, listener: (View)->Unit, isShow: Boolean) {
+
+    view?.setOnClickListener { v ->
         if (isFastDoubleClick(isShow)) return@setOnClickListener
         listener(v)
     }
