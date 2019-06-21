@@ -15,7 +15,7 @@ class IMGHomingAnimator : ValueAnimator() {
     var isRotate = false
         private set
 
-    private lateinit var mEvaluator: IMGHomingEvaluator
+    private lateinit var evaluator: IMGHomingEvaluator
 
     init {
         interpolator = AccelerateDecelerateInterpolator()
@@ -23,10 +23,10 @@ class IMGHomingAnimator : ValueAnimator() {
 
     override fun setObjectValues(vararg values: Any?) {
         super.setObjectValues(*values)
-        if (!::mEvaluator.isInitialized) {
-            mEvaluator = IMGHomingEvaluator()
+        if (!::evaluator.isInitialized) {
+            evaluator = IMGHomingEvaluator()
         }
-        setEvaluator(mEvaluator)
+        setEvaluator(evaluator)
     }
 
     fun setHomingValues(sHoming: IMGHoming, eHoming: IMGHoming) {

@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public final class ImageSource {
 
+
     static final String FILE_SCHEME = "file:///";
     static final String ASSET_SCHEME = "file:///android_asset/";
 

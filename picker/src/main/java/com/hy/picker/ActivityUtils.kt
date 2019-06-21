@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import kotlinx.android.extensions.LayoutContainer
 import org.jetbrains.anko.toast
 
 /**
@@ -25,8 +26,7 @@ import org.jetbrains.anko.toast
 
 private const val EXTRA_KEY_STRING = "bundle"
 
-@JvmOverloads
-fun Fragment.toActivity(cla: Class<out Activity>, bundle: Bundle? = null, data: Uri? = null){
+fun Fragment.toActivity(cla: Class<out Activity>, bundle: Bundle? = null, data: Uri? = null) {
 
     val intent = Intent(context, cla)
     if (null != bundle) intent.putExtra(EXTRA_KEY_STRING, bundle)
@@ -45,7 +45,7 @@ fun Fragment.toActivity(cla: Class<out Activity>, bundle: Bundle? = null, data: 
  * *
  * @param data   uri data
  */
-@JvmOverloads
+
 fun Context.toActivity(
         cla: Class<out Activity>,
         bundle: Bundle? = null,
@@ -63,8 +63,14 @@ fun Context.toActivity(
     startActivity(intent)
 }
 
+fun View.toActivity(cla: Class<out Activity>, bundle: Bundle? = null, data: Uri? = null) {
+    context.toActivity(cla, bundle, data)
+}
 
-@JvmOverloads
+fun LayoutContainer.toActivity(cla: Class<out Activity>, bundle: Bundle? = null, data: Uri? = null) {
+    containerView?.toActivity(cla, bundle, data)
+}
+
 fun Activity.toActivityForResult(
         cla: Class<out Activity>,
         requestCode: Int,
@@ -75,7 +81,6 @@ fun Activity.toActivityForResult(
     startActivityForResult(intent, requestCode)
 }
 
-@JvmOverloads
 fun Fragment.toActivityForResult(
         cla: Class<out Activity>,
         requestCode: Int,
@@ -87,10 +92,15 @@ fun Fragment.toActivityForResult(
     startActivityForResult(intent, requestCode)
 }
 
-@JvmOverloads
-fun Fragment.toNewActivity(cla: Class<out Activity>, bundle: Bundle? = null) = context?.toNewActivity(cla, bundle)
+fun Fragment.toNewActivity(cla: Class<out Activity>, bundle: Bundle? = null) {
+    val intent = Intent(context, cla)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+    if (null != bundle) {
+        intent.putExtra(EXTRA_KEY_STRING, bundle)
+    }
+    startActivity(intent)
+}
 
-@JvmOverloads
 fun Context.toNewActivity(cla: Class<out Activity>, bundle: Bundle? = null) {
     val intent = Intent(this, cla)
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -111,11 +121,6 @@ fun Fragment.screenHeight() = context?.screenHeight()
 fun View.screenWidth() = context.screenWidth()
 fun View.screenHeight() = context.screenHeight()
 
-//val screenWidth
-//    get() = MyApp.application.screenWidth()
-//val screenHeight
-//    get() = MyApp.application.screenHeight()
-
 
 fun Resources.dp(dpValue: Float): Int {
     val scale = displayMetrics.density
@@ -126,6 +131,89 @@ fun Resources.sp(spValue: Float): Int {
     val fontScale = displayMetrics.scaledDensity
     return (spValue * fontScale + 0.5f).toInt()
 }
+
+fun Resources.px2sp(pxValue: Float): Int {
+    val fontScale = displayMetrics.scaledDensity
+    return (pxValue / fontScale + 0.5f).toInt()
+}
+
+/**
+ * px转dp
+ *
+ * @param pxValue px值
+ * @return dp值
+ */
+fun Resources.px2dp(pxValue: Float): Int {
+    val scale = displayMetrics.density
+    return (pxValue / scale + 0.5f).toInt()
+}
+
+/**
+ * px转sp
+ *
+ * @param pxValue px值
+ * @return sp值
+ */
+fun Context.px2sp(pxValue: Float): Int {
+    val fontScale = resources.displayMetrics.scaledDensity
+    return (pxValue / fontScale + 0.5f).toInt()
+}
+
+/**
+ * px转dp
+ *
+ * @param pxValue px值
+ * @return dp值
+ */
+fun Context.px2dp(pxValue: Float): Int {
+    val scale = resources.displayMetrics.density
+    return (pxValue / scale + 0.5f).toInt()
+}
+
+/**
+ * px转sp
+ *
+ * @param pxValue px值
+ * @return sp值
+ */
+fun Fragment.px2sp(pxValue: Float): Int {
+    val fontScale = resources.displayMetrics.scaledDensity
+    return (pxValue / fontScale + 0.5f).toInt()
+}
+
+/**
+ * px转dp
+ *
+ * @param pxValue px值
+ * @return dp值
+ */
+fun Fragment.px2dp(pxValue: Float): Int {
+    val scale = resources.displayMetrics.density
+    return (pxValue / scale + 0.5f).toInt()
+}
+
+/**
+ * px转sp
+ *
+ * @param pxValue px值
+ * @return sp值
+ */
+fun View.px2sp(pxValue: Float): Int {
+    val fontScale = resources.displayMetrics.scaledDensity
+    return (pxValue / fontScale + 0.5f).toInt()
+}
+
+/**
+ * px转dp
+ *
+ * @param pxValue px值
+ * @return dp值
+ */
+fun View.px2dp(pxValue: Float): Int {
+    val scale = resources.displayMetrics.density
+    return (pxValue / scale + 0.5f).toInt()
+}
+
 
 /**
  * sp转px
@@ -192,7 +280,6 @@ fun Fragment?.canLoadImage(): Boolean {
         return false
     }
 
-
     return activity.canLoadImage()
 }
 
@@ -217,12 +304,11 @@ fun Activity?.canLoadImage(): Boolean {
 }
 
 
-private var lastClickTime: Long = 0
+private var lastClickTime = 0L
 
 /**
  * 防止多次点击，造成重复操作
  */
-@JvmOverloads
 fun isFastDoubleClick(isShow: Boolean = true): Boolean {
     val time = System.currentTimeMillis()
     val timeD = time - lastClickTime
@@ -244,18 +330,7 @@ fun isFastDoubleClick(isShow: Boolean = true): Boolean {
  * @param view     视图
  * @param listener 点击事件
  */
-fun setViewClick(view: View?, listener: (View)->Unit) {
-    setViewClick(view, listener, true)
-}
-
-
-/**
- * 视图点击事件的封装，防止点击过快
- *
- * @param view     视图
- * @param listener 点击事件
- */
-fun setViewClick(view: View?, listener: (View)->Unit, isShow: Boolean) {
+fun setViewClick(view: View?, listener: (View) -> Unit, isShow: Boolean = true) {
 
     view?.setOnClickListener { v ->
         if (isFastDoubleClick(isShow)) return@setOnClickListener

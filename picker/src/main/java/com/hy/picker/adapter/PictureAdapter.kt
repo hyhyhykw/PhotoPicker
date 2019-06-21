@@ -6,20 +6,16 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.drawable.ScalingUtils
-import com.facebook.drawee.view.SimpleDraweeView
 import com.hy.picker.*
 import com.hy.picker.model.Photo
 import com.hy.picker.utils.CommonUtils
 import com.hy.picker.utils.MediaListHolder
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.picker_grid_camera.*
-import kotlinx.android.synthetic.main.picker_grid_item.view.*
+import kotlinx.android.synthetic.main.picker_grid_item.*
 import java.io.File
 import java.util.*
 
@@ -89,21 +85,18 @@ class PictureAdapter(private val max: Int,
         _listener = listener
     }
 
-    private inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val image: SimpleDraweeView = view.pickerPhotoImage
-        private val mask: View = view.pickerItemMask
-        private val checkBox: AppCompatCheckBox = view.pickerItemCheckBox
-        private val ivGif: ImageView = view.pickerIvGif
-        private val tvTime: TextView = view.pickerVideoTime
+    private inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view),LayoutContainer {
+        override val containerView: View?
+            get() = itemView
 
         init {
             if (video) {
-                checkBox.visibility = View.GONE
-                itemView.pickerLytVideo.visibility = View.VISIBLE
+                pickerItemCheckBox.visibility = View.GONE
+                pickerLytVideo.visibility = View.VISIBLE
             } else {
                 val states = arrayOf(intArrayOf(-android.R.attr.state_checked), intArrayOf(android.R.attr.state_checked))
                 val colors = intArrayOf(PhotoPicker.theme.sendBgColor, PhotoPicker.theme.sendBgColor)
-                checkBox.supportButtonTintList = ColorStateList(states, colors)
+                pickerItemCheckBox.supportButtonTintList = ColorStateList(states, colors)
             }
         }
 
@@ -117,19 +110,19 @@ class PictureAdapter(private val max: Int,
             val item = photos[position]
 
             if (item.isGif) {
-                ivGif.visibility = View.VISIBLE
+                pickerIvGif.visibility = View.VISIBLE
             } else {
-                ivGif.visibility = View.GONE
+                pickerIvGif.visibility = View.GONE
             }
 
 
-            val hierarchy = image.hierarchy
+            val hierarchy = pickerPhotoImage.hierarchy
             hierarchy.setPlaceholderImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
             hierarchy.setFailureImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
-            image.controller = PictureSelectorActivity.getDraweeController(image, Uri.fromFile(File(item.uri)), PhotoContext.imageItemSize, PhotoContext.imageItemSize)
-            checkBox.isChecked = MediaListHolder.selectPhotos.contains(item)
+            pickerPhotoImage.controller = PictureSelectorActivity.getDraweeController(pickerPhotoImage, Uri.fromFile(File(item.uri)), PhotoContext.imageItemSize, PhotoContext.imageItemSize)
+            pickerItemCheckBox.isChecked = MediaListHolder.selectPhotos.contains(item)
 
-            checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            pickerItemCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (buttonView.isPressed) {
                     if (totalSelectedNum == max && isChecked) {
                         Toast.makeText(
@@ -142,11 +135,11 @@ class PictureAdapter(private val max: Int,
                         if (isChecked) {
                             item.isSelected = true
                             MediaListHolder.selectPhotos.add(item)
-                            mask.setBackgroundResource(R.drawable.picker_item_bg_selected)
+                            pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_selected)
                         } else {
                             item.isSelected = false
                             MediaListHolder.selectPhotos.remove(item)
-                            mask.setBackgroundResource(R.drawable.picker_item_bg_normal)
+                            pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_normal)
                         }
                     }
                     _listener?.invoke(2, item)
@@ -155,15 +148,15 @@ class PictureAdapter(private val max: Int,
 
 
             if (item.isSelected) {
-                mask.setBackgroundResource(R.drawable.picker_item_bg_selected)
+                pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_selected)
             } else {
-                mask.setBackgroundResource(R.drawable.picker_item_bg_normal)
+                pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_normal)
             }
 
 
             if (video) {
-                tvTime.text = CommonUtils.format(item.duration)
-                mask.setOnClickListener {
+                pickerVideoTime.text = CommonUtils.format(item.duration)
+                pickerItemMask.setOnClickListener {
                     item.isSelected = true
                     MediaListHolder.selectPhotos.add(item)
 
@@ -171,7 +164,7 @@ class PictureAdapter(private val max: Int,
                 }
                 return
             }
-            mask.setOnClickListener {
+            pickerItemMask.setOnClickListener {
                 if (preview) {
                     val intent = Intent(itemView.context, PicturePreviewActivity::class.java)
                             .putExtra(EXTRA_INDEX, position)
@@ -183,13 +176,13 @@ class PictureAdapter(private val max: Int,
                     if (max == 1) {
                         _listener?.invoke(1, item)
                     } else {
-                        checkBox.toggle()
-                        val isChecked = checkBox.isChecked
+                        pickerItemCheckBox.toggle()
+                        val isChecked = pickerItemCheckBox.isChecked
                         if (totalSelectedNum == max && isChecked) {
                             Toast.makeText(PhotoContext.context.applicationContext,
                                     PhotoContext.context.resources.getQuantityString(R.plurals.picker_picsel_selected_max, 1, max),
                                     Toast.LENGTH_SHORT).show()
-                            checkBox.isChecked = false
+                            pickerItemCheckBox.isChecked = false
                         } else {
                             if (isChecked) {
                                 item.isSelected = true
@@ -200,9 +193,9 @@ class PictureAdapter(private val max: Int,
                             }
                         }
                         if (item.isSelected) {
-                            mask.setBackgroundResource(R.drawable.picker_item_bg_selected)
+                            pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_selected)
                         } else {
-                            mask.setBackgroundResource(R.drawable.picker_item_bg_normal)
+                            pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_normal)
                         }
                         _listener?.invoke(2, item)
                     }

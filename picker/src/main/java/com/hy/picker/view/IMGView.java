@@ -87,16 +87,11 @@ public class IMGView extends FrameLayout implements Runnable, ScaleGestureDetect
 
     public IMGView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        initialize(context);
-    }
-
-
-    private void initialize(Context context) {
         mPen.setMode(mImage.getMode());
         mGDetector = new GestureDetector(context, new MoveAdapter());
         mSGDetector = new ScaleGestureDetector(context, this);
     }
+
 
     public void setImageBitmap(Bitmap image) {
         mImage.setBitmap(image);
