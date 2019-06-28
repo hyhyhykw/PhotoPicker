@@ -334,8 +334,17 @@ fun isFastDoubleClick(isShow: Boolean = true): Boolean {
  * @param view     视图
  * @param listener 点击事件
  */
-@JvmOverloads
-fun setViewClick(view: View?, listener: (View) -> Unit, isShow: Boolean = true) {
+fun setViewClick(view: View?, listener: (View) -> Unit) {
+    setViewClick(view,listener,true)
+}
+
+/**
+ * 视图点击事件的封装，防止点击过快
+ *
+ * @param view     视图
+ * @param listener 点击事件
+ */
+fun setViewClick(view: View?, listener: (View) -> Unit, isShow: Boolean ) {
 
     view?.setOnClickListener { v ->
         if (isFastDoubleClick(isShow)) return@setOnClickListener
