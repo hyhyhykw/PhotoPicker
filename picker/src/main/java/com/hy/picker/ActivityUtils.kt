@@ -277,14 +277,14 @@ fun post(block: () -> Unit) {
     postDelay(block, 0)
 }
 
- fun Fragment?.canLoadImage(): Boolean {
+fun Fragment?.canLoadImage(): Boolean {
 
-     if (this == null) {
+    if (this == null) {
         return false
     }
 
 
-     return activity.canLoadImage()
+    return activity.canLoadImage()
 }
 
 fun Context?.canLoadImage(): Boolean {
@@ -334,6 +334,7 @@ fun isFastDoubleClick(isShow: Boolean = true): Boolean {
  * @param view     视图
  * @param listener 点击事件
  */
+@JvmOverloads
 fun setViewClick(view: View?, listener: (View) -> Unit, isShow: Boolean = true) {
 
     view?.setOnClickListener { v ->
@@ -446,15 +447,9 @@ private var statusBarHeight = 0
 fun Context?.getStatusBarHeight(): Int {
     if (statusBarHeight != 0) return statusBarHeight
     if (null == this) return 0
-    try {
-        @SuppressLint("PrivateApi")
-        val clazz = Class.forName("com.android.internal.R\$dimen")
-        val obj = clazz.newInstance()
-        val field = clazz.getField("status_bar_height")
-        val temp = Integer.parseInt(field.get(obj).toString())
-        statusBarHeight = resources.getDimensionPixelSize(temp)
-    } catch (e: Exception) {
+    val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+    if (resourceId > 0) {
+        statusBarHeight = resources.getDimensionPixelSize(resourceId)
     }
-
     return statusBarHeight
 }
