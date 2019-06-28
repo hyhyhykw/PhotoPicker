@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.View
 import android.view.WindowManager.LayoutParams
 import android.widget.RadioGroup
 import com.hy.picker.core.IMGText
@@ -16,7 +15,7 @@ import kotlinx.android.synthetic.main.picker_text_dialog.*
  * Created by felix on 2017/12/1 上午11:21.
  */
 
-class IMGTextEditDialog(context: Context, private val callback: Callback?) : Dialog(context, R.style.PickerTextDialog), View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+class IMGTextEditDialog(context: Context, private val callback: Callback?) : Dialog(context, R.style.PickerTextDialog), RadioGroup.OnCheckedChangeListener {
 
 
     private var defaultText: IMGText? = null
@@ -32,8 +31,12 @@ class IMGTextEditDialog(context: Context, private val callback: Callback?) : Dia
         window?.setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
 
         pickerCgColors.setOnCheckedChangeListener(this)
-        pickerDlgCancel.setOnClickListener(this)
-        pickerDlgCancel.setOnClickListener(this)
+        pickerDlgDone.setOnClickListener{
+            onDone()
+        }
+        pickerDlgCancel.setOnClickListener{
+            dismiss()
+        }
     }
 
     override fun onStart() {
@@ -50,21 +53,12 @@ class IMGTextEditDialog(context: Context, private val callback: Callback?) : Dia
         pickerCgColors.checkColor = pickerEtText.currentTextColor
     }
 
-    fun setText(text: IMGText) {
+    fun setText(text: IMGText?) {
         defaultText = text
     }
 
     fun reset() {
         setText(IMGText(null, Color.WHITE))
-    }
-
-    override fun onClick(v: View?) {
-        val vid = v?.id
-        if (vid == R.id.pickerDlgDone) {
-            onDone()
-        } else if (vid == R.id.pickerDlgCancel) {
-            dismiss()
-        }
     }
 
     private fun onDone() {

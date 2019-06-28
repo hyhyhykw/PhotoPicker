@@ -20,11 +20,14 @@ import com.hy.picker.core.sticker.IMGStickerAdjustHelper;
 import com.hy.picker.core.sticker.IMGStickerHelper;
 import com.hy.picker.core.sticker.IMGStickerMoveHelper;
 
+import androidx.annotation.NonNull;
+
 /**
  * Created by felix on 2017/12/12 下午4:26.
  */
 
-public abstract class IMGStickerView extends ViewGroup implements IMGSticker, View.OnClickListener {
+public abstract class IMGStickerView extends ViewGroup implements IMGSticker,
+        View.OnClickListener {
 
 
     private View mContentView;
@@ -40,7 +43,7 @@ public abstract class IMGStickerView extends ViewGroup implements IMGSticker, Vi
 
     private ImageView mRemoveView, mAdjustView;
 
-    private float mMaxScaleValue = MAX_SCALE_VALUE;
+//    private float mMaxScaleValue = MAX_SCALE_VALUE;
 
     private final Paint PAINT=new Paint(Paint.ANTI_ALIAS_FLAG);
 
@@ -50,7 +53,7 @@ public abstract class IMGStickerView extends ViewGroup implements IMGSticker, Vi
 
     private final Rect mTempFrame = new Rect();
 
-    private static final float MAX_SCALE_VALUE = 4f;
+//    private static final float MAX_SCALE_VALUE = 4f;
 
     private static final int ANCHOR_SIZE = 48;
 
@@ -281,18 +284,18 @@ public abstract class IMGStickerView extends ViewGroup implements IMGSticker, Vi
     }
 
     @Override
-    public void onSticker(Canvas canvas) {
+    public void onSticker(@NonNull Canvas canvas) {
         canvas.translate(mContentView.getX(), mContentView.getY());
         mContentView.draw(canvas);
     }
 
     @Override
-    public void registerCallback(Callback callback) {
+    public void registerCallback(@NonNull Callback callback) {
         mStickerHelper.registerCallback(callback);
     }
 
     @Override
-    public void unregisterCallback(Callback callback) {
+    public void unregisterCallback(@NonNull Callback callback) {
         mStickerHelper.unregisterCallback(callback);
     }
 }

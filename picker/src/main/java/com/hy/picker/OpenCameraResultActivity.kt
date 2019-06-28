@@ -51,8 +51,6 @@ class OpenCameraResultActivity : AppCompatActivity(), EasyPermissions.Permission
         val intentFilter = IntentFilter()
         intentFilter.addAction(PICKER_ACTION_MEDIA_SURE)
         registerReceiver(sureReceiver, intentFilter)
-//        video = intent.getBooleanExtra(EXTRA_PICK_VIDEO, false)
-//        isEdit = intent.getBooleanExtra(EXTRA_EDIT, false)
 
         if (EasyPermissions.hasPermissions(this, *CAMERA_PERMISSION)) {
             requestCamera()

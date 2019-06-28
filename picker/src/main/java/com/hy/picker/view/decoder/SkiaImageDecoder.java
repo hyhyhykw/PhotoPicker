@@ -7,15 +7,16 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import androidx.annotation.Keep;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.hy.picker.view.PickerScaleImageView;
 
 import java.io.InputStream;
 import java.util.List;
+
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Default implementation of {@link ImageDecoder}
@@ -51,7 +52,7 @@ public class SkiaImageDecoder implements ImageDecoder {
 
     @Override
     @NonNull
-    public Bitmap decode(Context context, @NonNull Uri uri) throws Exception {
+    public Bitmap decode(@NonNull Context context, @NonNull Uri uri) throws Exception {
         String uriString = uri.toString();
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap bitmap;

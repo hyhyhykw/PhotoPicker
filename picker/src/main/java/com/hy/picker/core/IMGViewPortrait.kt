@@ -10,9 +10,9 @@ interface IMGViewPortrait {
 
     val height: Int
 
-    var scaleX: Float
+    val scaleX: Float
+    val scaleY: Float
 
-    var scaleY: Float
 
     var rotation: Float
 
@@ -21,7 +21,6 @@ interface IMGViewPortrait {
     val pivotY: Float
 
     var x: Float
-
     var y: Float
 
     var scale: Float

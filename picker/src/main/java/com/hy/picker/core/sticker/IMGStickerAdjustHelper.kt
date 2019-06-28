@@ -7,12 +7,14 @@ import android.view.MotionEvent
 import android.view.View
 import com.hy.picker.BuildConfig
 import com.hy.picker.view.IMGStickerView
+import kotlin.math.atan2
+import kotlin.math.sqrt
 
 /**
  * Created by felix on 2017/11/15 下午5:44.
  */
 
-class IMGStickerAdjustHelper(private val container: IMGStickerView, 
+class IMGStickerAdjustHelper(private val container: IMGStickerView,
                              private val outerView: View)
     : View.OnTouchListener {
 
@@ -77,7 +79,7 @@ class IMGStickerAdjustHelper(private val container: IMGStickerView,
 
                 val degrees = toDegrees(pointY, pointX)
 
-                val scale = (radius / radius).toFloat()
+                val scale = (radius / this.radius).toFloat()
 
 
                 container.addScale(scale)
@@ -100,11 +102,11 @@ class IMGStickerAdjustHelper(private val container: IMGStickerView,
         private const val TAG = "IMGStickerAdjustHelper"
 
         private fun toDegrees(v: Float, v1: Float): Double {
-            return Math.toDegrees(Math.atan2(v.toDouble(), v1.toDouble()))
+            return Math.toDegrees(atan2(v.toDouble(), v1.toDouble()))
         }
 
         private fun toLength(x1: Float, y1: Float, x2: Float, y2: Float): Double {
-            return Math.sqrt(((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)).toDouble())
+            return sqrt(((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)).toDouble())
         }
     }
 }

@@ -67,7 +67,7 @@ public class SkiaImageRegionDecoder implements ImageRegionDecoder {
 
     @Override
     @NonNull
-    public Point init(Context context, @NonNull Uri uri) throws Exception {
+    public Point init(@NonNull Context context, @NonNull Uri uri) throws Exception {
         String uriString = uri.toString();
         if (uriString.startsWith(RESOURCE_PREFIX)) {
             Resources res;

@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.hy.picker
 
 import android.annotation.SuppressLint
@@ -17,6 +19,7 @@ import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import kotlinx.android.extensions.LayoutContainer
 import org.jetbrains.anko.toast
+import kotlin.math.roundToInt
 
 /**
  * Created time : 2019-05-18 11:18.
@@ -124,7 +127,7 @@ fun View.screenHeight() = context.screenHeight()
 
 fun Resources.dp(dpValue: Float): Int {
     val scale = displayMetrics.density
-    return Math.round(dpValue * scale)
+    return (dpValue * scale).roundToInt()
 }
 
 fun Resources.sp(spValue: Float): Int {
@@ -274,13 +277,14 @@ fun post(block: () -> Unit) {
     postDelay(block, 0)
 }
 
+ fun Fragment?.canLoadImage(): Boolean {
 
-fun Fragment?.canLoadImage(): Boolean {
-    if (this == null) {
+     if (this == null) {
         return false
     }
 
-    return activity.canLoadImage()
+
+     return activity.canLoadImage()
 }
 
 fun Context?.canLoadImage(): Boolean {

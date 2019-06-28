@@ -113,7 +113,7 @@ public class SkiaPooledImageRegionDecoder implements ImageRegionDecoder {
      */
     @Override
     @NonNull
-    public Point init(final Context context, @NonNull final Uri uri) throws Exception {
+    public Point init(@NonNull final Context context, @NonNull final Uri uri) throws Exception {
         this.context = context;
         this.uri = uri;
         initialiseDecoder();
