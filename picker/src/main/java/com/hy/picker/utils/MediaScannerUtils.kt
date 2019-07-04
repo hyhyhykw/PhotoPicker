@@ -10,6 +10,7 @@ import com.hy.picker.PhotoContext
 import com.hy.picker.R
 import com.hy.picker.model.Photo
 import com.hy.picker.model.PhotoDirectory
+import java.io.File
 
 
 //                             _ooOoo_
@@ -190,13 +191,14 @@ class MediaScannerUtils {
 
             while (cursor.moveToNext()) {
                 val size = cursor.getInt(cursor.getColumnIndexOrThrow(sizeColumn)).toLong()
+                val path = cursor.getString(cursor.getColumnIndexOrThrow(dataColumn))
+                if (!File(path).exists()) continue
                 if (size < 1) continue
 
 
                 val datetaken = cursor.getLong(cursor.getColumnIndexOrThrow(dateTakenColumn))
                 val bucketId = cursor.getString(cursor.getColumnIndexOrThrow(bucketIdColumn))
                 val name = cursor.getString(cursor.getColumnIndexOrThrow(bucketDisplayNameColumn))
-                val path = cursor.getString(cursor.getColumnIndexOrThrow(dataColumn))
 
                 val title = cursor.getString(cursor.getColumnIndexOrThrow(titleColumn))
                 val mimeType = cursor.getString(cursor.getColumnIndexOrThrow(mimeTypeColumn))
