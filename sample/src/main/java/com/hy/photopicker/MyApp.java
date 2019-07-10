@@ -95,4 +95,9 @@ public class MyApp extends Application implements PhotoModule, CrashModule {
     public void upload(String filePath) {
 
     }
+
+    @Override
+    public boolean debug() {
+        return false;
+    }
 }
