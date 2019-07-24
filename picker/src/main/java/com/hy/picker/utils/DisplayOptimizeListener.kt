@@ -26,6 +26,7 @@ package com.hy.picker.utils
 
 import android.graphics.PointF
 import com.hy.picker.view.PickerScaleImageView
+import kotlin.math.abs
 
 /**
  * credit: https://github.com/Piasy/BigImageViewer/issues/2
@@ -64,7 +65,7 @@ class DisplayOptimizeListener(private val imageView: PickerScaleImageView) : Pic
         }
 
         // `对结果进行放大裁定，防止计算结果跟双击放大结果过于相近`
-        if (Math.abs(result - 0.1) < 0.2f) {
+        if (abs(result - 0.1) < 0.2f) {
             result += 0.2f
         }
 

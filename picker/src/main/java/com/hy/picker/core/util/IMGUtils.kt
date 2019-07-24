@@ -4,6 +4,8 @@ import android.graphics.Matrix
 import android.graphics.RectF
 
 import com.hy.picker.core.homing.IMGHoming
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Created by felix on 2017/12/5 下午2:20.
@@ -48,7 +50,7 @@ object IMGUtils {
         val w = win.width() - paddingL - paddingR
         val h = win.height() - paddingT - paddingB
 
-        val scale = Math.min(w / frame.width(), h / frame.height())
+        val scale = min(w / frame.width(), h / frame.height())
 
         // 缩放FIT
         frame.set(0f, 0f, frame.width() * scale, frame.height() * scale)
@@ -70,7 +72,7 @@ object IMGUtils {
 
         // 宽高都小于Win，才有必要放大
         if (frame.width() < win.width() && frame.height() < win.height()) {
-            dHoming.scale = Math.min(win.width() / frame.width(), win.height() / frame.height())
+            dHoming.scale = min(win.width() / frame.width(), win.height() / frame.height())
         }
 
         val rect = RectF()
@@ -110,7 +112,7 @@ object IMGUtils {
 
         // 宽高都小于Win，才有必要放大
         if (frame.width() < win.width() && frame.height() < win.height()) {
-            dHoming.scale = Math.min(win.width() / frame.width(), win.height() / frame.height())
+            dHoming.scale = min(win.width() / frame.width(), win.height() / frame.height())
         }
 
         val rect = RectF()
@@ -151,7 +153,7 @@ object IMGUtils {
 
         // 宽高都小于Win，才有必要放大
         if (isJustInner || frame.width() < win.width() && frame.height() < win.height()) {
-            dHoming.scale = Math.min(win.width() / frame.width(), win.height() / frame.height())
+            dHoming.scale = min(win.width() / frame.width(), win.height() / frame.height())
         }
 
         val rect = RectF()
@@ -189,7 +191,7 @@ object IMGUtils {
         }
 
         if (frame.width() < win.width() || frame.height() < win.height()) {
-            dHoming.scale = Math.max(win.width() / frame.width(), win.height() / frame.height())
+            dHoming.scale = max(win.width() / frame.width(), win.height() / frame.height())
         }
 
         val rect = RectF()
@@ -219,7 +221,7 @@ object IMGUtils {
         }
 
         if (frame.width() < win.width() || frame.height() < win.height()) {
-            dHoming.scale = Math.max(win.width() / frame.width(), win.height() / frame.height())
+            dHoming.scale = max(win.width() / frame.width(), win.height() / frame.height())
         }
 
         val rect = RectF()
@@ -249,7 +251,7 @@ object IMGUtils {
         }
 
         // 第一次时缩放到裁剪区域内
-        dHoming.scale = Math.max(win.width() / frame.width(), win.height() / frame.height())
+        dHoming.scale = max(win.width() / frame.width(), win.height() / frame.height())
 
         val rect = RectF()
         MATRIX.setScale(dHoming.scale, dHoming.scale, frame.centerX(), frame.centerY())
@@ -281,7 +283,7 @@ object IMGUtils {
             return
         }
 
-        val scale = Math.max(win.width() / frame.width(), win.height() / frame.height())
+        val scale = max(win.width() / frame.width(), win.height() / frame.height())
 
         MATRIX.setScale(scale, scale, frame.centerX(), frame.centerY())
         MATRIX.mapRect(frame)

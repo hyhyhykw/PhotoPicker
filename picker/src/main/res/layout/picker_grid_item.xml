@@ -14,12 +14,6 @@
         app:fadeDuration="300"/>
 
 
-    <!--<ImageView-->
-    <!--android:id="@id/pickerPhotoImage"-->
-    <!--android:scaleType="centerCrop"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"/>-->
-
     <ImageView
         android:id="@id/pickerIvGif"
         android:layout_width="28dp"

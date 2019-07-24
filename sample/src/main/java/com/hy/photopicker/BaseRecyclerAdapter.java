@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
  *
  * @author HY
  */
-@SuppressWarnings("unused")
 public abstract class BaseRecyclerAdapter<T, V extends BaseRecyclerAdapter.BaseViewHolder> extends RecyclerView.Adapter<V> {
 
     protected final ArrayList<T> mData = new ArrayList<>();

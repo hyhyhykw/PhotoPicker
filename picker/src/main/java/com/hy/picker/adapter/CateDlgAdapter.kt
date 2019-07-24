@@ -106,9 +106,9 @@ class CateDlgAdapter(private val defaultDrawable: Drawable) : BaseAdapter() {
 
             itemView.setOnClickListener {
                 if (position == selectCateIndex) {
-                    _listener?.invoke(position, false)
+                    _listener?.invoke(position,item.name, false)
                 } else {
-                    _listener?.invoke(position, true)
+                    _listener?.invoke(position,item.name, true)
                     selected(position)
                 }
             }
@@ -116,9 +116,9 @@ class CateDlgAdapter(private val defaultDrawable: Drawable) : BaseAdapter() {
     }
 
 
-    private var _listener: ((Int, Boolean) -> Unit)? = null
+    private var _listener: ((Int,String?, Boolean) -> Unit)? = null
 
-    fun setOnItemClickListener(listener: (Int, Boolean) -> Unit) {
+    fun setOnItemClickListener(listener: (Int,String?, Boolean) -> Unit) {
         _listener = listener
     }
 }

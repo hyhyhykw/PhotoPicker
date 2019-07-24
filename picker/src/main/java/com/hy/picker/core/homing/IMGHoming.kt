@@ -40,7 +40,7 @@ class IMGHoming(var x: Float,
     companion object {
 
         fun isRotate(sHoming: IMGHoming, eHoming: IMGHoming): Boolean {
-            return java.lang.Float.compare(sHoming.rotate, eHoming.rotate) != 0
+            return sHoming.rotate.compareTo(eHoming.rotate) != 0
         }
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import com.hy.picker.R
+import kotlin.math.ceil
 
 /**
  * Created time : 2018/8/27 14:24.
@@ -91,7 +92,7 @@ class CompletedView @JvmOverloads constructor(context: Context, attrs: Attribute
         textPaint.textSize = radius / 2
 
         val fm = textPaint.fontMetrics
-        textHeight = Math.ceil((fm.descent - fm.ascent).toDouble()).toInt().toFloat()
+        textHeight = ceil((fm.descent - fm.ascent).toDouble()).toInt().toFloat()
     }
 
     //画图

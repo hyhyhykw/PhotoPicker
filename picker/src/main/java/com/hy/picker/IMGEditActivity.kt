@@ -22,6 +22,8 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.math.max
+import kotlin.math.roundToInt
 
 /**
  * Created by felix on 2017/11/14 下午2:26.
@@ -64,12 +66,11 @@ class IMGEditActivity : IMGEditBaseActivity() {
         decoder.decode(options)
 
         if (options.outWidth > MAX_WIDTH) {
-            options.inSampleSize = IMGUtils.inSampleSize(Math.round(1f * options.outWidth / MAX_WIDTH))
+            options.inSampleSize = IMGUtils.inSampleSize((1f * options.outWidth / MAX_WIDTH).roundToInt())
         }
 
         if (options.outHeight > MAX_HEIGHT) {
-            options.inSampleSize = Math.max(options.inSampleSize,
-                    IMGUtils.inSampleSize(Math.round(1f * options.outHeight / MAX_HEIGHT)))
+            options.inSampleSize = max(options.inSampleSize, IMGUtils.inSampleSize((1f * options.outHeight / MAX_HEIGHT).roundToInt()))
         }
 
         options.inJustDecodeBounds = false
@@ -100,12 +101,11 @@ class IMGEditActivity : IMGEditBaseActivity() {
             options.inJustDecodeBounds = true
 
             if (options.outWidth > MAX_WIDTH) {
-                options.inSampleSize = IMGUtils.inSampleSize(Math.round(1f * options.outWidth / MAX_WIDTH))
+                options.inSampleSize = IMGUtils.inSampleSize((1f * options.outWidth / MAX_WIDTH).roundToInt())
             }
 
             if (options.outHeight > MAX_HEIGHT) {
-                options.inSampleSize = Math.max(options.inSampleSize,
-                        IMGUtils.inSampleSize(Math.round(1f * options.outHeight / MAX_HEIGHT)))
+                options.inSampleSize = max(options.inSampleSize, IMGUtils.inSampleSize((1f * options.outHeight / MAX_HEIGHT).roundToInt()))
             }
 
             options.inJustDecodeBounds = false

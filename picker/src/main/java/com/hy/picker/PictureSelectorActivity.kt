@@ -1,9 +1,6 @@
 package com.hy.picker
 
 import android.Manifest
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -25,7 +22,6 @@ import android.text.TextUtils
 import android.view.View
 import android.view.Window
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,56 +30,54 @@ import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.DraweeView
 import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.request.ImageRequestBuilder
-import com.hy.picker.adapter.CateDlgAdapter
 import com.hy.picker.adapter.PictureAdapter
 import com.hy.picker.model.Photo
 import com.hy.picker.model.PickerTheme
 import com.hy.picker.model.PickerWhiteTheme
 import com.hy.picker.utils.*
-import kotlinx.android.synthetic.main.picker_activity_selector.*
+import com.hy.picker.view.FolderPopupWindow
+import kotlinx.android.synthetic.main.picker_activity_selector2.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.util.*
-import kotlin.concurrent.thread
 
 class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
 
     private var takePictureUri: Uri? = null
-    private val max by lazy{
+    private val max by lazy {
         intent.getIntExtra(EXTRA_MAX, 9)
     }
-    private val selectItems: ArrayList<Photo>? by lazy{
+
+    private val selectItems: ArrayList<Photo>? by lazy {
         intent.getParcelableArrayListExtra<Photo>(EXTRA_ITEMS)
     }
 
-    private val gif by lazy{
+    private val gif by lazy {
         intent.getBooleanExtra(EXTRA_SHOW_GIF, true)
     }
-    private val preview by lazy{
+    private val preview by lazy {
         intent.getBooleanExtra(EXTRA_PREVIEW, true)
     }
-    private val video by lazy{
+    private val video by lazy {
         intent.getBooleanExtra(EXTRA_PICK_VIDEO, false)
     }
-    private val gifOnly by lazy{
+    private val gifOnly by lazy {
         intent.getBooleanExtra(EXTRA_ONLY_GIF, false)
     }
     private lateinit var gridViewAdapter: PictureAdapter
 
-    private val isShowCamera by lazy{
+    private val isShowCamera by lazy {
         intent.getBooleanExtra(EXTRA_SHOW_CAMERA, false)
     }
 
     private val mSelectReceiver = SelectReceiver()
-    private  val defaultDrawable by lazy{
+    private val defaultDrawable by lazy {
         ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!
     }
 
-    private lateinit var cateDlgAdapter: CateDlgAdapter
 
-    private var isAnimating = false
-    private var isShowing = false
+    private lateinit var folderPopupWindow: FolderPopupWindow
 
 
     private val totalSelectedNum: Int
@@ -92,7 +86,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
     private var selectCateIndex = 0
 
-    private val cateHeight by lazy{
+    private val cateHeight by lazy {
         (screenWidth() * 1.3f).toInt()
     }
 
@@ -100,7 +94,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setBackgroundDrawable(ColorDrawable(PhotoPicker.theme.windowBgColor))
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.picker_activity_selector)
+        setContentView(R.layout.picker_activity_selector2)
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(PICKER_ACTION_MEDIA_ADD)
@@ -108,27 +102,8 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         intentFilter.addAction(PICKER_ACTION_MEDIA_SEND)
         registerReceiver(mSelectReceiver, intentFilter)
 
-
         initTheme()
 
-
-//        defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!
-
-//        val screenHeight = screenHeight()
-        val statusBarHeight = getStatusBarHeight()
-//        val gridHeight = screenHeight - statusBarHeight - dp(96f)
-
-//        mCount = Math.ceil(gridHeight * 1.0 / mSize).toInt()
-
-//        val intent = intent
-//        max = intent.getIntExtra(EXTRA_MAX, 9)
-//        gif = intent.getBooleanExtra(EXTRA_SHOW_GIF, true)
-//        preview = intent.getBooleanExtra(EXTRA_PREVIEW, true)
-//        gifOnly = intent.getBooleanExtra(EXTRA_ONLY_GIF, false)
-//        video = intent.getBooleanExtra(EXTRA_PICK_VIDEO, false)
-//        isShowCamera = intent.getBooleanExtra(EXTRA_SHOW_CAMERA, false)
-
-//        selectItems = intent.getParcelableArrayListExtra(EXTRA_ITEMS)
 
         pickerBackIv.setOnClickListener { onBackPressed() }
 
@@ -139,15 +114,6 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
         pickerTitle.setText(if (video) R.string.picker_picsel_videotype else R.string.picker_picsel_pictype)
 
-//        cateHeight = (screenWidth() * 1.3f).toInt()
-
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(pickerSelectorRoot)
-        constraintSet.setMargin(R.id.pickerBackIv, ConstraintSet.TOP, statusBarHeight)
-        constraintSet.constrainHeight(R.id.pickerCateDlgLst, cateHeight)
-        constraintSet.applyTo(pickerSelectorRoot)
-
-        pickerCateDlgLst.translationY = cateHeight.toFloat()
 
         if (video) {
             pickerPreviewTv.visibility = View.GONE
@@ -217,38 +183,11 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                 if (!canLoadImage()) return
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Fresco.getImagePipeline().resume()
-//                    Glide.with(recyclerView).resumeRequests()
                 } else {
                     Fresco.getImagePipeline().pause()
-//                    Glide.with(recyclerView).pauseRequests()
-
                 }
             }
         })
-        //        mCatalogAdapter = new CatalogAdapter();
-        cateDlgAdapter = CateDlgAdapter(defaultDrawable)
-        cateDlgAdapter.setOnItemClickListener { position, isChange ->
-            hideCatalog()
-            selectCateIndex = position
-            if (isChange) {
-                val item = cateDlgAdapter.getItem(position)
-                pickerCateTv.text = item.name
-
-                postDelay({
-                    thread {
-                        MediaListHolder.currentPhotos.clear()
-                        MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories[position].photos)
-                        runOnUiThread {
-
-                            gridViewAdapter.reset(MediaListHolder.currentPhotos)
-                        }
-                    }
-                }, 302)
-            }
-        }
-        pickerCateDlgLst.adapter = cateDlgAdapter
-        //        mCatalogListView.setTranslationY(catalogHeight);
-
 
         val perms = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         val permissionNames = Permission.transformText(this, *perms)
@@ -257,10 +196,6 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                 this,
                 message,
                 RC_WRITE_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//        Looper.myQueue().addIdleHandler {
-//
-//            false
-//        }
     }
 
     private fun initTheme() {
@@ -317,6 +252,18 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
     }
 
 
+    private val listener = { position: Int, name: String?, isChange: Boolean ->
+        hideCatalog()
+        selectCateIndex = position
+        if (isChange) {
+            pickerCateTv.text = name
+            MediaListHolder.currentPhotos.clear()
+            MediaListHolder.currentPhotos.addAll(MediaListHolder.allDirectories[position].photos)
+//
+            gridViewAdapter.reset(MediaListHolder.currentPhotos)
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -347,7 +294,16 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
                         updateToolbar()
 //
-                        cateDlgAdapter.reset(MediaListHolder.allDirectories)
+                        folderPopupWindow = FolderPopupWindow(
+                                this, screenWidth(), defaultDrawable,
+                                listener, cateHeight
+                        )
+
+                        folderPopupWindow.setOnDismissAnimatorListener(
+                                onDismiss = {
+                                    pickerCateDlgMask.visibility = View.GONE
+                                }
+                        )
                     }
 
 
@@ -364,7 +320,12 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         pickerCateTv.setText(if (video) R.string.picker_all_video else R.string.picker_all_image)
 
         pickerCateTv.isEnabled = true
-        pickerCateTv.setOnClickListener { showCatalog() }
+        pickerCateTv.setOnClickListener {
+            if (!::folderPopupWindow.isInitialized) return@setOnClickListener
+            pickerCateDlgMask.visibility = View.VISIBLE
+            folderPopupWindow.showAsDropDown(pickerBottomBg)
+
+        }
 
         if (preview && !video) {
             pickerPreviewTv.visibility = View.VISIBLE
@@ -382,11 +343,6 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
 
             startActivityForResult(intent, PICKER_REQUEST_PREVIEW)
         }
-
-
-        pickerSelectorMask.setOnClickListener(MaskClickListener())
-        pickerBottomTask.setOnClickListener(MaskClickListener())
-        pickerCateDlgMask.setOnClickListener(MaskClickListener())
 
     }
 
@@ -427,57 +383,12 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         }
     }
 
-    private inner class MaskClickListener : View.OnClickListener {
-        override fun onClick(v: View) {
-            hideCatalog()
-        }
-    }
-
-    private fun showCatalog() {
-        if (isAnimating) return
-
-        pickerCateDlgMask.visibility = View.VISIBLE
-        val translationY = ObjectAnimator.ofFloat(pickerCateDlgLst, "translationY", cateHeight.toFloat(), 0f)
-        translationY.duration = 300
-        translationY.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                isAnimating = false
-                translationY.removeAllListeners()
-            }
-
-            override fun onAnimationStart(animation: Animator) {
-                super.onAnimationStart(animation)
-                pickerSelectorMask.visibility = View.VISIBLE
-                pickerBottomTask.visibility = View.VISIBLE
-                isAnimating = true
-                isShowing = true
-            }
-        })
-        translationY.start()
-    }
 
     private fun hideCatalog() {
-        if (isAnimating) return
-        val translationY = ObjectAnimator.ofFloat(pickerCateDlgLst, "translationY", 0f, cateHeight.toFloat())
-        translationY.duration = 300
-        translationY.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                super.onAnimationEnd(animation)
-                pickerSelectorMask.visibility = View.GONE
-                pickerBottomTask.visibility = View.GONE
-                pickerCateDlgMask.visibility = View.GONE
-                isAnimating = false
-                isShowing = false
-                translationY.removeAllListeners()
-            }
-
-            override fun onAnimationStart(animation: Animator) {
-                super.onAnimationStart(animation)
-                isAnimating = true
-            }
-        })
-        translationY.start()
+        if (!::folderPopupWindow.isInitialized) return
+        if (folderPopupWindow.isShowing) {
+            folderPopupWindow.dismiss()
+        }
     }
 
 
@@ -600,8 +511,8 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
     }
 
     override fun onBackPressed() {
-        if (isShowing) {
-            hideCatalog()
+        if (::folderPopupWindow.isInitialized && folderPopupWindow.isShowing) {
+            folderPopupWindow.dismiss()
             return
         }
         if (!selectItems.isNullOrEmpty()) {

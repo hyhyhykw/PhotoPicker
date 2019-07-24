@@ -62,3 +62,9 @@ val CATEGORY = R.string.picker_category
 const val JSON_BASE = "https://gitee.com/hyhyhykw/Sucai/raw/master/json/"
 
 val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+
+//val dp144 by lazy {
+//    PhotoContext.context.dp(144f)
+//}
+

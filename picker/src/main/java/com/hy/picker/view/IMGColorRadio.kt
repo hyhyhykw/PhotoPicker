@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.appcompat.widget.AppCompatRadioButton
 import com.hy.picker.R
+import kotlin.math.min
 
 /**
  * Created by felix on 2017/12/1 下午2:50.
@@ -58,7 +59,7 @@ class IMGColorRadio @JvmOverloads constructor(context: Context, attrs: Attribute
 
         val hw = width / 2f
         val hh = height / 2f
-        val radius = Math.min(hw, hh)
+        val radius = min(hw, hh)
 
         canvas?.save()
         paint.color = color

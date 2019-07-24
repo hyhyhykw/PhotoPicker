@@ -62,7 +62,6 @@ class PictureAdapter(private val max: Int,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val context = parent.context
 
-//        val inflater = LayoutInflater.from(context)
         val holder: RecyclerView.ViewHolder
 
         if (viewType == 0) {

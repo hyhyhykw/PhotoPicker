@@ -88,4 +88,5 @@
     <item name="picker_cr_green" type="id"/>
     <item name="picker_cr_yellow" type="id"/>
     <item name="picker_cr_blue" type="id"/>
+    <item name="rcyFolder" type="id"/>
 </resources>

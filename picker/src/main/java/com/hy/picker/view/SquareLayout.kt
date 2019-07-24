@@ -15,7 +15,6 @@ class SquareLayout @JvmOverloads constructor(context: Context, attrs: AttributeS
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         setMeasuredDimension(getDefaultSize(0, widthMeasureSpec), getDefaultSize(0, heightMeasureSpec))
         val i = measuredWidth
-//        measuredHeight
 
         val j = MeasureSpec.makeMeasureSpec(i, MeasureSpec.EXACTLY)
         super.onMeasure(j, j)

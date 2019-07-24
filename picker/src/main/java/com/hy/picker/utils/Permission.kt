@@ -51,7 +51,7 @@ object Permission {
      * Turn permissions into text.
      */
     fun transformText(context: Context, vararg permissions: String): List<String> {
-        return transformText(context, Arrays.asList(*permissions))
+        return transformText(context, listOf(*permissions))
     }
 
     /**
@@ -60,7 +60,7 @@ object Permission {
     fun transformText(context: Context, vararg groups: Array<String>): List<String> {
         val permissionList = ArrayList<String>()
         for (group in groups) {
-            permissionList.addAll(Arrays.asList(*group))
+            permissionList.addAll(listOf(*group))
         }
         return transformText(context, permissionList)
     }
