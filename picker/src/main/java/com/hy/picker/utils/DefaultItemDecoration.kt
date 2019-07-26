@@ -28,7 +28,7 @@ class DefaultItemDecoration
                           private val dividerHeight: Int = 2,
                           vararg excludeViewType: Int = intArrayOf(-1)) : RecyclerView.ItemDecoration() {
     private val divider: Drawable
-    private val viewTypeList = ArrayList<Int>(excludeViewType.asList())
+    private val viewTypeList = ArrayList(excludeViewType.asList())
 
     init {
         divider = ColorDrawable(color)

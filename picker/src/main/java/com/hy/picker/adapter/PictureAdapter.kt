@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -66,12 +67,12 @@ class PictureAdapter(private val max: Int,
 
         if (viewType == 0) {
 
-            val cameraView = View.inflate(context, R.layout.picker_grid_camera, null)
+            val cameraView = LayoutInflater.from(context).inflate(R.layout.picker_grid_camera, parent, false)
 
             holder = CameraHolder(cameraView)
         } else {
 
-            val convertView = View.inflate(context, R.layout.picker_grid_item, null)
+            val convertView = LayoutInflater.from(context).inflate(R.layout.picker_grid_item, parent, false)
             holder = ItemHolder(convertView)
         }
 
@@ -84,7 +85,7 @@ class PictureAdapter(private val max: Int,
         _listener = listener
     }
 
-    private inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view),LayoutContainer {
+    private inner class ItemHolder(view: View) : RecyclerView.ViewHolder(view), LayoutContainer {
         override val containerView: View?
             get() = itemView
 
@@ -114,11 +115,29 @@ class PictureAdapter(private val max: Int,
                 pickerIvGif.visibility = View.GONE
             }
 
+            val layoutParams = pickerPhotoImage.layoutParams
+            var change = false
+            if (layoutParams.height != PhotoContext.imageItemSize) {
+                layoutParams.height = PhotoContext.imageItemSize
+                change = true
+            }
+            if (layoutParams.width != PhotoContext.imageItemSize) {
+                layoutParams.width = PhotoContext.imageItemSize
+                change = true
+            }
+            if (change) {
+                pickerPhotoImage.layoutParams = layoutParams
+            }
 
             val hierarchy = pickerPhotoImage.hierarchy
             hierarchy.setPlaceholderImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
             hierarchy.setFailureImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
-            pickerPhotoImage.controller = PictureSelectorActivity.getDraweeController(pickerPhotoImage, Uri.fromFile(File(item.uri)), PhotoContext.imageItemSize, PhotoContext.imageItemSize)
+
+            pickerPhotoImage.controller = PictureSelectorActivity.getDraweeController(pickerPhotoImage,
+                    Uri.fromFile(File(item.uri)),
+                    PhotoContext.imageItemSize,
+                    PhotoContext.imageItemSize)
+
             pickerItemCheckBox.isChecked = MediaListHolder.selectPhotos.contains(item)
 
             pickerItemCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->

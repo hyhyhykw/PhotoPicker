@@ -36,7 +36,7 @@ import com.hy.picker.model.PickerTheme
 import com.hy.picker.model.PickerWhiteTheme
 import com.hy.picker.utils.*
 import com.hy.picker.view.FolderPopupWindow
-import kotlinx.android.synthetic.main.picker_activity_selector2.*
+import kotlinx.android.synthetic.main.picker_activity_selector.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
@@ -94,7 +94,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setBackgroundDrawable(ColorDrawable(PhotoPicker.theme.windowBgColor))
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.picker_activity_selector2)
+        setContentView(R.layout.picker_activity_selector)
 
         val intentFilter = IntentFilter()
         intentFilter.addAction(PICKER_ACTION_MEDIA_ADD)
@@ -595,12 +595,6 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
                         }
                     }
 
-//                    if (gridViewAdapter.itemCount > mCount) {
-//                        Fresco.getImagePipeline().pause()
-//                    }
-//                    postDelay(Runnable { pickerPhotoGrd.smoothScrollToPosition(0) }, 50)
-
-//                    cateDlgAdapter.reset(MediaListHolder.allDirectories)
                     updateToolbar()
 
                 }

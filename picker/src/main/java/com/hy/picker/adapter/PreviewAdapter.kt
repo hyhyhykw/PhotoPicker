@@ -20,7 +20,8 @@ import java.io.File
  *
  * @author HY
  */
-class PreviewAdapter(private val defaultDrawable: Drawable) : BaseRecyclerAdapter<Photo, BaseRecyclerAdapter.BaseViewHolder>() {
+class PreviewAdapter(private val defaultDrawable: Drawable) :
+        BaseRecyclerAdapter<Photo, BaseRecyclerAdapter.BaseViewHolder>() {
 
 
     fun setOnItemClickListener(listener: () -> Unit) {
@@ -105,6 +106,8 @@ class PreviewAdapter(private val defaultDrawable: Drawable) : BaseRecyclerAdapte
         override fun bind() {
             val position = adapterPosition
             val item = getItem(position)
+
+
 
             val hierarchy = pickerItemGif.hierarchy
             hierarchy.setPlaceholderImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
