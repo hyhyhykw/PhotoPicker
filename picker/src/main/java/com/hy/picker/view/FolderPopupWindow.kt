@@ -34,7 +34,7 @@ class FolderPopupWindow(context: Context,
         width = viewWidth
         height = viewHeight
         adapter.setOnItemClickListener(listener)
-        rcyFolder.adapter = adapter
+        pickerRcyFolder.adapter = adapter
         adapter.reset(MediaListHolder.allDirectories)
         isFocusable = true
         setBackgroundDrawable(ColorDrawable(0x00000000))
@@ -43,8 +43,8 @@ class FolderPopupWindow(context: Context,
 
     override fun animateIn() {
 
-        rcyFolder.translationY = viewHeight.toFloat()
-        rcyFolder.animate()
+        pickerRcyFolder.translationY = viewHeight.toFloat()
+        pickerRcyFolder.animate()
                 .translationY(0f)
                 .setDuration(duration)
                 .setListener(null)
@@ -55,13 +55,13 @@ class FolderPopupWindow(context: Context,
 
     override fun animateOut() {
 
-        rcyFolder.animate()
+        pickerRcyFolder.animate()
                 .translationY(viewHeight.toFloat())
                 .setListener(object : AnimatorListenerAdapter() {
 
                     override fun onAnimationEnd(animation: Animator) {
                         onAnimationEnd()
-                        rcyFolder.animate().setListener(null)
+                        pickerRcyFolder.animate().setListener(null)
                     }
                 }).setDuration(duration)
                 .start()
