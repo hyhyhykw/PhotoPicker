@@ -308,6 +308,18 @@ fun Activity?.canLoadImage(): Boolean {
 }
 
 
+fun View?.setClick(listener: (View) -> Unit) {
+    setClick(listener, true)
+}
+
+fun View?.setClick(listener: (View) -> Unit, isShow: Boolean) {
+    this?.setOnClickListener { v ->
+        if (isFastDoubleClick(isShow)) return@setOnClickListener
+        listener(v)
+    }
+}
+
+
 private var lastClickTime = 0L
 
 /**
@@ -327,31 +339,6 @@ fun isFastDoubleClick(isShow: Boolean = true): Boolean {
 
     return false
 }
-
-/**
- * 视图点击事件的封装，防止点击过快
- *
- * @param view     视图
- * @param listener 点击事件
- */
-fun setViewClick(view: View?, listener: (View) -> Unit) {
-    setViewClick(view,listener,true)
-}
-
-/**
- * 视图点击事件的封装，防止点击过快
- *
- * @param view     视图
- * @param listener 点击事件
- */
-fun setViewClick(view: View?, listener: (View) -> Unit, isShow: Boolean ) {
-
-    view?.setOnClickListener { v ->
-        if (isFastDoubleClick(isShow)) return@setOnClickListener
-        listener(v)
-    }
-}
-
 
 fun Activity.setStatusTransparent() {
     val window = window
