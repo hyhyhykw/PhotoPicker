@@ -307,7 +307,6 @@ class PicturePreviewActivity : BaseActivity() {
                 PICKER_ACTION_MEDIA_ADD -> {
                     runOnUiThread {
                         previewAdapter.add(0, photo)
-
                         updateToolbar()
                     }
 

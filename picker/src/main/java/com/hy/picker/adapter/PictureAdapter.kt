@@ -46,16 +46,17 @@ class PictureAdapter(private val max: Int,
     fun add(index: Int, photo: Photo) {
         photos.add(index, photo)
         notifyItemInserted(index)
-
+        notifyItemRangeChanged(index,photos.size-index)
     }
 
     fun add(photo: Photo) {
         if (photos.isEmpty()) {
             photos.add(photo)
-            notifyItemInserted(0)
+            notifyDataSetChanged()
         } else {
             photos.add(photo)
             notifyItemInserted(photos.size - 1)
+            notifyItemRangeChanged(photos.size - 1,1)
         }
     }
 
