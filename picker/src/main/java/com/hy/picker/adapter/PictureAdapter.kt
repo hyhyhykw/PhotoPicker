@@ -64,17 +64,15 @@ class PictureAdapter(private val max: Int,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val context = parent.context
 
-        val holder: RecyclerView.ViewHolder
-
-        if (viewType == 0) {
+        val holder: RecyclerView.ViewHolder = if (viewType == 0) {
 
             val cameraView = LayoutInflater.from(context).inflate(R.layout.picker_grid_camera, parent, false)
 
-            holder = CameraHolder(cameraView)
+            CameraHolder(cameraView)
         } else {
 
             val convertView = LayoutInflater.from(context).inflate(R.layout.picker_grid_item, parent, false)
-            holder = ItemHolder(convertView)
+            ItemHolder(convertView)
         }
 
         return holder

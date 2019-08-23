@@ -35,7 +35,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha02'
     implementation project(':picker')
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-beta01'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
     api 'com.github.hyhyhykw:Crash:1.6'
     implementation "com.github.bumptech.glide:okhttp3-integration:4.9.0"
     implementation 'com.github.bumptech.glide:glide:4.9.0'
