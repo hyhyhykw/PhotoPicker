@@ -125,8 +125,12 @@ class DefaultItemDecoration
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        drawHorizontal(c, parent)
-        drawVertical(c, parent)
+        try {
+            drawHorizontal(c, parent)
+            drawVertical(c, parent)
+        } catch (e: Exception) {
+        }
+
     }
 
     private fun drawHorizontal(c: Canvas, parent: RecyclerView) {
@@ -151,6 +155,7 @@ class DefaultItemDecoration
     }
 
     private fun drawVertical(c: Canvas, parent: RecyclerView) {
+
         c.save()
         val adapter = parent.adapter ?: return
         val childCount = parent.childCount
