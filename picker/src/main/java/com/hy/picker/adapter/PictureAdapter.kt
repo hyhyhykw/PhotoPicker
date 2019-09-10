@@ -64,7 +64,7 @@ class PictureAdapter(private val max: Int,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val context = parent.context
 
-        val holder: RecyclerView.ViewHolder = if (viewType == 0) {
+        return if (viewType == 0) {
 
             val cameraView = LayoutInflater.from(context).inflate(R.layout.picker_grid_camera, parent, false)
 
@@ -74,8 +74,6 @@ class PictureAdapter(private val max: Int,
             val convertView = LayoutInflater.from(context).inflate(R.layout.picker_grid_item, parent, false)
             ItemHolder(convertView)
         }
-
-        return holder
     }
 
     private var _listener: ((Int, Photo) -> Unit)? = null

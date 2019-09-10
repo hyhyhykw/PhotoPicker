@@ -259,7 +259,7 @@ class IMGEditActivity : IMGEditBaseActivity() {
 
                     if (selectNum < max) {
                         photo.isSelected = true
-                        MediaListHolder.selectPhotos.add(photo)
+                        selectPhotos.add(photo)
                         val intent = Intent(PICKER_ACTION_MEDIA_ADD)
                         intent.putExtra(PICKER_EXTRA_PHOTO, photo)
                         intent.putExtra(PICKER_EXTRA_UPDATE_INDEX, updateIndex)

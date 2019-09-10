@@ -44,7 +44,7 @@ android {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
 }
 
 dependencies {
@@ -56,8 +56,8 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.0.0-beta04")
     implementation("androidx.recyclerview:recyclerview:1.0.0")
 
-    api("com.facebook.fresco:fresco:1.13.0")
-    api("com.facebook.fresco:animated-gif:1.13.0")
+    api("com.facebook.fresco:fresco:2.0.0")
+    api("com.facebook.fresco:animated-gif:2.0.0")
     api("me.relex:photodraweeview:2.0.0")
     api("androidx.exifinterface:exifinterface:1.0.0")
     implementation("com.google.code.gson:gson:2.8.5")

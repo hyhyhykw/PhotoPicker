@@ -272,7 +272,7 @@ class PicturePreviewActivity : BaseActivity() {
         pickerSelectorCheck.setTextColor(theme.titleTvColor)
 
         val states = arrayOf(intArrayOf(-android.R.attr.state_checked), intArrayOf(android.R.attr.state_checked))
-        val colors = intArrayOf(PhotoPicker.theme.sendBgColor, PhotoPicker.theme.sendBgColor)
+        val colors = intArrayOf(theme.sendBgColor, theme.sendBgColor)
         pickerSelectorCheck.supportButtonTintList = ColorStateList(states, colors)
     }
 
