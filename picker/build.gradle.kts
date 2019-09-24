@@ -18,11 +18,13 @@ android {
         targetSdkVersion(27)
         versionCode = 42
         versionName = "4.2"
+
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
             }
         }
+
     }
 
     compileOptions {

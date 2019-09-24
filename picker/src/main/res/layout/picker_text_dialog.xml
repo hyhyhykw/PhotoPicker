@@ -12,7 +12,7 @@
         android:paddingBottom="8dp"
         android:paddingTop="8dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@id/pickerDlgCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:textColor="@color/picker_color_primary"
             android:textSize="16sp"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@id/pickerDlgDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
 
     </FrameLayout>
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@id/pickerEtText"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.hy.picker.core.Category{*;}
+-keep class com.hy.picker.core.CrystalCategory{*;}
+-keep class com.hy.picker.core.Crystal{*;}
+-keep class com.hy.picker.core.CrystalResult{*;}

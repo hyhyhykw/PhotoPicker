@@ -13,9 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:clickable="true"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@id/pickerBackIv"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -23,9 +23,9 @@
         android:src="@drawable/picker_picsel_back_normal"
         app:layout_constraintBottom_toBottomOf="@id/pickerTitleBg"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="ContentDescription,UnusedAttribute"/>
+        tools:ignore="ContentDescription,UnusedAttribute" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@id/pickerIndexTotalTv"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
@@ -35,10 +35,10 @@
         android:gravity="center_vertical"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@id/pickerBackIv"
-        app:layout_constraintTop_toTopOf="@id/pickerBackIv"/>
+        app:layout_constraintTop_toTopOf="@id/pickerBackIv" />
 
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@id/pickerSure"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
@@ -55,7 +55,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/pickerBackIv"
         tools:ignore="UnusedAttribute"
-        tools:targetApi="m"/>
+        tools:targetApi="m" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:minHeight="48dp">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@id/pickerBackIv"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -24,9 +24,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="UnusedAttribute"
-            tools:targetApi="m"/>
+            tools:targetApi="m" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@id/pickerTitle"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -36,9 +36,9 @@
             android:text="@string/picker_picsel_toolbar"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@id/pickerBackIv"
-            app:layout_constraintTop_toTopOf="@id/pickerBackIv"/>
+            app:layout_constraintTop_toTopOf="@id/pickerBackIv" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@id/pickerSend"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
@@ -55,7 +55,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/pickerBackIv"
             tools:ignore="UnusedAttribute"
-            tools:targetApi="m"/>
+            tools:targetApi="m" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -69,7 +69,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@id/pickerPhotoGrd"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
 
         <ProgressBar
@@ -78,14 +78,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:indeterminateBehavior="repeat"
-            android:indeterminateDrawable="@drawable/picker_progress_bar"/>
+            android:indeterminateDrawable="@drawable/picker_progress_bar" />
 
         <View
             android:id="@id/pickerCateDlgMask"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/picker_picsel_catalog_shadow"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </FrameLayout>
 
@@ -95,7 +95,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@id/pickerCateTv"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -104,9 +104,9 @@
             android:text="@string/picker_picsel_pictype"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@id/pickerCateIv"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -114,7 +114,7 @@
             android:paddingTop="8dp"
             app:layout_constraintStart_toEndOf="@+id/pickerCateTv"
             app:layout_constraintTop_toTopOf="@+id/pickerCateTv"
-            tools:ignore="ContentDescription,RtlSymmetry"/>
+            tools:ignore="ContentDescription,RtlSymmetry" />
 
         <View
             android:id="@+id/line1"
@@ -124,9 +124,9 @@
             android:background="#2A2A2A"
             app:layout_constraintBottom_toBottomOf="@+id/pickerPreviewTv"
             app:layout_constraintEnd_toStartOf="@+id/pickerPreviewTv"
-            app:layout_constraintTop_toTopOf="@+id/pickerPreviewTv"/>
+            app:layout_constraintTop_toTopOf="@+id/pickerPreviewTv" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@id/pickerPreviewTv"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -136,7 +136,7 @@
             android:text="@string/picker_picsel_toolbar_preview"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

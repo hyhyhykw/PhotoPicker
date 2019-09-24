@@ -125,12 +125,12 @@ fun View.screenWidth() = context.screenWidth()
 fun View.screenHeight() = context.screenHeight()
 
 
-fun Resources.dp(dpValue: Float): Int {
+infix  fun Resources.dp(dpValue: Float): Int {
     val scale = displayMetrics.density
     return (dpValue * scale).roundToInt()
 }
 
-fun Resources.sp(spValue: Float): Int {
+infix fun Resources.sp(spValue: Float): Int {
     val fontScale = displayMetrics.scaledDensity
     return (spValue * fontScale + 0.5f).toInt()
 }
@@ -224,7 +224,7 @@ fun View.px2dp(pxValue: Float): Int {
  * @param spValue sp值
  * @return px值
  */
-fun Context.sp(spValue: Float): Int = resources.sp(spValue)
+fun Context.sp(spValue: Float): Int = resources  sp spValue
 
 /**
  * dp转px
@@ -232,7 +232,7 @@ fun Context.sp(spValue: Float): Int = resources.sp(spValue)
  * @param dpValue dp值
  * @return px值
  */
-fun Context.dp(dpValue: Float): Int = resources.dp(dpValue)
+fun Context.dp(dpValue: Float): Int = resources dp dpValue
 
 /**
  * sp转px
@@ -240,7 +240,7 @@ fun Context.dp(dpValue: Float): Int = resources.dp(dpValue)
  * @param spValue sp值
  * @return px值
  */
-fun View.sp(spValue: Float): Int = resources.sp(spValue)
+fun View.sp(spValue: Float): Int = resources sp spValue
 
 /**
  * dp转px
@@ -248,7 +248,7 @@ fun View.sp(spValue: Float): Int = resources.sp(spValue)
  * @param dpValue dp值
  * @return px值
  */
-fun View.dp(dpValue: Float): Int = resources.dp(dpValue)
+fun View.dp(dpValue: Float): Int = resources dp dpValue
 
 /**
  * sp转px
@@ -256,7 +256,7 @@ fun View.dp(dpValue: Float): Int = resources.dp(dpValue)
  * @param spValue sp值
  * @return px值
  */
-fun Fragment.sp(spValue: Float): Int = resources.sp(spValue)
+fun Fragment.sp(spValue: Float): Int = resources sp spValue
 
 /**
  * dp转px
@@ -264,7 +264,7 @@ fun Fragment.sp(spValue: Float): Int = resources.sp(spValue)
  * @param dpValue dp值
  * @return px值
  */
-fun Fragment.dp(dpValue: Float): Int = resources.dp(dpValue)
+fun Fragment.dp(dpValue: Float): Int = resources dp dpValue
 
 val MAIN_HANDLER = Handler(Looper.getMainLooper())
 
@@ -457,5 +457,16 @@ fun Context?.getStatusBarHeight(): Int {
     if (resourceId > 0) {
         statusBarHeight = resources.getDimensionPixelSize(resourceId)
     }
+
     return statusBarHeight
 }
+
+
+inline val Float.dp
+    get() = PhotoContext.context.dp(this)
+
+inline val Int.dp
+    get() = toFloat().dp
+
+inline val Double.dp
+    get() = toFloat().dp

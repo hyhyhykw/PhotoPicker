@@ -6,7 +6,7 @@
     android:background="@color/picker_color_white"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_add"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

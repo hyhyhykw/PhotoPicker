@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@id/pickerIvGif"
         android:layout_width="28dp"
         android:layout_height="15dp"
@@ -64,14 +64,14 @@
         app:layout_constraintEnd_toEndOf="@id/pickerPhotoImage"
         app:layout_constraintStart_toStartOf="@id/pickerPhotoImage">
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/picker_app_name"
             android:src="@drawable/picker_video"/>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@id/pickerVideoTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

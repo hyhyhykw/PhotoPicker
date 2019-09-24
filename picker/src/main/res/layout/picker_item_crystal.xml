@@ -21,9 +21,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:viewAspectRatio="1"/>
+        app:viewAspectRatio="1" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@id/pickerTvSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,9 +31,9 @@
         android:textColor="@color/picker_color_black"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pickerIvCrystal"/>
+        app:layout_constraintTop_toBottomOf="@id/pickerIvCrystal" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@id/pickerIvDownload"
         android:layout_width="20dp"
         android:layout_height="20dp"
@@ -41,9 +41,9 @@
         android:src="@drawable/picker_download"
         app:layout_constraintBottom_toBottomOf="@+id/pickerTvSize"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/pickerTvSize"/>
+        app:layout_constraintTop_toTopOf="@+id/pickerTvSize" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@id/pickerTvWait"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
         android:textSize="12sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/pickerIvDownload"/>
+        app:layout_constraintTop_toTopOf="@id/pickerIvDownload" />
 
     <com.hy.picker.view.CompletedView
         android:id="@id/pickerDownloadProgress"
@@ -66,6 +66,6 @@
         app:picker_complete_radius="9dp"
         app:picker_complete_ringBgColor="#f1f1f1"
         app:picker_complete_ringColor="#28b9fc"
-        app:picker_complete_strokeWidth="1dp"/>
+        app:picker_complete_strokeWidth="1dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

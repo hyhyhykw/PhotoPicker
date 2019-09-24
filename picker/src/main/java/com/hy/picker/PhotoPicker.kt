@@ -20,9 +20,7 @@ import kotlin.properties.Delegates
  */
 class PhotoPicker {
 
-
     private var isEdit = false
-
 
     private var isVideo = false
 

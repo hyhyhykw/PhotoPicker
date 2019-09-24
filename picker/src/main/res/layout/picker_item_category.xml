@@ -14,7 +14,7 @@
               tools:targetApi="m"
               tools:ignore="UnusedAttribute">
 
-    <!--<ImageView-->
+    <!--<androidx.appcompat.widget.AppCompatImageView-->
         <!--android:id="@id/pickerIvCrystal"-->
         <!--android:layout_width="50dp"-->
         <!--android:layout_height="50dp"-->
@@ -26,7 +26,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         app:fadeDuration="300"/>
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@id/pickerTvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

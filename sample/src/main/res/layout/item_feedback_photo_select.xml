@@ -14,7 +14,7 @@
         fresco:fadeDuration="300"
         fresco:actualImageScaleType="centerCrop"/>
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_delete_image"
         android:layout_width="18dp"
         android:layout_height="18dp"
