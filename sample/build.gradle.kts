@@ -41,6 +41,7 @@ dependencies {
     api("com.github.hyhyhykw:Crash:1.8")
     implementation("com.github.bumptech.glide:okhttp3-integration:4.9.0")
     implementation("com.github.bumptech.glide:glide:4.9.0")
+    implementation("com.github.markzhai:blockcanary-android:1.5.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.9.0")
     testImplementation("com.squareup.leakcanary:leakcanary-android-no-op:1.6.3")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:1.6.3")

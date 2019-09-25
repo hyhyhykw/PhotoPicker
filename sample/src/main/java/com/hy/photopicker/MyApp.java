@@ -6,6 +6,8 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.common.memory.MemoryTrimType;
 import com.facebook.common.memory.MemoryTrimmableRegistry;
@@ -13,14 +15,14 @@ import com.facebook.common.memory.NoOpMemoryTrimmableRegistry;
 import com.facebook.common.util.ByteConstants;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.hy.crash.CrashModule;
 import com.hy.picker.PhotoModule;
 import com.hy.picker.PhotoPicker;
 import com.squareup.leakcanary.LeakCanary;
 
 import java.io.File;
-
-import androidx.annotation.NonNull;
 
 /**
  * Created time : 2018/8/20 9:55.
@@ -71,6 +73,8 @@ public class MyApp extends Application implements PhotoModule, CrashModule {
                 .setBitmapsConfig(Bitmap.Config.RGB_565)
                 .build();
         Fresco.initialize(this, imagePipelineConfig);
+
+        BlockCanary.install(this, new BlockCanaryContext()).start();
 //        CrashHandler.getInstance().install(this, this);
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.

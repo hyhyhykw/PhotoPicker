@@ -106,119 +106,104 @@ class PictureAdapter(private val max: Int,
 
             val item = photos[position]
 
-            if (item.isGif) {
-                pickerIvGif.visibility = View.VISIBLE
-            } else {
-                pickerIvGif.visibility = View.GONE
-            }
-
-            val layoutParams = pickerPhotoImage.layoutParams
-            var change = false
-            if (layoutParams.height != PhotoContext.imageItemSize) {
-                layoutParams.height = PhotoContext.imageItemSize
-                change = true
-            }
-            if (layoutParams.width != PhotoContext.imageItemSize) {
-                layoutParams.width = PhotoContext.imageItemSize
-                change = true
-            }
-            if (change) {
-                pickerPhotoImage.layoutParams = layoutParams
-            }
-
-            val hierarchy = pickerPhotoImage.hierarchy
-            hierarchy.setPlaceholderImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
-            hierarchy.setFailureImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
-
-            pickerPhotoImage.controller = PictureSelectorActivity.getDraweeController(pickerPhotoImage,
-                    Uri.fromFile(File(item.uri)),
-                    PhotoContext.imageItemSize,
-                    PhotoContext.imageItemSize)
-
-            pickerItemCheckBox.isChecked = MediaListHolder.selectPhotos.contains(item)
-
-            pickerItemCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (buttonView.isPressed) {
-                    if (totalSelectedNum == max && isChecked) {
-                        Toast.makeText(
-                                PhotoContext.context.applicationContext,
-                                PhotoContext.context.resources.getQuantityString(R.plurals.picker_picsel_selected_max, 1, max),
-                                Toast.LENGTH_SHORT).show()
-                        buttonView.isChecked = false
-                    } else {
-                        //                            item.setSelected(isChecked);
-                        if (isChecked) {
-                            item.isSelected = true
-                            MediaListHolder.selectPhotos.add(item)
-                            pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_selected)
-                        } else {
-                            item.isSelected = false
-                            MediaListHolder.selectPhotos.remove(item)
-                            pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_normal)
-                        }
-                    }
-                    _listener?.invoke(2, item)
-                }
-            }
-
-
-            if (item.isSelected) {
-                pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_selected)
-            } else {
-                pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_normal)
-            }
-
-
-            if (video) {
-                pickerVideoTime.text = CommonUtils.format(item.duration)
-                pickerItemMask.setOnClickListener {
-                    item.isSelected = true
-                    MediaListHolder.selectPhotos.add(item)
-
-                    _listener?.invoke(1, item)
-                }
-                return
-            }
-            pickerItemMask.setOnClickListener {
-                if (preview) {
-                    val intent = Intent(itemView.context, PicturePreviewActivity::class.java)
-                            .putExtra(EXTRA_INDEX, position)
-                            .putExtra(EXTRA_IS_GIF, item.isGif)
-                            .putExtra(EXTRA_MAX, max)
-
-                    itemView.context.startActivity(intent)
+            post {
+                if (item.isGif) {
+                    pickerIvGif.visibility = View.VISIBLE
                 } else {
-                    if (max == 1) {
-                        _listener?.invoke(1, item)
-                    } else {
-                        pickerItemCheckBox.toggle()
-                        val isChecked = pickerItemCheckBox.isChecked
+                    pickerIvGif.visibility = View.GONE
+                }
+
+                val hierarchy = pickerPhotoImage.hierarchy
+                hierarchy.setPlaceholderImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
+                hierarchy.setFailureImage(defaultDrawable, ScalingUtils.ScaleType.CENTER_CROP)
+
+                pickerPhotoImage.controller = PictureSelectorActivity.getDraweeController(pickerPhotoImage,
+                        Uri.fromFile(File(item.uri)),
+                        PhotoContext.imageItemSize,
+                        PhotoContext.imageItemSize)
+
+                pickerItemCheckBox.isChecked = MediaListHolder.selectPhotos.contains(item)
+
+                pickerItemCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (buttonView.isPressed) {
                         if (totalSelectedNum == max && isChecked) {
-                            Toast.makeText(PhotoContext.context.applicationContext,
+                            Toast.makeText(
+                                    PhotoContext.context.applicationContext,
                                     PhotoContext.context.resources.getQuantityString(R.plurals.picker_picsel_selected_max, 1, max),
                                     Toast.LENGTH_SHORT).show()
-                            pickerItemCheckBox.isChecked = false
+                            buttonView.isChecked = false
                         } else {
+                            //                            item.setSelected(isChecked);
                             if (isChecked) {
                                 item.isSelected = true
                                 MediaListHolder.selectPhotos.add(item)
+                                pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_selected)
                             } else {
                                 item.isSelected = false
                                 MediaListHolder.selectPhotos.remove(item)
+                                pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_normal)
                             }
-                        }
-                        if (item.isSelected) {
-                            pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_selected)
-                        } else {
-                            pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_normal)
                         }
                         _listener?.invoke(2, item)
                     }
                 }
 
 
-            }
+                if (item.isSelected) {
+                    pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_selected)
+                } else {
+                    pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_normal)
+                }
 
+
+                if (video) {
+                    pickerVideoTime.text = CommonUtils.format(item.duration)
+                    pickerItemMask.setOnClickListener {
+                        item.isSelected = true
+                        MediaListHolder.selectPhotos.add(item)
+
+                        _listener?.invoke(1, item)
+                    }
+                    return@post
+                }
+                pickerItemMask.setOnClickListener {
+                    if (preview) {
+                        val intent = Intent(itemView.context, PicturePreviewActivity::class.java)
+                                .putExtra(EXTRA_INDEX, position)
+                                .putExtra(EXTRA_IS_GIF, item.isGif)
+                                .putExtra(EXTRA_MAX, max)
+
+                        itemView.context.startActivity(intent)
+                    } else {
+                        if (max == 1) {
+                            _listener?.invoke(1, item)
+                        } else {
+                            pickerItemCheckBox.toggle()
+                            val isChecked = pickerItemCheckBox.isChecked
+                            if (totalSelectedNum == max && isChecked) {
+                                Toast.makeText(PhotoContext.context.applicationContext,
+                                        PhotoContext.context.resources.getQuantityString(R.plurals.picker_picsel_selected_max, 1, max),
+                                        Toast.LENGTH_SHORT).show()
+                                pickerItemCheckBox.isChecked = false
+                            } else {
+                                if (isChecked) {
+                                    item.isSelected = true
+                                    MediaListHolder.selectPhotos.add(item)
+                                } else {
+                                    item.isSelected = false
+                                    MediaListHolder.selectPhotos.remove(item)
+                                }
+                            }
+                            if (item.isSelected) {
+                                pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_selected)
+                            } else {
+                                pickerItemMask.setBackgroundResource(R.drawable.picker_item_bg_normal)
+                            }
+                            _listener?.invoke(2, item)
+                        }
+                    }
+                }
+            }
         }
     }
 

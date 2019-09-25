@@ -3,17 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@id/pickerPhotoImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:actualImageScaleType="centerCrop"
         app:fadeDuration="300"
+        app:layout_constraintDimensionRatio="h,1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -26,7 +27,7 @@
         android:src="@drawable/picker_gif"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/pickerPhotoImage"
-        app:layout_constraintStart_toStartOf="@id/pickerPhotoImage"/>
+        app:layout_constraintStart_toStartOf="@id/pickerPhotoImage" />
 
     <View
         android:id="@id/pickerItemMask"
@@ -36,7 +37,7 @@
         app:layout_constraintBottom_toBottomOf="@id/pickerPhotoImage"
         app:layout_constraintEnd_toEndOf="@id/pickerPhotoImage"
         app:layout_constraintStart_toStartOf="@id/pickerPhotoImage"
-        app:layout_constraintTop_toTopOf="@id/pickerPhotoImage"/>
+        app:layout_constraintTop_toTopOf="@id/pickerPhotoImage" />
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@id/pickerItemCheckBox"
@@ -45,7 +46,7 @@
         android:layout_height="32dp"
         android:checked="false"
         app:layout_constraintEnd_toEndOf="@id/pickerPhotoImage"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <RelativeLayout
@@ -69,7 +70,7 @@
             android:layout_height="20dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/picker_app_name"
-            android:src="@drawable/picker_video"/>
+            android:src="@drawable/picker_video" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@id/pickerVideoTime"
@@ -80,6 +81,6 @@
             android:textColor="@color/picker_color_white"
             android:textSize="14sp"
             tools:ignore="RelativeOverlap"
-            tools:text="20:00"/>
+            tools:text="20:00" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
