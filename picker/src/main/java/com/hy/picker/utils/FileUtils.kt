@@ -24,6 +24,7 @@ object FileUtils {
      * @param str 路径
      * @return md5
      */
+    @JvmStatic
     fun md5(str: String): String {
         val digest: ByteArray
         try {
@@ -58,6 +59,7 @@ object FileUtils {
         return sbl.toString()
     }
 
+    @JvmStatic
     fun isExist(context: Context, cate: String, crystal: Crystal): ExistBean {
         val md5 = md5(crystal.res)
         val cachePicDir = getCachePicDir(context, cate)
@@ -66,6 +68,7 @@ object FileUtils {
     }
 
 
+    @JvmStatic
     fun formatFileSize(fileSize: Long): String {
         return when {
             fileSize in 1..1023 -> fileSize.toString() + "B"
@@ -76,6 +79,7 @@ object FileUtils {
     }
 
 
+    @JvmStatic
     fun getCachePicDir(context: Context, cate: String): File {
         val cacheDir = context.getExternalFilesDir(null)
         if (cacheDir != null) {

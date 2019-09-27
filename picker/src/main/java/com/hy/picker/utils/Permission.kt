@@ -50,6 +50,7 @@ object Permission {
     /**
      * Turn permissions into text.
      */
+    @JvmStatic
     fun transformText(context: Context, vararg permissions: String): List<String> {
         return transformText(context, listOf(*permissions))
     }
@@ -57,6 +58,7 @@ object Permission {
     /**
      * Turn permissions into text.
      */
+    @JvmStatic
     fun transformText(context: Context, vararg groups: Array<String>): List<String> {
         val permissionList = ArrayList<String>()
         for (group in groups) {
@@ -68,6 +70,7 @@ object Permission {
     /**
      * Turn permissions into text.
      */
+    @JvmStatic
     fun transformText(context: Context, permissions: List<String>): List<String> {
         val textList = ArrayList<String>()
         for (permission in permissions) {

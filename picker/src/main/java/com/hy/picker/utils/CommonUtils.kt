@@ -15,6 +15,7 @@ object CommonUtils {
     /**
      * 判断SDCard是否可用
      */
+    @JvmStatic
     fun existSDCard(): Boolean {
         return Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
     }
@@ -26,6 +27,7 @@ object CommonUtils {
      * @param format String 格式
      * @return 返回字符型日期
      */
+    @JvmStatic
     fun format(date: Date, format: String): String {
         var result = ""
         try {
@@ -37,6 +39,7 @@ object CommonUtils {
         return result
     }
 
+    @JvmStatic
     fun format(time: Long): String {
         val sumSec = time / 1000
 
@@ -50,6 +53,7 @@ object CommonUtils {
         } else sumHour.toString() + ":" + formatNum(minute) + ":" + formatNum(second)
     }
 
+    @JvmStatic
     private fun formatNum(num: Long): String {
         return if (num < 10) {
             "0$num"

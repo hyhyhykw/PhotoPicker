@@ -15,6 +15,7 @@ object PhotoContext {
         (context.screenWidth() - context.dp(4f) * 3) / 4
     }
 
+    @JvmStatic
     internal fun setPhotoModule(photoModule: PhotoModule) {
         sPhotoModule = photoModule
     }

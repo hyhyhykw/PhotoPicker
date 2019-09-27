@@ -116,6 +116,7 @@ class PhotoPicker {
         var defaultDrawable = R.drawable.picker_grid_image_default
             private set
 
+        @JvmStatic
         @JvmOverloads
         fun init(photoModule: PhotoModule,
                  @DrawableRes defaultDrawable: Int = R.drawable.picker_grid_image_default,
@@ -126,20 +127,24 @@ class PhotoPicker {
         }
 
 
+        @JvmStatic
         fun isSingle(requestCode: Int): Boolean {
             return PICKER_REQUEST_TAKE_PHOTO == requestCode || requestCode == PICKER_REQUEST_TAKE_VIDEO
         }
 
+        @JvmStatic
         fun isVideo(requestCode: Int): Boolean {
             return requestCode == PICKER_REQUEST_MULTI_VIDEO || requestCode == PICKER_REQUEST_TAKE_VIDEO
         }
 
+        @JvmStatic
         fun obtainTakeResult(requestCode: Int, resultCode: Int, intent: Intent?): Photo? {
             return if (resultCode != Activity.RESULT_OK || requestCode != PICKER_REQUEST_TAKE_PHOTO && requestCode != PICKER_REQUEST_TAKE_VIDEO || intent == null) {
                 null
             } else intent.getParcelableExtra(EXTRA_ITEM)
         }
 
+        @JvmStatic
         fun obtainMultiResult(requestCode: Int, resultCode: Int, intent: Intent?): ArrayList<Photo> {
             return if (resultCode != Activity.RESULT_OK || requestCode != PICKER_REQUEST_MULTI_PICK && requestCode != PICKER_REQUEST_MULTI_VIDEO || intent == null) {
                 ArrayList()
@@ -152,6 +157,7 @@ class PhotoPicker {
         /**
          * 删除编辑缓存
          */
+        @JvmStatic
         fun deleteEditCache() {
             val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
             if (!path.exists()) {
@@ -176,6 +182,7 @@ class PhotoPicker {
         }
 
 
+        @JvmStatic
         fun preview(index: Int, items: ArrayList<Photo>) {
             val intent = Intent(PhotoContext.context, SelectedPicturePreviewActivity::class.java)
                     .putExtra(EXTRA_INDEX, index)

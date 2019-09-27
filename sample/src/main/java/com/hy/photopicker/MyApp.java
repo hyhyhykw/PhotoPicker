@@ -33,7 +33,7 @@ public class MyApp extends Application implements PhotoModule, CrashModule {
     @Override
     public void onCreate() {
         super.onCreate();
-        PhotoPicker.Companion.init(this);
+        PhotoPicker.init(this);
 
         MemoryTrimmableRegistry memoryTrimmableRegistry = NoOpMemoryTrimmableRegistry.getInstance();
         memoryTrimmableRegistry.registerMemoryTrimmable(trimType -> {
