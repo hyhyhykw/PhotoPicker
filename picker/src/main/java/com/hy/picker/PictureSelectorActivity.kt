@@ -173,10 +173,13 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
         }
 
         pickerPhotoGrd.setHasFixedSize(true)
+
         pickerPhotoGrd.adapter = gridViewAdapter
+
         val gridLayoutManager = GridLayoutManager(this, 4)
         pickerPhotoGrd.layoutManager = gridLayoutManager
         pickerPhotoGrd.addItemDecoration(MyGridItemDecoration(this))
+
         pickerPhotoGrd.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)

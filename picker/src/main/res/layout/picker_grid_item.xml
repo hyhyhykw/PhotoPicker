@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<com.hy.picker.view.SquareLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,35 +9,27 @@
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@id/pickerPhotoImage"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:actualImageScaleType="centerCrop"
-        app:fadeDuration="300"
-        app:layout_constraintDimensionRatio="h,1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:fadeDuration="300"/>
 
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@id/pickerIvGif"
         android:layout_width="28dp"
         android:layout_height="15dp"
+        android:layout_gravity="bottom"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/picker_app_name"
         android:src="@drawable/picker_gif"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/pickerPhotoImage"
-        app:layout_constraintStart_toStartOf="@id/pickerPhotoImage" />
+        android:visibility="gone" />
 
     <View
         android:id="@id/pickerItemMask"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@drawable/picker_item_bg_normal"
-        app:layout_constraintBottom_toBottomOf="@id/pickerPhotoImage"
-        app:layout_constraintEnd_toEndOf="@id/pickerPhotoImage"
-        app:layout_constraintStart_toStartOf="@id/pickerPhotoImage"
-        app:layout_constraintTop_toTopOf="@id/pickerPhotoImage" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/picker_item_bg_normal" />
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@id/pickerItemCheckBox"
@@ -51,7 +43,7 @@
 
     <RelativeLayout
         android:id="@id/pickerLytVideo"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_gravity="bottom"
         android:background="@drawable/picker_item_bottom"
@@ -60,10 +52,7 @@
         android:paddingTop="5dp"
         android:paddingEnd="10dp"
         android:paddingBottom="5dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/pickerPhotoImage"
-        app:layout_constraintEnd_toEndOf="@id/pickerPhotoImage"
-        app:layout_constraintStart_toStartOf="@id/pickerPhotoImage">
+        android:visibility="gone">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="20dp"
@@ -83,4 +72,4 @@
             tools:ignore="RelativeOverlap"
             tools:text="20:00" />
     </RelativeLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.hy.picker.view.SquareLayout>
