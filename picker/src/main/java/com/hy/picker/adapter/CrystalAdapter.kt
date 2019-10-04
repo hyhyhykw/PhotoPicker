@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.picker_item_crystal.*
  * @author HY
  */
 class CrystalAdapter(private val cate: String, private val defaultDrawable: Drawable) :
-        BaseRecyclerAdapter<Crystal, CrystalAdapter.ViewHolder>() {
+        PickerBaseRecyclerAdapter<Crystal, CrystalAdapter.ViewHolder>() {
 
     private val imageSize by lazy{
         (PhotoContext.context.screenWidth() - 4) / 4 - PhotoContext.context.dp(20f)
@@ -31,7 +31,7 @@ class CrystalAdapter(private val cate: String, private val defaultDrawable: Draw
     override fun layout() = R.layout.picker_item_crystal
 
     inner class ViewHolder constructor(itemView: View) :
-            BaseRecyclerAdapter.BaseViewHolder(itemView) {
+            PickerBaseRecyclerAdapter.BaseViewHolder(itemView) {
 
         override fun bind() {
             val position = adapterPosition

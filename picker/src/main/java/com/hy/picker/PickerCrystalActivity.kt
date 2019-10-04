@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.picker_activity_list.*
  *
  * @author HY
  */
-class PickerCrystalActivity : BaseListActivity() {
+class PickerCrystalActivity : PickerBaseListActivity() {
 
 
     private lateinit var crystalAdapter: CrystalAdapter

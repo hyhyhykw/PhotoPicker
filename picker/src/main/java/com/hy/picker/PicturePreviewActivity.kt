@@ -21,7 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.hy.picker.adapter.PreviewAdapter
 import com.hy.picker.model.Photo
-import com.hy.picker.utils.CommonUtils
+import com.hy.picker.utils.PickerCommonUtils
 import com.hy.picker.utils.MediaListHolder
 import kotlinx.android.synthetic.main.picker_activity_preview.*
 import java.io.File
@@ -33,7 +33,7 @@ import java.util.*
  *
  * @author HY
  */
-class PicturePreviewActivity : BaseActivity() {
+class PicturePreviewActivity : PickerBaseActivity() {
     private lateinit var itemList: ArrayList<Photo>
 
     private var currentIndex = 0
@@ -198,7 +198,7 @@ class PicturePreviewActivity : BaseActivity() {
 
         }
 
-        val name = "IMG-EDIT-" + CommonUtils.format(Date(), "yyyy-MM-dd-HHmmss") + ".jpg"
+        val name = "IMG-EDIT-" + PickerCommonUtils.format(Date(), "yyyy-MM-dd-HHmmss") + ".jpg"
         val editFile = File(path, name)
 
         startActivity(Intent(this, IMGEditActivity::class.java)

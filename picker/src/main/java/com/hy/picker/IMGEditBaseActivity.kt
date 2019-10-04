@@ -18,7 +18,7 @@ import java.io.IOException
  * Created by felix on 2017/12/5 下午3:08.
  */
 
-abstract class IMGEditBaseActivity : BaseActivity(), View.OnClickListener, IMGTextEditDialog.Callback, RadioGroup.OnCheckedChangeListener, DialogInterface.OnShowListener, DialogInterface.OnDismissListener {
+abstract class IMGEditBaseActivity : PickerBaseActivity(), View.OnClickListener, IMGTextEditDialog.Callback, RadioGroup.OnCheckedChangeListener, DialogInterface.OnShowListener, DialogInterface.OnDismissListener {
 
     private var textDialog: IMGTextEditDialog? = null
 

@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.picker_activity_list.*
  *
  * @author HY
  */
-class PickerCrystalCategoryActivity : BaseListActivity() {
+class PickerCrystalCategoryActivity : PickerBaseListActivity() {
 
     private val crystalCategoryAdapter by lazy {
         val defaultDrawable = ContextCompat.getDrawable(this, PhotoPicker.defaultDrawable)!!

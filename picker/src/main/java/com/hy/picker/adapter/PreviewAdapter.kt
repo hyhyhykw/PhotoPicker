@@ -21,7 +21,7 @@ import java.io.File
  * @author HY
  */
 class PreviewAdapter(private val defaultDrawable: Drawable) :
-        BaseRecyclerAdapter<Photo, BaseRecyclerAdapter.BaseViewHolder>() {
+        PickerBaseRecyclerAdapter<Photo, PickerBaseRecyclerAdapter.BaseViewHolder>() {
 
 
     fun setOnItemClickListener(listener: () -> Unit) {

@@ -42,7 +42,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.util.*
 
-class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
+class PictureSelectorActivity : PickerBaseActivity(), EasyPermissions.PermissionCallbacks, EasyPermissions.RationaleCallbacks {
 
     private var takePictureUri: Uri? = null
     private val max by lazy {
@@ -529,7 +529,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
     }
 
     private fun requestCamera() {
-        if (!CommonUtils.existSDCard()) {
+        if (!PickerCommonUtils.existSDCard()) {
             Toast.makeText(this, R.string.picker_empty_sdcard, Toast.LENGTH_SHORT).show()
             return
         }
@@ -541,7 +541,7 @@ class PictureSelectorActivity : BaseActivity(), EasyPermissions.PermissionCallba
             path.mkdirs()
         }
 
-        val name = (if (video) "VIDEO-" else "IMG-") + CommonUtils.format(Date(), "yyyy-MM-dd-HHmmss") + if (video) ".mp4" else ".jpg"
+        val name = (if (video) "VIDEO-" else "IMG-") + PickerCommonUtils.format(Date(), "yyyy-MM-dd-HHmmss") + if (video) ".mp4" else ".jpg"
         val file = File(path, name)
         val resInfoList = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
         if (resInfoList.size <= 0) {

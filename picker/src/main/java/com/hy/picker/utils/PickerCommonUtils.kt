@@ -9,7 +9,7 @@ import java.util.*
  *
  * @author HY
  */
-object CommonUtils {
+object PickerCommonUtils {
 
     private val sdf = SimpleDateFormat.getInstance() as SimpleDateFormat
     /**

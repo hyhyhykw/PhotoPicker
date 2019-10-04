@@ -28,7 +28,7 @@ import java.io.File
  *
  * @author HY
  */
-class PictureEditPreviewActivity : BaseActivity() {
+class PictureEditPreviewActivity : PickerBaseActivity() {
 
     private var fullScreen = false
 

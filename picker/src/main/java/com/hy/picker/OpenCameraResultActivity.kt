@@ -86,7 +86,7 @@ class OpenCameraResultActivity : AppCompatActivity(), EasyPermissions.Permission
 
         }
 
-        val name = "IMG-EDIT-" + CommonUtils.format(Date(), "yyyy-MM-dd-HHmmss") + ".jpg"
+        val name = "IMG-EDIT-" + PickerCommonUtils.format(Date(), "yyyy-MM-dd-HHmmss") + ".jpg"
         val editFile = File(path, name)
 
         startActivity(Intent(this, IMGEditActivity::class.java)
@@ -239,7 +239,7 @@ class OpenCameraResultActivity : AppCompatActivity(), EasyPermissions.Permission
     }
 
     private fun requestCamera() {
-        if (!CommonUtils.existSDCard()) {
+        if (!PickerCommonUtils.existSDCard()) {
             Toast.makeText(this, R.string.picker_empty_sdcard, Toast.LENGTH_SHORT).show()
             finish()
             return
@@ -255,7 +255,7 @@ class OpenCameraResultActivity : AppCompatActivity(), EasyPermissions.Permission
         }
 
 
-        val name = (if (video) "VIDEO-" else "IMG-") + CommonUtils.format(Date(), "yyyy-MM-dd-HHmmss") + if (video) ".mp4" else ".jpg"
+        val name = (if (video) "VIDEO-" else "IMG-") + PickerCommonUtils.format(Date(), "yyyy-MM-dd-HHmmss") + if (video) ".mp4" else ".jpg"
         val file = File(path, name)
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val resInfoList = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)

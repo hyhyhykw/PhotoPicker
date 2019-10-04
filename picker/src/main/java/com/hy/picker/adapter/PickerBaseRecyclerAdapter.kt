@@ -16,7 +16,7 @@ import java.util.*
  *
  * @author HY
  */
-abstract class BaseRecyclerAdapter<T, V : BaseRecyclerAdapter.BaseViewHolder> : RecyclerView.Adapter<V>() {
+abstract class PickerBaseRecyclerAdapter<T, V : PickerBaseRecyclerAdapter.BaseViewHolder> : RecyclerView.Adapter<V>() {
 
     protected val mData = ArrayList<T>()
 

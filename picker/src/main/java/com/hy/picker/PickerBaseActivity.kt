@@ -10,7 +10,7 @@ import com.hy.picker.model.PickerTheme
  *
  * @author HY
  */
-open class BaseActivity : AppCompatActivity() {
+open class PickerBaseActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

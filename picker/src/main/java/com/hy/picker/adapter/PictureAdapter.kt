@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.drawable.ScalingUtils
 import com.hy.picker.*
 import com.hy.picker.model.Photo
-import com.hy.picker.utils.CommonUtils
+import com.hy.picker.utils.PickerCommonUtils
 import com.hy.picker.utils.MediaListHolder
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.picker_grid_camera.*
@@ -158,7 +158,7 @@ class PictureAdapter(private val max: Int,
 
 
             if (video) {
-                pickerVideoTime.text = CommonUtils.format(item.duration)
+                pickerVideoTime.text = PickerCommonUtils.format(item.duration)
                 pickerItemMask.setOnClickListener {
                     item.isSelected = true
                     MediaListHolder.selectPhotos.add(item)

@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.picker_activity_list.*
  *
  * @author HY
  */
-abstract class BaseListActivity : BaseActivity() {
+abstract class PickerBaseListActivity : PickerBaseActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

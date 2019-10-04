@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.picker_item_category.*
  *
  * @author HY
  */
-class CrystalCategoryAdapter(private val defaultDrawable: Drawable) : BaseRecyclerAdapter<Category, CrystalCategoryAdapter.ViewHolder>() {
+class CrystalCategoryAdapter(private val defaultDrawable: Drawable) : PickerBaseRecyclerAdapter<Category, CrystalCategoryAdapter.ViewHolder>() {
 
     private val imageSize by lazy { PhotoContext.context.dp(50f) }
 
@@ -24,7 +24,7 @@ class CrystalCategoryAdapter(private val defaultDrawable: Drawable) : BaseRecycl
 
     override fun layout() = R.layout.picker_item_category
 
-    inner class ViewHolder internal constructor(itemView: View) : BaseRecyclerAdapter.BaseViewHolder(itemView) {
+    inner class ViewHolder internal constructor(itemView: View) : PickerBaseRecyclerAdapter.BaseViewHolder(itemView) {
 
         override fun bind() {
             val item = getItem(adapterPosition)

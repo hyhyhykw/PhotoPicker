@@ -14,7 +14,7 @@ import java.util.*
  *
  * @author HY
  */
-class SelectedPicturePreviewActivity : BaseActivity() {
+class SelectedPicturePreviewActivity : PickerBaseActivity() {
 
     private var currentIndex = 0
 
