@@ -16,15 +16,8 @@ android {
     defaultConfig {
         minSdkVersion(21)
         targetSdkVersion(27)
-        versionCode = 42
-        versionName = "4.2"
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                includeCompileClasspath = true
-            }
-        }
-
+        versionCode = 124
+        versionName = "12.4"
     }
 
     compileOptions {
@@ -64,7 +57,6 @@ dependencies {
     api("androidx.exifinterface:exifinterface:1.0.0")
     implementation("com.google.code.gson:gson:2.8.5")
     api("pub.devrel:easypermissions:3.0.0")
-    implementation("com.afollestad.material-dialogs:core:3.1.1")
 }
 
 //---------------------------------------------

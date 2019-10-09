@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
-import com.afollestad.materialdialogs.MaterialDialog
+import androidx.appcompat.app.AlertDialog
 import com.facebook.drawee.drawable.ScalingUtils
 import com.hy.picker.*
 import com.hy.picker.core.Crystal
@@ -78,14 +78,25 @@ class CrystalAdapter(private val cate: String, private val defaultDrawable: Draw
         }
 
         private fun showDownloadDialog(context: Context, position: Int, exist: ExistBean) {
-            MaterialDialog(context)
-                    .title(R.string.pickerTitle_dialog)
-                    .message(R.string.picker_sticker_not_download)
-                    .positiveButton(android.R.string.ok, click = {
+            AlertDialog.Builder(context)
+                    .setTitle(R.string.pickerTitle_dialog)
+                    .setMessage(R.string.picker_sticker_not_download)
+                    .setPositiveButton(android.R.string.ok) { dialog, _ ->
                         download(position, exist)
-                    })
-                    .negativeButton(R.string.picker_cancel)
+                        dialog.cancel()
+                    }
+                    .setNegativeButton(R.string.picker_cancel) { dialog, _->
+                        dialog.cancel()
+                    }
                     .show()
+//            MaterialDialog(context)
+//                    .title(R.string.pickerTitle_dialog)
+//                    .message(R.string.picker_sticker_not_download)
+//                    .positiveButton(android.R.string.ok, click = {
+//                        download(position, exist)
+//                    })
+//                    .negativeButton(R.string.picker_cancel)
+//                    .show()
         }
 
         private fun download(position: Int, exist: ExistBean) {
