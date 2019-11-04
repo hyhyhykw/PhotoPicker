@@ -251,16 +251,16 @@ class OpenCameraResultActivity : AppCompatActivity(), EasyPermissions.Permission
             if (BuildConfig.DEBUG) {
                 Log.d("TAG", "文件夹：" + path + "创建" + if (mkdirs) "成功" else "失败")
             }
-
         }
+
 
 
         val name = (if (video) "VIDEO-" else "IMG-") + PickerCommonUtils.format(Date(), "yyyy-MM-dd-HHmmss") + if (video) ".mp4" else ".jpg"
         val file = File(path, name)
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val intent =if(video) Intent(MediaStore.ACTION_VIDEO_CAPTURE) else Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val resInfoList = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
         if (resInfoList.size <= 0) {
-            Toast.makeText(this, resources.getString(R.string.picker_voip_cpu_error), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.picker_voip_cpu_error, Toast.LENGTH_SHORT).show()
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 takePictureUri = MyFileProvider.getUriForFile(this, applicationContext.packageName + ".demo.file_provider", file)

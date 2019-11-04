@@ -11,7 +11,7 @@ plugins {
 
 group = "com.github.hyhyhykw"    // 指定group，com.github.<用户名>
 android {
-    compileSdkVersion(28)
+    compileSdkVersion(29)
     resourcePrefix("picker_")
     defaultConfig {
         minSdkVersion(21)
@@ -48,14 +48,14 @@ dependencies {
     implementation("org.jetbrains.anko:anko-common:0.10.8")
     implementation("androidx.constraintlayout:constraintlayout:1.1.3")
     implementation("androidx.appcompat:appcompat:1.1.0")
-    implementation("androidx.viewpager2:viewpager2:1.0.0-beta04")
+    implementation("androidx.viewpager2:viewpager2:1.0.0-beta05")
     implementation("androidx.recyclerview:recyclerview:1.0.0")
 
     api("com.facebook.fresco:fresco:2.0.0")
     api("com.facebook.fresco:animated-gif:2.0.0")
     api("me.relex:photodraweeview:2.0.0")
     api("androidx.exifinterface:exifinterface:1.0.0")
-    implementation("com.google.code.gson:gson:2.8.5")
+    implementation("com.google.code.gson:gson:2.8.6")
     api("pub.devrel:easypermissions:3.0.0")
 }
 

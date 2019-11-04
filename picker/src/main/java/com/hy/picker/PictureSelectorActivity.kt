@@ -649,6 +649,7 @@ class PictureSelectorActivity : PickerBaseActivity(), EasyPermissions.Permission
                     .setOldController(targetView.controller)
                     .setImageRequest(request)
                     .setCallerContext(uri)
+                    .setAutoPlayAnimations(true)
                     .build()
         }
     }
