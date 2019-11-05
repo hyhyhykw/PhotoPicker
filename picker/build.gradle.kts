@@ -48,7 +48,7 @@ dependencies {
     implementation("org.jetbrains.anko:anko-common:0.10.8")
     implementation("androidx.constraintlayout:constraintlayout:1.1.3")
     implementation("androidx.appcompat:appcompat:1.1.0")
-    implementation("androidx.viewpager2:viewpager2:1.0.0-beta05")
+    implementation("androidx.viewpager2:viewpager2:1.0.0-rc01")
     implementation("androidx.recyclerview:recyclerview:1.0.0")
 
     api("com.facebook.fresco:fresco:2.0.0")
